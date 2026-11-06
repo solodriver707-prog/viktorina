@@ -924,9 +924,12 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     if(st.status === "playing" && typeof st.startAt === "number"){
       var n = quizQs(quiz).length, lim = (quiz.timeLimit || 10) * 1000, slot = lim + GAP;
       if(t < st.startAt) return {k:"count", left: st.startAt - t};
-      var i = Math.floor((t - st.startAt) / slot);
+      /* when everyone has answered, the host moves the schedule forward: question `jump.i` starts at `jump.at` */
+      var b = (st.jump && typeof st.jump.at === "number" && typeof st.jump.i === "number" && st.jump.at >= st.startAt) ? st.jump : {i:0, at:st.startAt};
+      if(t < b.at) return {k:"gap", i:b.i - 1, left:b.at - t, last:b.i - 1 === n - 1, n:n, early:true};
+      var i = b.i + Math.floor((t - b.at) / slot);
       if(i >= n) return {k:"end"};
-      var qs = st.startAt + i * slot, w = t - qs;
+      var qs = b.at + (i - b.i) * slot, w = t - qs;
       if(w < lim) return {k:"q", i:i, qStart:qs, left:lim - w, lim:lim, n:n};
       return {k:"gap", i:i, left:slot - w, last:i === n - 1, n:n};
     }
@@ -1160,7 +1163,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     var mine = G.mine["q" + ph.i], tile = $("gg-tile");
     tile.className = "state-tile " + (mine ? "ok" : "late");
     tile.textContent = mine ? "✓" : "!";
-    $("gg-title").textContent = mine ? "Atbilde pieņemta!" : "Laiks beidzās!";
+    $("gg-title").textContent = mine ? (ph.early ? "Visi atbildējuši!" : "Atbilde pieņemta!") : "Laiks beidzās!";
     $("gg-sub").textContent = mine ? "Tu atbildēji " + fmtSec(mine.t) + " laikā. Vai pareizi, uzzināsi beigās." : "Uz šo jautājumu atbilde netika saņemta.";
     if(!mine) beep(220, 0.3, 0.16);
   }
@@ -1464,7 +1467,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     } else if(ph.k === "gap"){
       $("hg-count").textContent = "Jautājums " + (ph.i + 1) + " / " + n;
       $("hg-prog").style.width = Math.round((ph.i + 1) / n * 100) + "%";
-      body.append(h("h2", {class:"qtext", text:"Laiks beidzās!"}), h("p", {class:"lede", id:"hg-next"}));
+      body.append(h("h2", {class:"qtext", text: ph.early ? "Visi atbildējuši!" : "Laiks beidzās!"}), h("p", {class:"lede", id:"hg-next"}));
     } else {
       $("hg-count").textContent = "Jautājumi beigušies!";
       $("hg-prog").style.width = "100%";
@@ -1495,7 +1498,20 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
       $("hg-meter").hidden = false;
     }
   }
+  var EARLY_GAP = 2500;
+  /* everyone answered: start the next question after a short pause instead of waiting out the timer */
+  function hMaybeAdvance(ph){
+    if(!H.inGame || !H.state || H.state.status !== "playing" || ph.k !== "q") return;
+    if(ph.left < EARLY_GAP + 300) return;
+    var ids = Object.keys(H.players);
+    if(!ids.length) return;
+    var all = ids.every(function(id){ var a = H.answers[id]; return a && a["q" + ph.i]; });
+    if(!all || H.jumpedFor === H.pin + ":" + ph.i) return;
+    H.jumpedFor = H.pin + ":" + ph.i;
+    S.update("games/" + H.pin + "/state", {jump: {i: ph.i + 1, at: Math.round(now() + EARLY_GAP)}}).catch(function(){ H.jumpedFor = null; });
+  }
   function hTick(ph){
+    hMaybeAdvance(ph);
     if(cur !== "hgame") return;
     if(ph.k === "count"){
       var n = Math.max(1, Math.min(3, Math.ceil(ph.left / 1000))), el = $("hg-num");
