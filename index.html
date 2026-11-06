@@ -698,7 +698,8 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     var sb = window.supabase.createClient(conf.url, conf.key, {auth:{persistSession:false, autoRefreshToken:false, detectSessionInUrl:false}});
     var off = 0, games = {}, connCbs = [];
     function parts(p){ return String(p).split("/").filter(Boolean); }
-    function gameOf(p){ return parts(p).slice(0, 2).join("-"); }
+    /* answers live in their own stream, so only the host receives every guest's answer (keeps fan-out at N, not N×N) */
+    function gameOf(p){ var ps = parts(p); return ps[0] === "games" && ps[2] === "answers" ? "games-" + ps[1] + "-ans" : ps.slice(0, 2).join("-"); }
     function isPrefix(a, b){ if(a.length > b.length) return false; for(var i = 0; i < a.length; i++) if(a[i] !== b[i]) return false; return true; }
     function dig(v, ps){ for(var i = 0; i < ps.length; i++){ if(v == null || typeof v !== "object") return undefined; v = v[ps[i]]; } return v; }
     function put(obj, ps, v){
@@ -820,6 +821,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
           return assemble(m, P);
         });
       },
+      refresh: function(P){ var g = games[gameOf(P)]; return g ? reload(g) : Promise.resolve(); },
       set: function(P, v){ return write(P, v); },
       update: function(P, o){ return Promise.all(Object.keys(o).map(function(k){ return write(P + "/" + k, o[k]); })); },
       remove: function(P){ return write(P, null); },
@@ -1053,12 +1055,13 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
       gLobbyNames();
     });
     G.sub.on("games/" + pin + "/results", function(v){ G.results = v; gUpdate(); });
-    G.sub.on("games/" + pin + "/answers/" + pid, function(v){
+    /* own earlier answers, read once (after a reload); guests do not listen to the answers stream */
+    S.get("games/" + pin + "/answers/" + pid).then(function(v){
       v = v || {};
       var changed = false;
       Object.keys(v).forEach(function(k){ if(!G.mine[k] && v[k]){ G.mine[k] = v[k]; changed = true; } });
       if(changed){ G.phase = ""; gUpdate(); }
-    });
+    }).catch(function(){});
   }
   function gForget(){ lsSet(LS_JOIN, null); gStop(); }
   function gResume(saved){
@@ -1543,9 +1546,18 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     rows.forEach(function(r){ byPid[r.pid] = {rank:r.rank, pts:r.pts, correct:r.correct}; });
     return {rows:rows, podium:podium, byPid:byPid, count:rows.length, scored:scored.length, n:qs.length, keyByIdx: scored.reduce(function(m, s){ m[s.i] = s.key; return m; }, {})};
   }
+  /* re-read players and answers from the database first, so no missed live update can change the score */
   function hWriteResults(){
-    var R = hCompute();
-    return S.set("games/" + H.pin + "/results", {podium:R.podium, byPid:R.byPid, count:R.count, scored:R.scored});
+    var pin = H.pin;
+    var sync = S.refresh ? Promise.all([S.refresh("games/" + pin + "/players"), S.refresh("games/" + pin + "/answers")]) : Promise.resolve();
+    return sync.then(function(){
+      return Promise.all([S.get("games/" + pin + "/players"), S.get("games/" + pin + "/answers")]);
+    }).then(function(r){
+      if(r[0]) H.players = r[0];
+      H.answers = r[1] || {};
+      var R = hCompute();
+      return S.set("games/" + pin + "/results", {podium:R.podium, byPid:R.byPid, count:R.count, scored:R.scored});
+    });
   }
   function hSetTab(t){
     H.resTab = t;
