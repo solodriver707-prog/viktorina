@@ -528,11 +528,31 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
 .add-quiz{border-style:dashed}
 #hp-count:empty{display:none}
 .play-ic{width:20px;height:20px;fill:currentColor;flex:none}
+
+/* language switch for guests */
+.lang-switch{display:flex;gap:4px;justify-self:end;align-self:flex-end;background:var(--card);border:2px solid var(--line);border-radius:12px;padding:3px;box-shadow:var(--shadow)}
+.center-screen .lang-switch{justify-self:end;position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:max(16px,env(safe-area-inset-right,0px))}
+#s-globby{position:relative}
+.lang-switch button{appearance:none;border:0;background:transparent;color:var(--muted);font:800 13px/1 var(--body);letter-spacing:.04em;padding:8px 10px;border-radius:9px;cursor:pointer;min-width:40px}
+.lang-switch button[aria-pressed="true"]{background:var(--blue);color:#fff}
+#s-home > .lang-switch{margin-bottom:-14px}
+
+/* result after each question */
+.state-tile.poll{background:var(--blue)}
+.gap-pts{font:900 clamp(44px,13vw,64px)/1 var(--display);color:var(--green);font-variant-numeric:tabular-nums;animation:pop .5s cubic-bezier(.2,1.6,.4,1)}
+.gap-rank{font:800 17px/1.3 var(--body);background:var(--card);border:2px solid var(--line);border-radius:14px;padding:10px 16px;box-shadow:var(--shadow);font-variant-numeric:tabular-nums}
+.qtext-sm{font-size:clamp(22px,6vw,30px)}
+.lead-board .gain{color:var(--green-ink);font-weight:800}
+.info-chip{background:var(--blue-soft);border-color:transparent;color:var(--ink)}
+.poll-check{font-size:15px}
+.is-poll .pick input,.is-poll .oview input{visibility:hidden;width:0;margin:0}
+.is-poll .right-tag{display:none!important}
+.is-poll .orow.is-correct input[type=text],.is-poll .oview.is-correct{border-color:var(--line);background:transparent}
 </style>
 </head>
 <body>
 <div id="scene" aria-hidden="true"><div id="scene-fx"></div></div>
-<div class="net" id="net" hidden role="status">Nav savienojuma ar internetu. Mēģinām pieslēgties…</div>
+<div class="net" id="net" hidden role="status" data-i18n="net">Nav savienojuma ar internetu. Mēģinām pieslēgties…</div>
 <main class="wrap" id="app">
 
   <!-- ===== setup error ===== -->
@@ -543,54 +563,56 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
 
   <!-- ===== GUEST ===== -->
   <section id="s-home" class="screen" hidden>
+    <div class="lang-switch" role="group" aria-label="Valoda / Language / Язык"><button type="button" data-lang="lv">LV</button><button type="button" data-lang="en">EN</button><button type="button" data-lang="ru">RU</button></div>
     <div class="hero">
       <div class="candle" id="home-candle" aria-hidden="true" hidden><span class="flame"></span><span class="wick"></span><span class="two" id="home-badge">2</span></div>
       <div class="brand-mark" id="home-brand" aria-hidden="true"><span class="c0">A</span><span class="c1">B</span><span class="c2">C</span><span class="c3">D</span></div>
       <div class="hero-text">
         <p class="eyebrow" id="home-sub">quizmaker.fun</p>
         <h1 id="home-title">Pievienojies spēlei</h1>
-        <p class="lede">Ieraksti savu vārdu un gaidi, kamēr vadītājs nospiedīs START.</p>
+        <p class="lede" data-i18n="home.lede">Ieraksti savu vārdu un gaidi, kamēr vadītājs nospiedīs START.</p>
       </div>
     </div>
     <form class="join" id="join-form" novalidate>
       <div class="field" id="pin-field">
-        <label class="lbl" for="j-pin">Spēles PIN</label>
+        <label class="lbl" for="j-pin" data-i18n="home.pin">Spēles PIN</label>
         <input id="j-pin" type="text" inputmode="numeric" autocomplete="off" maxlength="7" class="big-input pin-input" placeholder="123 456">
       </div>
       <div class="field">
-        <label class="lbl" for="j-name">Tavs vārds</label>
-        <input id="j-name" type="text" autocomplete="off" maxlength="24" class="big-input" placeholder="Piemēram, Anna">
+        <label class="lbl" for="j-name" data-i18n="home.name">Tavs vārds</label>
+        <input id="j-name" type="text" autocomplete="off" maxlength="24" class="big-input" placeholder="Piemēram, Anna" data-i18n-ph="home.namePh">
       </div>
       <p class="err" id="j-err" aria-live="polite"></p>
-      <button class="btn btn-go" type="submit" id="j-go">Pievienoties</button>
+      <button class="btn btn-go" type="submit" id="j-go" data-i18n="home.join">Pievienoties</button>
     </form>
     <div class="panel">
-      <p class="eyebrow">Kā spēlēt</p>
+      <p class="eyebrow" data-i18n="home.how">Kā spēlēt</p>
       <ol class="howto">
-        <li><span class="num c0">1</span><span>Ieraksti vārdu un spied „Pievienoties”.</span></li>
-        <li><span class="num c1">2</span><span>Kad vadītājs nospiedīs START, visiem jautājumi sāksies reizē.</span></li>
-        <li><span class="num c2">3</span><span>Jo ātrāk atbildi pareizi, jo vairāk punktu. Uzvarētāju atklāsim beigās.</span></li>
+        <li><span class="num c0">1</span><span data-i18n="home.how1">Ieraksti vārdu un spied „Pievienoties”.</span></li>
+        <li><span class="num c1">2</span><span data-i18n="home.how2">Kad vadītājs nospiedīs START, visiem jautājumi sāksies reizē.</span></li>
+        <li><span class="num c2">3</span><span data-i18n="home.how3">Jo ātrāk atbildi pareizi, jo vairāk punktu. Pēc katra jautājuma redzēsi, vai bija pareizi.</span></li>
       </ol>
     </div>
     <div class="host-entry">
-      <a class="btn btn-quiet btn-sm" href="#jauna">Izveidot savu viktorīnu</a>
-      <a class="btn-text" href="#vaditajs">Vadītāja ieeja</a>
+      <a class="btn btn-quiet btn-sm" href="#jauna" data-i18n="home.create">Izveidot savu viktorīnu</a>
+      <a class="btn-text" href="#vaditajs" data-i18n="home.host">Vadītāja ieeja</a>
     </div>
   </section>
 
   <section id="s-globby" class="screen center-screen" hidden>
-    <p class="eyebrow">Tu esi spēlē!</p>
+    <div class="lang-switch" role="group" aria-label="Valoda / Language / Язык"><button type="button" data-lang="lv">LV</button><button type="button" data-lang="en">EN</button><button type="button" data-lang="ru">RU</button></div>
+    <p class="eyebrow" data-i18n="lobby.in">Tu esi spēlē!</p>
     <h2 class="big-name" id="gl-name">Anna</h2>
-    <p class="lede">Gaidi, kamēr vadītājs nospiedīs <strong>START</strong>. Jautājumi parādīsies visiem reizē.</p>
+    <p class="lede" data-i18n="lobby.wait">Gaidi, kamēr vadītājs nospiedīs START. Jautājumi parādīsies visiem reizē.</p>
     <div class="dots" aria-hidden="true"><span class="c0" style="--c:var(--red)"></span><span style="--c:var(--yellow)"></span><span style="--c:var(--blue)"></span><span style="--c:var(--green)"></span></div>
     <p class="eyebrow" id="gl-count"></p>
     <div class="names" id="gl-names"></div>
-    <button class="btn-text btn-danger" id="gl-leave" type="button">Iziet no spēles</button>
+    <button class="btn-text btn-danger" id="gl-leave" type="button" data-i18n="lobby.leave">Iziet no spēles</button>
   </section>
 
   <section id="s-gcount" class="screen ready" hidden>
     <p class="eyebrow" id="gc-sub"></p>
-    <h2>Sākam!</h2>
+    <h2 data-i18n="count.go">Sākam!</h2>
     <div class="ready-num" id="gc-num" aria-live="assertive">3</div>
   </section>
 
@@ -600,7 +622,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
         <div class="count" id="gq-count">1 / 16</div>
         <div class="who" id="gq-who"></div>
       </div>
-      <div class="ring" id="gq-ring" role="timer" aria-label="Atlikušās sekundes"><span id="gq-secs">10</span></div>
+      <div class="ring" id="gq-ring" role="timer" aria-label="Atlikušās sekundes" data-i18n-label="q.timer"><span id="gq-secs">10</span></div>
     </div>
     <div class="prog" aria-hidden="true"><span id="gq-prog"></span></div>
     <div style="display:grid;gap:8px"><p class="eyebrow" id="gq-eyebrow"></p><h2 class="qtext" id="gq-q"></h2></div>
@@ -612,7 +634,9 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
   <section id="s-ggap" class="screen center-screen" hidden>
     <div class="state-tile ok" id="gg-tile" aria-hidden="true">✓</div>
     <h2 class="qtext" id="gg-title">Atbilde pieņemta!</h2>
+    <p class="gap-pts" id="gg-pts" hidden></p>
     <p class="lede" id="gg-sub"></p>
+    <p class="gap-rank" id="gg-rank" hidden></p>
     <p class="eyebrow" id="gg-next"></p>
   </section>
 
@@ -620,22 +644,22 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     <div class="done-mark" aria-hidden="true">✓</div>
     <h2 class="qtext" id="ge-title">Malacis!</h2>
     <div class="panel score-card">
-      <p class="eyebrow">Tavs kopējais atbilžu laiks</p>
+      <p class="eyebrow" data-i18n="end.timeLabel">Tavs kopējais atbilžu laiks</p>
       <p class="time-big" id="ge-time">0 s</p>
       <p class="score-meta" id="ge-meta"></p>
     </div>
-    <p class="note info"><strong>Tagad jāpagaida.</strong> Kad vadītājs atklās uzvarētājus, tu to redzēsi arī savā telefonā.</p>
+    <p class="note info" data-i18n="end.wait">Tagad jāpagaida. Kad vadītājs atklās uzvarētājus, tu to redzēsi arī savā telefonā.</p>
   </section>
 
   <section id="s-greveal" class="screen" hidden>
-    <div><p class="eyebrow">Rezultāti</p><h2 class="qtext" id="gr-title">Uzvarētāji</h2></div>
+    <div><p class="eyebrow" data-i18n="rev.label">Rezultāti</p><h2 class="qtext" id="gr-title">Uzvarētāji</h2></div>
     <div id="gr-body" class="screen"></div>
   </section>
 
   <section id="s-gbye" class="screen center-screen" hidden>
     <h2 class="qtext" id="gb-title">Spēle beigusies</h2>
     <p class="lede" id="gb-text"></p>
-    <button class="btn btn-primary" id="gb-home" type="button">Pievienoties spēlei</button>
+    <button class="btn btn-primary" id="gb-home" type="button" data-i18n="bye.home">Pievienoties spēlei</button>
   </section>
 
   <!-- ===== HOST ===== -->
@@ -861,7 +885,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
   /* ================= constants ================= */
   var CONF = window.VK_CONFIG || {};
   var LETTERS = ["A","B","C","D"];
-  var GAP = 3000;          /* pause between questions */
+  var GAP = 7000;          /* pause between questions: shows the right answer, points and the top five */
   var PRE = 4000;          /* 3-2-1 before the first question */
   var BASE_PTS = 500, SPEED_PTS = 500;
   var LS_JOIN = "vk-join", LS_HOST = "vk-host", LS_HQ = "vk-hq";
@@ -944,7 +968,8 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
       ["ad-talants","Kurā lietā {N} ir slepeni ļoti {labs|laba}?",["Dziedāšanā","Dejošanā","Ēdiena gatavošanā","Jokos"]],
       ["ad-gadalaiks","Kuru gadalaiku {N} mīl visvairāk?",["Ziemu","Pavasari","Vasaru","Rudeni"]],
       ["ad-rits","Ko {N} dara vispirms no rīta?",["Dzer kafiju","Skatās telefonā","Iet dušā","Ieslēdz ziņas"]],
-      ["ad-filmas","Kāda žanra filmas {N} skatās visbiežāk?",["Komēdijas","Trillerus","Romantiskās","Dokumentālās"]]
+      ["ad-filmas","Kāda žanra filmas {N} skatās visbiežāk?",["Komēdijas","Trillerus","Romantiskās","Dokumentālās"]],
+      ["ad-p-nakamreiz","Aptauja: kā svinēt nākamo jubileju?",["Ceļojumā","Ar lielu ballīti","SPA dienā","Mājās ar tuvākajiem"],null,"poll"]
     ]},
     {id:"wedding", tile:"♥", c:0, bg:"sirsninas", title:"Kāzas", sub:"Cik labi pazīsti pāri?",
      desc:"Kā viņi satikās, kurš kavē un kur dosies medusmēnesī.",
@@ -959,7 +984,8 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
       ["kz-bildina","Kur notika bildināšana?",["Ceļojumā","Mājās","Dabā","Restorānā"]],
       ["kz-medus","Kur {N} dosies medusmēnesī?",["Pie jūras","Kalnos","Uz lielpilsētu","Paliks mājās"]],
       ["kz-aizmieg","Kurš vakarā aizmieg pirmais?",["Līgava","Līgavainis","Abi reizē","Atkarīgs no dienas"]],
-      ["kz-datums","Kurš izvēlējās kāzu datumu?",["Līgava","Līgavainis","Abi kopā","Vecāki"]]
+      ["kz-datums","Kurš izvēlējās kāzu datumu?",["Līgava","Līgavainis","Abi kopā","Vecāki"]],
+      ["kz-p-dejas","Aptauja: kurš šovakar dejos visilgāk?",["Līgavas draudzenes","Līgavaiņa draugi","Vecvecāki","Bērni"],null,"poll"]
     ]},
     {id:"babyshower", tile:"9 m", c:1, bg:"makonisi", title:"Gaidību ballīte", sub:"Viss par mazuļiem",
      desc:"Jautājumi par mazuļiem. Pareizās atbildes jau atzīmētas.",
@@ -986,7 +1012,8 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
       ["wk-kave","Kas visbiežāk aizkavē sapulces sākumu?",["Tehnika","Kafijas rinda","Satiksme","Iepriekšējā sapulce"]],
       ["wk-pasakums","Kur notika mūsu pēdējais kopīgais pasākums?",["Ārpus pilsētas","Restorānā","Birojā","Tāds vēl nav bijis"]],
       ["wk-atvalinajums","Kurā mēnesī komandā ir visvairāk atvaļinājumu?",["Jūnijā","Jūlijā","Augustā","Decembrī"]],
-      ["wk-epasti","Cik e-pastu vidēji dienā saņem mūsu vadītājs?",["Līdz 20","20–50","51–100","Vairāk nekā 100"]]
+      ["wk-epasti","Cik e-pastu vidēji dienā saņem mūsu vadītājs?",["Līdz 20","20–50","51–100","Vairāk nekā 100"]],
+      ["wk-p-karaoke","Aptauja: kuram vajadzētu dziedāt karaoke pirmajam?",["Vadītājam","Jaunākajam kolēģim","Tam, kurš visvairāk runā","Visiem kopā"],null,"poll"]
     ]},
     {id:"latvija", tile:"LV", c:0, bg:"klasika", title:"Latvijas viktorīna", sub:"Vispārējās zināšanas",
      desc:"Vēsture, daba un simboli. Pareizās atbildes jau atzīmētas.",
@@ -1183,9 +1210,11 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
   }
   function clone(o){ return JSON.parse(JSON.stringify(o)); }
   function plural(n, one, many){ return (n % 10 === 1 && n % 100 !== 11) ? one : many; }
-  function fmtPts(n){ try{ return Number(n).toLocaleString("lv-LV"); }catch(e){ return String(n); } }
-  function fmtSec(ms){ return (Math.max(0, ms) / 1000).toFixed(1).replace(".", ",") + " s"; }
-  function fmtTime(ms){ var s = Math.round(ms / 1000); if(s < 60) return s + " s"; var m = Math.floor(s / 60), r = s % 60; return m + " min" + (r ? " " + r + " s" : ""); }
+  function curLang(){ try{ return lang; }catch(e){ return "lv"; } }
+  function fmtPts(n){ var L = curLang(); try{ return Number(n).toLocaleString(L === "en" ? "en-GB" : L === "ru" ? "ru-RU" : "lv-LV"); }catch(e){ return String(n); } }
+  function secUnit(){ return curLang() === "ru" ? " с" : " s"; }
+  function fmtSec(ms){ var v = (Math.max(0, ms) / 1000).toFixed(1); return (curLang() === "en" ? v : v.replace(".", ",")) + secUnit(); }
+  function fmtTime(ms){ var s = Math.round(ms / 1000), mu = curLang() === "ru" ? " мин" : " min"; if(s < 60) return s + secUnit(); var m = Math.floor(s / 60), r = s % 60; return m + mu + (r ? " " + r + secUnit() : ""); }
   function fmtPin(p){ return String(p || "").replace(/^(\d{3})(\d{3})$/, "$1 $2"); }
   function rid(){ return Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4); }
   function lsGet(k){ try{ return JSON.parse(localStorage.getItem(k) || "null"); }catch(e){ return null; } }
@@ -1202,13 +1231,160 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     var base = btn.textContent, t = null;
     btn.addEventListener("click", function(){
       if(btn.classList.contains("armed")){ clearTimeout(t); btn.classList.remove("armed"); btn.textContent = base; onConfirm(); return; }
-      btn.classList.add("armed"); btn.textContent = armedText;
+      base = btn.textContent;
+      btn.classList.add("armed"); btn.textContent = typeof armedText === "function" ? armedText() : armedText;
       t = setTimeout(function(){ btn.classList.remove("armed"); btn.textContent = base; }, 3500);
     });
   }
 
+
+  /* ================= guest languages ================= */
+  /* Guests can switch the screens to English or Russian; the host's own questions stay as written. */
+  var I18N = {
+    lv:{
+      "net":"Nav savienojuma ar internetu. Mēģinām pieslēgties…",
+      "home.title":"Pievienojies spēlei","home.lede":"Ieraksti savu vārdu un gaidi, kamēr vadītājs nospiedīs START.",
+      "home.pin":"Spēles PIN","home.name":"Tavs vārds","home.namePh":"Piemēram, Anna","home.join":"Pievienoties",
+      "home.how":"Kā spēlēt","home.how1":"Ieraksti vārdu un spied „Pievienoties”.","home.how2":"Kad vadītājs nospiedīs START, visiem jautājumi sāksies reizē.",
+      "home.how3":"Jo ātrāk atbildi pareizi, jo vairāk punktu. Pēc katra jautājuma redzēsi, vai bija pareizi.",
+      "home.create":"Izveidot savu viktorīnu","home.host":"Vadītāja ieeja","home.game":"Spēle {pin}",
+      "err.pin":"Ieraksti 6 ciparu spēles PIN.","err.name":"Ieraksti savu vārdu.","err.notFound":"Spēle ar šo PIN nav atrasta. Pārbaudi ciparus.",
+      "err.over":"Šī spēle jau ir beigusies.","err.dup":"Spēlē jau ir „{name}”. Pieliec klāt uzvārda burtu, piemēram, „{name} K.”",
+      "err.net":"Neizdevās pievienoties. Pārbaudi internetu un mēģini vēlreiz.","err.gone":"Spēle ar šo kodu vairs nav atrasta. Noskenē jaunāko QR kodu vai ieraksti PIN.",
+      "err.full":"Šajā spēlē jau ir maksimālais spēlētāju skaits ({n}).",
+      "lobby.in":"Tu esi spēlē!","lobby.wait":"Gaidi, kamēr vadītājs nospiedīs START. Jautājumi parādīsies visiem reizē.",
+      "lobby.players_one":"Spēlē jau {n} dalībnieks","lobby.players_many":"Spēlē jau {n} dalībnieki",
+      "lobby.leave":"Iziet no spēles","lobby.leaveSure":"Tiešām iziet? Spied vēlreiz",
+      "count.go":"Sākam!","count.q_one":"{n} jautājums","count.q_many":"{n} jautājumi","count.each":"{s} sekundes katram",
+      "q.timer":"Atlikušās sekundes","q.done":"Atbilde pieņemta · {t}. Gaidām pārējos…","q.sendFail":"Atbildi neizdevās nosūtīt. Pārbaudi internetu.",
+      "gap.next":"Nākamais jautājums pēc {s} s","gap.last":"Tas bija pēdējais jautājums!","gap.allIn":"Visi atbildējuši!",
+      "gap.got":"Atbilde pieņemta!","gap.late":"Laiks beidzās!","gap.yourTime":"Tu atbildēji {t} laikā.","gap.noAnswer":"Uz šo jautājumu atbilde netika saņemta.",
+      "gap.atEnd":"Vai pareizi, uzzināsi beigās.","gap.right":"Pareizi!","gap.wrong":"Nepareizi","gap.correctWas":"Pareizā atbilde: {a}",
+      "gap.poll":"Paldies par balsi!","gap.pollTop":"Visvairāk balsu: {a}","gap.pollNone":"Šoreiz neviens nenobalsoja.",
+      "gap.rank":"{r}. vieta no {n}",
+      "pts_one":"{n} punkts","pts_many":"{n} punkti","plus_one":"+{n} punkts","plus_many":"+{n} punkti",
+      "end.title":"Malacis, {name}!","end.timeLabel":"Tavs kopējais atbilžu laiks","end.meta":"Atbildēji uz {a} no {n} · vidēji {t} uz jautājumu",
+      "end.wait":"Tagad jāpagaida. Kad vadītājs atklās uzvarētājus, tu to redzēsi arī savā telefonā.",
+      "rev.label":"Rezultāti","rev.waitTitle":"Gaidām rezultātus","rev.wait":"Vadītājs gatavojas atklāt uzvarētājus…",
+      "rev.winners":"Uzvarētāji","rev.revealing":"Vadītājs atklāj vietas…","rev.won":"Tu uzvarēji!","rev.yours":"Tava vieta","rev.place":"{r}. vieta",
+      "rev.correct":"{c} no {s} pareizi","players_one":"kopā {n} spēlētājs","players_many":"kopā {n} spēlētāji",
+      "rev.again":"Pievienoties citai spēlei","rev.share":"Dalīties ar rezultātu","rev.shareText":"Es ieguvu {r}. vietu viktorīnā „{q}”! Izveido savu: quizmaker.fun",
+      "pod.tie":"dalīta vieta","pod.hidden":"Vēl nav atklāts",
+      "bye.over":"Spēle beigusies","bye.closed":"Vadītājs šo spēli ir aizvēris.","bye.kicked":"Tevi izņēma no spēles","bye.kickedText":"Ja tas notika nejauši, pievienojies vēlreiz.",
+      "bye.home":"Pievienoties spēlei","toast.copied":"Nokopēts."
+    },
+    en:{
+      "net":"No internet connection. Trying to reconnect…",
+      "home.title":"Join a game","home.lede":"Enter your name and wait for the host to press START.",
+      "home.pin":"Game PIN","home.name":"Your name","home.namePh":"For example, Anna","home.join":"Join",
+      "home.how":"How to play","home.how1":"Enter your name and tap “Join”.","home.how2":"When the host presses START, the questions start for everyone at once.",
+      "home.how3":"The faster you answer correctly, the more points you get. After every question you'll see if you were right.",
+      "home.create":"Create your own quiz","home.host":"Host login","home.game":"Game {pin}",
+      "err.pin":"Enter the 6-digit game PIN.","err.name":"Enter your name.","err.notFound":"No game with this PIN. Check the digits.",
+      "err.over":"This game has already ended.","err.dup":"There is already a “{name}” in this game. Add an initial, for example “{name} K.”",
+      "err.net":"Could not join. Check your internet and try again.","err.gone":"This game is no longer available. Scan the latest QR code or enter the PIN.",
+      "err.full":"This game already has the maximum number of players ({n}).",
+      "lobby.in":"You're in!","lobby.wait":"Wait for the host to press START. The questions will appear for everyone at once.",
+      "lobby.players_one":"{n} player in the game","lobby.players_many":"{n} players in the game",
+      "lobby.leave":"Leave the game","lobby.leaveSure":"Leave for real? Tap again",
+      "count.go":"Let's go!","count.q_one":"{n} question","count.q_many":"{n} questions","count.each":"{s} seconds each",
+      "q.timer":"Seconds left","q.done":"Answer received · {t}. Waiting for the others…","q.sendFail":"Could not send your answer. Check your internet.",
+      "gap.next":"Next question in {s} s","gap.last":"That was the last question!","gap.allIn":"Everyone has answered!",
+      "gap.got":"Answer received!","gap.late":"Time's up!","gap.yourTime":"You answered in {t}.","gap.noAnswer":"No answer was received for this question.",
+      "gap.atEnd":"You'll find out at the end if it was right.","gap.right":"Correct!","gap.wrong":"Not quite","gap.correctWas":"Correct answer: {a}",
+      "gap.poll":"Thanks for voting!","gap.pollTop":"Most votes: {a}","gap.pollNone":"Nobody voted this time.",
+      "gap.rank":"Place {r} of {n}",
+      "pts_one":"{n} point","pts_many":"{n} points","plus_one":"+{n} point","plus_many":"+{n} points",
+      "end.title":"Well done, {name}!","end.timeLabel":"Your total answer time","end.meta":"You answered {a} of {n} · {t} per question on average",
+      "end.wait":"Now hold on. When the host reveals the winners, you'll see it on your phone too.",
+      "rev.label":"Results","rev.waitTitle":"Waiting for the results","rev.wait":"The host is about to reveal the winners…",
+      "rev.winners":"Winners","rev.revealing":"The host is revealing the places…","rev.won":"You won!","rev.yours":"Your place","rev.place":"#{r}",
+      "rev.correct":"{c} of {s} correct","players_one":"{n} player","players_many":"{n} players",
+      "rev.again":"Join another game","rev.share":"Share my result","rev.shareText":"I came #{r} in the quiz “{q}”! Make your own: quizmaker.fun",
+      "pod.tie":"shared place","pod.hidden":"Not revealed yet",
+      "bye.over":"Game over","bye.closed":"The host has closed this game.","bye.kicked":"You were removed from the game","bye.kickedText":"If that was a mistake, join again.",
+      "bye.home":"Join a game","toast.copied":"Copied."
+    },
+    ru:{
+      "net":"Нет подключения к интернету. Пытаемся подключиться…",
+      "home.title":"Присоединяйся к игре","home.lede":"Введи своё имя и жди, пока ведущий нажмёт START.",
+      "home.pin":"PIN игры","home.name":"Твоё имя","home.namePh":"Например, Анна","home.join":"Присоединиться",
+      "home.how":"Как играть","home.how1":"Введи имя и нажми «Присоединиться».","home.how2":"Когда ведущий нажмёт START, вопросы начнутся у всех одновременно.",
+      "home.how3":"Чем быстрее правильный ответ, тем больше очков. После каждого вопроса увидишь, верно ли ответил.",
+      "home.create":"Создать свою викторину","home.host":"Вход для ведущего","home.game":"Игра {pin}",
+      "err.pin":"Введи 6-значный PIN игры.","err.name":"Введи своё имя.","err.notFound":"Игра с таким PIN не найдена. Проверь цифры.",
+      "err.over":"Эта игра уже закончилась.","err.dup":"В игре уже есть «{name}». Добавь букву фамилии, например «{name} К.»",
+      "err.net":"Не удалось присоединиться. Проверь интернет и попробуй ещё раз.","err.gone":"Эта игра больше не доступна. Отсканируй новый QR-код или введи PIN.",
+      "err.full":"В этой игре уже максимальное число игроков ({n}).",
+      "lobby.in":"Ты в игре!","lobby.wait":"Жди, пока ведущий нажмёт START. Вопросы появятся у всех одновременно.",
+      "lobby.players_one":"В игре уже {n} участник","lobby.players_few":"В игре уже {n} участника","lobby.players_many":"В игре уже {n} участников",
+      "lobby.leave":"Выйти из игры","lobby.leaveSure":"Точно выйти? Нажми ещё раз",
+      "count.go":"Начинаем!","count.q_one":"{n} вопрос","count.q_few":"{n} вопроса","count.q_many":"{n} вопросов","count.each":"по {s} сек. на вопрос",
+      "q.timer":"Осталось секунд","q.done":"Ответ принят · {t}. Ждём остальных…","q.sendFail":"Не удалось отправить ответ. Проверь интернет.",
+      "gap.next":"Следующий вопрос через {s} с","gap.last":"Это был последний вопрос!","gap.allIn":"Все ответили!",
+      "gap.got":"Ответ принят!","gap.late":"Время вышло!","gap.yourTime":"Ты ответил за {t}.","gap.noAnswer":"Ответ на этот вопрос не получен.",
+      "gap.atEnd":"Верно ли — узнаешь в конце.","gap.right":"Правильно!","gap.wrong":"Неверно","gap.correctWas":"Правильный ответ: {a}",
+      "gap.poll":"Спасибо за голос!","gap.pollTop":"Больше всего голосов: {a}","gap.pollNone":"В этот раз никто не проголосовал.",
+      "gap.rank":"{r}-е место из {n}",
+      "pts_one":"{n} очко","pts_few":"{n} очка","pts_many":"{n} очков","plus_one":"+{n} очко","plus_few":"+{n} очка","plus_many":"+{n} очков",
+      "end.title":"Молодец, {name}!","end.timeLabel":"Твоё общее время ответов","end.meta":"Ты ответил на {a} из {n} · в среднем {t} на вопрос",
+      "end.wait":"Теперь подожди. Когда ведущий объявит победителей, ты увидишь это и на своём телефоне.",
+      "rev.label":"Результаты","rev.waitTitle":"Ждём результаты","rev.wait":"Ведущий готовится объявить победителей…",
+      "rev.winners":"Победители","rev.revealing":"Ведущий объявляет места…","rev.won":"Ты победил!","rev.yours":"Твоё место","rev.place":"{r}-е место",
+      "rev.correct":"{c} из {s} верно","players_one":"всего {n} игрок","players_few":"всего {n} игрока","players_many":"всего {n} игроков",
+      "rev.again":"Присоединиться к другой игре","rev.share":"Поделиться результатом","rev.shareText":"Я занял {r}-е место в викторине «{q}»! Создай свою: quizmaker.fun",
+      "pod.tie":"общее место","pod.hidden":"Ещё не открыто",
+      "bye.over":"Игра окончена","bye.closed":"Ведущий закрыл эту игру.","bye.kicked":"Тебя удалили из игры","bye.kickedText":"Если это ошибка, присоединись снова.",
+      "bye.home":"Присоединиться к игре","toast.copied":"Скопировано."
+    }
+  };
+  var LS_LANG = "vk-lang";
+  var lang = (function(){
+    var s = lsGet(LS_LANG); if(s && I18N[s]) return s;
+    var nav = ((navigator.languages && navigator.languages[0]) || navigator.language || "lv").toLowerCase();
+    return nav.indexOf("ru") === 0 ? "ru" : "lv";
+  })();
+  function pluralKey(n){
+    n = Math.abs(Math.round(Number(n) || 0));
+    if(lang === "ru"){ var a = n % 10, b = n % 100; if(a === 1 && b !== 11) return "one"; if(a >= 2 && a <= 4 && (b < 12 || b > 14)) return "few"; return "many"; }
+    if(lang === "en") return n === 1 ? "one" : "many";
+    return (n % 10 === 1 && n % 100 !== 11) ? "one" : "many";
+  }
+  function tr(k, v){
+    var d = I18N[lang] || I18N.lv, s = d[k];
+    if(s == null) s = I18N.lv[k];
+    if(s == null) s = k;
+    if(v) s = s.replace(/\{(\w+)\}/g, function(m, n){ return v[n] != null ? String(v[n]) : m; });
+    return s;
+  }
+  function trn(base, n, v){
+    var k = base + "_" + pluralKey(n), d = I18N[lang] || I18N.lv;
+    if(d[k] == null && k.slice(-4) === "_few") k = base + "_many";
+    var vars = {n: fmtPts(n)}; if(v) for(var x in v) vars[x] = v[x];
+    return tr(k, vars);
+  }
+  function applyLang(){
+    document.documentElement.setAttribute("lang", lang);
+    Array.prototype.forEach.call(document.querySelectorAll("[data-i18n]"), function(el){ el.textContent = tr(el.getAttribute("data-i18n")); });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-i18n-ph]"), function(el){ el.setAttribute("placeholder", tr(el.getAttribute("data-i18n-ph"))); });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-i18n-label]"), function(el){ el.setAttribute("aria-label", tr(el.getAttribute("data-i18n-label"))); });
+    Array.prototype.forEach.call(document.querySelectorAll(".lang-switch button"), function(b){ b.setAttribute("aria-pressed", b.getAttribute("data-lang") === lang ? "true" : "false"); });
+  }
+  function setLang(l){
+    if(!I18N[l] || l === lang) return;
+    lang = l; lsSet(LS_LANG, l); applyLang();
+    if(G.active){ G.phase = ""; gUpdate(); if(cur === "globby") gLobbyNames(); }
+    if(cur === "home"){
+      if(!$("home-title").getAttribute("data-game")) $("home-title").textContent = tr("home.title");
+      if(G.homePin) $("home-sub").textContent = tr("home.game", {pin: fmtPin(G.homePin)});
+    }
+  }
+  Array.prototype.forEach.call(document.querySelectorAll(".lang-switch button"), function(b){
+    b.addEventListener("click", function(){ setLang(b.getAttribute("data-lang")); });
+  });
+
   /* ================= quiz config ================= */
-  function freshQ(b){ return {id:b[0], text:b[1], options:b[2].slice(), correct: typeof b[3] === "number" ? b[3] : null, on:true, img:0}; }
+  function freshQ(b){ return {id:b[0], text:b[1], options:b[2].slice(), correct: typeof b[3] === "number" ? b[3] : null, on:true, img:0, poll: b[4] === "poll" ? 1 : 0}; }
 
   /* shrink a chosen photo to at most 1000 px and a JPEG small enough for mobile data */
   function compressImage(file){
@@ -1264,7 +1440,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
       sound: c.sound !== false,
       questions: qs ? qs.filter(function(q){ return q && typeof q.id === "string"; }).map(function(q){
         return {id:q.id, text:String(q.text || ""), options:normOpts(q.options),
-          correct:(typeof q.correct === "number" && q.correct >= 0 && q.correct < 4) ? q.correct : null, on: q.on !== false, img: q.img ? 1 : 0};
+          correct:(!q.poll && typeof q.correct === "number" && q.correct >= 0 && q.correct < 4) ? q.correct : null, on: q.on !== false, img: q.img ? 1 : 0, poll: q.poll ? 1 : 0};
       }) : BASE.map(freshQ)
     };
   }
@@ -1280,7 +1456,8 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
   }
   function filledOpts(q){ return q.options.filter(function(o){ return String(o).trim(); }).length; }
   function activeQs(c){ return c ? c.questions.filter(function(q){ return q.on && String(q.text).trim() && filledOpts(q) >= 2; }) : []; }
-  function hasKey(q){ return q.correct != null && String(q.options[q.correct] || "").trim() !== ""; }
+  function hasKey(q){ return !q.poll && q.correct != null && String(q.options[q.correct] || "").trim() !== ""; }
+  function scorable(list){ return list.filter(function(q){ return !q.poll; }); }
 
   /* ================= data store (Firebase, or a test double) ================= */
   var S = null;
@@ -1591,8 +1768,8 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
       var who = h("div", {class:"who"});
       if(shown){
         who.append(h("div", {class:"names", text: grp.names}));
-        who.append(h("div", {class:"pts", text: fmtPts(grp.pts) + " " + plural(grp.pts, "punkts", "punkti") + (grp.tie ? " · dalīta vieta" : "")}));
-      } else who.append(h("div", {class:"q", "aria-label":"Vēl nav atklāts", text:"?"}));
+        who.append(h("div", {class:"pts", text: trn("pts", grp.pts) + (grp.tie ? " · " + tr("pod.tie") : "")}));
+      } else who.append(h("div", {class:"q", "aria-label":tr("pod.hidden"), text:"?"}));
       wrap.append(h("div", {class:"place p" + place + (shown ? " shown" : "")}, who, h("div", {class:"block", text: place})));
     });
     return wrap;
@@ -1634,23 +1811,23 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     $("pin-field").hidden = !!pin;
     $("j-pin").value = pin ? fmtPin(pin) : "";
     $("j-err").textContent = msg || "";
-    $("home-title").textContent = "Pievienojies spēlei";
+    $("home-title").textContent = tr("home.title"); $("home-title").removeAttribute("data-game");
     $("home-sub").textContent = "quizmaker.fun";
     setHero("");
-    G.scene = null;
+    G.scene = null; G.homePin = null;
     document.title = "Quizmaker";
     show("home");
     if(pin){
       S.get("games/" + pin + "/quiz").then(function(q){
         if(q && (q.title || q.child)){
-          $("home-title").textContent = gameTitle(q);
-          $("home-sub").textContent = "Spēle " + fmtPin(pin);
+          $("home-title").textContent = gameTitle(q); $("home-title").setAttribute("data-game", "1");
+          $("home-sub").textContent = tr("home.game", {pin: fmtPin(pin)}); G.homePin = pin;
           setHero(q.badge || "");
           document.title = gameTitle(q) + " · Quizmaker";
           G.scene = q.bg || null; syncScene();
         } else {
           $("pin-field").hidden = false; $("j-pin").value = "";
-          $("j-err").textContent = "Spēle ar šo kodu vairs nav atrasta. Noskenē jaunāko QR kodu vai ieraksti PIN.";
+          $("j-err").textContent = tr("err.gone");
         }
       }).catch(function(){});
     }
@@ -1665,17 +1842,17 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     var err = $("j-err"); err.textContent = "";
     var pin = $("j-pin").value.replace(/\D/g, "");
     var name = $("j-name").value.replace(/\s+/g, " ").trim().slice(0, 24);
-    if(pin.length !== 6){ err.textContent = "Ieraksti 6 ciparu spēles PIN."; focusSoon("j-pin"); return; }
-    if(!name){ err.textContent = "Ieraksti savu vārdu."; focusSoon("j-name"); return; }
+    if(pin.length !== 6){ err.textContent = tr("err.pin"); focusSoon("j-pin"); return; }
+    if(!name){ err.textContent = tr("err.name"); focusSoon("j-name"); return; }
     var btn = $("j-go"); btn.disabled = true;
     Promise.all([S.get("games/" + pin + "/state"), S.get("games/" + pin + "/quiz"), S.get("games/" + pin + "/players")]).then(function(r){
       var st = r[0], quiz = r[1], players = r[2] || {};
-      if(!st || !quiz){ err.textContent = "Spēle ar šo PIN nav atrasta. Pārbaudi ciparus."; return null; }
+      if(!st || !quiz){ err.textContent = tr("err.notFound"); return null; }
       var ph = phaseOf(st, quiz, now());
-      if(ph.k === "end" || ph.k === "reveal"){ err.textContent = "Šī spēle jau ir beigusies."; return null; }
+      if(ph.k === "end" || ph.k === "reveal"){ err.textContent = tr("err.over"); return null; }
       var low = name.toLocaleLowerCase("lv");
       var dup = Object.keys(players).some(function(k){ return String((players[k] || {}).name || "").toLocaleLowerCase("lv") === low; });
-      if(dup){ err.textContent = "Spēlē jau ir „" + name + "”. Pieliec klāt uzvārda burtu, piemēram, „" + name + " K.”"; return null; }
+      if(dup){ err.textContent = tr("err.dup", {name:name}); return null; }
       var pid = rid();
       return S.set("games/" + pin + "/players/" + pid, {name:name, joinedAt:S.ts()}).then(function(){
         lsSet(LS_JOIN, {pin:pin, pid:pid, name:name, at:Date.now()});
@@ -1683,7 +1860,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
       });
     }).catch(function(e){
       console.warn(e);
-      err.textContent = "Neizdevās pievienoties. Pārbaudi internetu un mēģini vēlreiz.";
+      err.textContent = tr("err.net");
     }).then(function(){ btn.disabled = false; });
   });
 
@@ -1702,10 +1879,15 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     G.sub.on("games/" + pin + "/players", function(v){
       G.players = v || {};
       if(G.players[G.pid]) G.joined = true;
-      else if(G.joined){ gForget(); gBye("Tevi izņēma no spēles", "Ja tas notika nejauši, pievienojies vēlreiz."); return; }
+      else if(G.joined){ gForget(); gBye(tr("bye.kicked"), tr("bye.kickedText")); return; }
       gLobbyNames();
     });
     G.sub.on("games/" + pin + "/results", function(v){ G.results = v; gUpdate(); });
+    G.rev = {}; G.gapSound = null;
+    G.sub.on("games/" + pin + "/rev", function(v){
+      G.rev = v || {};
+      if(cur === "ggap" && G.quiz && G.state){ var ph = phaseOf(G.state, G.quiz, now()); if(ph.k === "gap") gRenderGap(ph); }
+    });
     /* own earlier answers, read once (after a reload); guests do not listen to the answers stream */
     S.get("games/" + pin + "/answers/" + pid).then(function(v){
       v = v || {};
@@ -1739,7 +1921,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     show("gbye");
   }
   $("gb-home").addEventListener("click", function(){ gHome(); });
-  armButton($("gl-leave"), "Tiešām iziet? Spied vēlreiz", function(){
+  armButton($("gl-leave"), function(){ return tr("lobby.leaveSure"); }, function(){
     var pin = G.pin, pid = G.pid;
     gForget();
     S.remove("games/" + pin + "/players/" + pid).catch(function(){});
@@ -1749,7 +1931,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
 
   function gUpdate(){
     if(!G.active || !G.quiz || G.state === undefined) return;
-    if(G.state === null){ gForget(); gBye("Spēle beigusies", "Vadītājs šo spēli ir aizvēris."); return; }
+    if(G.state === null){ gForget(); gBye(tr("bye.over"), tr("bye.closed")); return; }
     var ph = phaseOf(G.state, G.quiz, now());
     var key = ph.k + (ph.i != null ? ":" + ph.i : "");
     if(ph.k === "reveal") key += ":" + (G.state.revealStep || 0) + ":" + (G.results ? JSON.stringify(G.results).length : 0);
@@ -1761,7 +1943,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     if(ph.k === "lobby"){ $("gl-name").textContent = G.name; gLobbyNames(); show("globby"); }
     else if(ph.k === "count"){
       G.lastCount = null;
-      $("gc-sub").textContent = n + " " + plural(n, "jautājums", "jautājumi") + " · " + (G.quiz.timeLimit || 10) + " sekundes katram";
+      $("gc-sub").textContent = trn("count.q", n) + " · " + tr("count.each", {s: G.quiz.timeLimit || 10});
       show("gcount");
     }
     else if(ph.k === "q"){ gRenderQ(ph); show("gq"); try{ window.scrollTo(0, 0); }catch(e){} }
@@ -1783,13 +1965,13 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
       var s = Math.ceil(ph.left / 1000);
       if(s !== G.lastSec){ if(s <= 3 && G.lastSec != null && !G.mine["q" + ph.i]) beep(660, 0.08, 0.14); G.lastSec = s; }
     } else if(ph.k === "gap"){
-      $("gg-next").textContent = ph.last ? "Tas bija pēdējais jautājums!" : "Nākamais jautājums pēc " + Math.max(1, Math.ceil(ph.left / 1000)) + " s";
+      $("gg-next").textContent = ph.last ? tr("gap.last") : tr("gap.next", {s: Math.max(1, Math.ceil(ph.left / 1000))});
     }
   }
   function gLobbyNames(){
     var r = nameChips(G.players, {me:G.pid});
     var box = $("gl-names"); box.textContent = ""; box.append(r.frag);
-    $("gl-count").textContent = "Spēlē jau " + r.count + " " + plural(r.count, "dalībnieks", "dalībnieki");
+    $("gl-count").textContent = trn("lobby.players", r.count);
   }
   function gRenderQ(ph){
     var item = quizQs(G.quiz)[ph.i] || {}, mine = G.mine["q" + ph.i];
@@ -1806,7 +1988,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     box.append(optButtons(item, mine ? mine.a : null, function(k, b){ gAnswer(ph.i, k, b); }));
     var done = $("gq-done");
     done.hidden = !mine;
-    if(mine) done.textContent = "Atbilde pieņemta · " + fmtSec(mine.t) + ". Gaidām pārējos…";
+    if(mine) done.textContent = tr("q.done", {t: fmtSec(mine.t)});
     G.lastSec = null;
   }
   function gAnswer(i, k, btn){
@@ -1814,29 +1996,59 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     if(ph.k !== "q" || ph.i !== i || G.mine["q" + i]) return;
     var rec = {a:k, t:Math.max(0, Math.round(now() - ph.qStart))};
     G.mine["q" + i] = rec;
-    S.set("games/" + G.pin + "/answers/" + G.pid + "/q" + i, rec).catch(function(){ toast("Atbildi neizdevās nosūtīt. Pārbaudi internetu."); });
+    S.set("games/" + G.pin + "/answers/" + G.pid + "/q" + i, rec).catch(function(){ toast(tr("q.sendFail")); });
     var box = $("gq-opts");
     Array.prototype.forEach.call(box.children, function(c){ c.classList.remove("sel"); c.setAttribute("aria-pressed", "false"); });
     btn.classList.add("sel"); btn.setAttribute("aria-pressed", "true");
     box.classList.add("locked");
     var done = $("gq-done"); done.hidden = false;
-    done.textContent = "Atbilde pieņemta · " + fmtSec(rec.t) + ". Gaidām pārējos…";
+    done.textContent = tr("q.done", {t: fmtSec(rec.t)});
     beep(740, 0.1, 0.15);
   }
+  /* letter the guest saw next to option k (empty options are skipped) */
+  function optLabel(item, k){
+    var o = normOpts(item.options), shown = 0;
+    for(var i = 0; i < k; i++) if(String(o[i]).trim()) shown++;
+    return LETTERS[shown] + " · " + o[k];
+  }
   function gRenderGap(ph){
-    var mine = G.mine["q" + ph.i], tile = $("gg-tile");
-    tile.className = "state-tile " + (mine ? "ok" : "late");
-    tile.textContent = mine ? "✓" : "!";
-    $("gg-title").textContent = mine ? (ph.early ? "Visi atbildējuši!" : "Atbilde pieņemta!") : "Laiks beidzās!";
-    $("gg-sub").textContent = mine ? "Tu atbildēji " + fmtSec(mine.t) + " laikā. Vai pareizi, uzzināsi beigās." : "Uz šo jautājumu atbilde netika saņemta.";
-    if(!mine) beep(220, 0.3, 0.16);
+    var mine = G.mine["q" + ph.i], rv = (G.rev || {})["q" + ph.i], item = quizQs(G.quiz)[ph.i] || {}, tile = $("gg-tile");
+    var title = $("gg-title"), sub = $("gg-sub"), pts = $("gg-pts"), rank = $("gg-rank"), tone;
+    pts.hidden = true; rank.hidden = true;
+    if(rv && (rv.k === -2 || item.poll)){
+      var d = listOf(rv.d), best = -1, bc = 0;
+      d.forEach(function(c, k){ if(c > bc){ bc = c; best = k; } });
+      tile.className = "state-tile poll"; tile.textContent = "★";
+      title.textContent = mine ? tr("gap.poll") : tr("gap.late");
+      sub.textContent = best >= 0 ? tr("gap.pollTop", {a: optLabel(item, best)}) : tr("gap.pollNone");
+      tone = "poll";
+    } else if(rv && rv.k >= 0){
+      var right = !!mine && mine.a === rv.k, me = rv.r && rv.r[G.pid];
+      tile.className = "state-tile " + (right ? "ok" : "late"); tile.textContent = right ? "✓" : "✗";
+      title.textContent = right ? tr("gap.right") : mine ? tr("gap.wrong") : tr("gap.late");
+      if(right && me && me[2]){ pts.textContent = trn("plus", me[2]); pts.hidden = false; }
+      sub.textContent = right ? tr("gap.yourTime", {t: fmtSec(mine.t)}) : tr("gap.correctWas", {a: optLabel(item, rv.k)});
+      if(me){ rank.textContent = tr("gap.rank", {r: me[0], n: rv.np || 1}) + " · " + trn("pts", me[1]); rank.hidden = false; }
+      tone = right ? "right" : "wrong";
+    } else {
+      tile.className = "state-tile " + (mine ? "ok" : "late"); tile.textContent = mine ? "✓" : "!";
+      title.textContent = mine ? (ph.early ? tr("gap.allIn") : tr("gap.got")) : tr("gap.late");
+      sub.textContent = mine ? tr("gap.yourTime", {t: fmtSec(mine.t)}) + (rv && rv.k === -1 ? " " + tr("gap.atEnd") : "") : tr("gap.noAnswer");
+      tone = mine ? "wait" : "late";
+    }
+    var sk = ph.i + ":" + tone;
+    if(G.gapSound !== sk){
+      G.gapSound = sk;
+      if(tone === "right"){ beep(784, 0.1, 0.16); setTimeout(function(){ beep(1047, 0.18, 0.16); }, 110); }
+      else if(tone === "wrong" || tone === "late") beep(220, 0.3, 0.16);
+    }
   }
   function gRenderEnd(){
     var n = quizQs(G.quiz).length, lim = (G.quiz.timeLimit || 10) * 1000, total = 0, answered = 0;
     for(var i = 0; i < n; i++){ var m = G.mine["q" + i]; if(m){ answered++; total += m.t; } else total += lim; }
-    $("ge-title").textContent = "Malacis, " + G.name + "!";
+    $("ge-title").textContent = tr("end.title", {name: G.name});
     $("ge-time").textContent = fmtTime(total);
-    $("ge-meta").textContent = "Atbildēji uz " + answered + " no " + n + " · vidēji " + fmtSec(n ? total / n : 0) + " uz jautājumu";
+    $("ge-meta").textContent = tr("end.meta", {a: answered, n: n, t: fmtSec(n ? total / n : 0)});
     beep(990, 0.25, 0.2);
   }
   function gRenderReveal(){
@@ -1844,27 +2056,27 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     body.textContent = "";
     var podium = R ? listOf(R.podium) : [];
     if(!R || !podium.length){
-      $("gr-title").textContent = "Gaidām rezultātus";
-      body.append(h("p", {class:"lede", text:"Vadītājs gatavojas atklāt uzvarētājus…"}));
+      $("gr-title").textContent = tr("rev.waitTitle");
+      body.append(h("p", {class:"lede", text:tr("rev.wait")}));
       return;
     }
     var g = podium.length, done = step >= g;
-    $("gr-title").textContent = done ? "Uzvarētāji" : "Vadītājs atklāj vietas…";
+    $("gr-title").textContent = done ? tr("rev.winners") : tr("rev.revealing");
     body.append(podiumEl(podium, step));
     if(!done) return;
     var me = R.byPid && R.byPid[G.pid];
     if(me){
       body.append(h("div", {class:"panel me-card"},
-        h("p", {class:"eyebrow", text: me.rank === 1 ? "Tu uzvarēji!" : "Tava vieta"}),
-        h("p", {class:"me-rank", text: me.rank + ". vieta"}),
-        h("p", {class:"score-meta", text: fmtPts(me.pts) + " " + plural(me.pts, "punkts", "punkti") + " · " + me.correct + " no " + (R.scored || 0) + " pareizi · kopā " + (R.count || 0) + " " + plural(R.count || 0, "spēlētājs", "spēlētāji")})));
+        h("p", {class:"eyebrow", text: me.rank === 1 ? tr("rev.won") : tr("rev.yours")}),
+        h("p", {class:"me-rank", text: tr("rev.place", {r: me.rank})}),
+        h("p", {class:"score-meta", text: trn("pts", me.pts) + " · " + tr("rev.correct", {c: me.correct, s: R.scored || 0}) + " · " + trn("players", R.count || 0)})));
     }
     var sv = lsGet(LS_JOIN);
     if(sv && sv.pin === G.pin && !sv.doneAt){ sv.doneAt = Date.now(); lsSet(LS_JOIN, sv); }
-    var again = h("button", {type:"button", class:"btn btn-primary", text:"Pievienoties citai spēlei"});
+    var again = h("button", {type:"button", class:"btn btn-primary", text:tr("rev.again")});
     again.addEventListener("click", function(){ gForget(); try{ history.replaceState(null, "", location.pathname); }catch(e){} gHome(); });
     body.append(h("div", {class:"actions after-game"}, again,
-      h("a", {class:"btn btn-quiet", href:"#jauna", text:"Izveidot savu viktorīnu", onclick:function(){ lsSet(LS_JOIN, null); }})));
+      h("a", {class:"btn btn-quiet", href:"#jauna", text:tr("home.create"), onclick:function(){ lsSet(LS_JOIN, null); }})));
     if(!G.confettiDone){ G.confettiDone = true; confetti(); beep(990, 0.25, 0.2); }
   }
 
@@ -2087,14 +2299,14 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
   function hLeaveGame(){ H.inGame = false; H.sub.clear(); keepAwake(false); }
   function hPanel(){
     hLeaveGame();
-    var c = H.cfg, aq = activeQs(c), sq = aq.filter(hasKey).length, nm = c.child.name.trim(), t = tplById(c.tpl);
+    var c = H.cfg, aq = activeQs(c), sc = scorable(aq), sq = sc.filter(hasKey).length, nm = c.child.name.trim(), t = tplById(c.tpl);
     $("hp-title").textContent = quizTitle(c);
     $("hp-tpl").textContent = t.title + " · fons „" + (sceneById(c.bg) || sceneById(BRAND_SCENE)).name + "”";
     var th = $("hp-thumb"); th.textContent = ""; th.append(sceneThumb(sceneById(c.bg) || sceneById(BRAND_SCENE)));
     hRenderQuizzes();
     var st = $("hp-stats"); st.textContent = "";
     [{n: aq.length, l: plural(aq.length, "jautājums", "jautājumi"), c:0},
-     {n: sq + "/" + aq.length, l:"pareizās atbildes atzīmētas", c: sq === aq.length && aq.length ? 3 : 1},
+     {n: sq + "/" + sc.length, l:"pareizās atbildes atzīmētas", c: sq === sc.length && aq.length ? 3 : 1},
      {n: c.timeLimit, unit:"s", l:"katram jautājumam", c:2}].forEach(function(it){
       var n = h("span", {class:"n"}, String(it.n));
       if(it.unit) n.append(h("small", {text:it.unit}));
@@ -2103,7 +2315,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     var w = [];
     if(t.name && !nm) w.push("ieraksti " + (t.name.label.charAt(0).toLowerCase() + t.name.label.slice(1)).replace(/vārds$/, "vārdu").replace(/vārdi$/, "vārdus"));
     if(!aq.length) w.push("pievieno jautājumus");
-    else if(sq < aq.length) w.push("atzīmē pareizās atbildes");
+    else if(sq < sc.length) w.push("atzīmē pareizās atbildes");
     $("hp-note").hidden = !w.length;
     $("hp-note").textContent = w.length ? "Pirms spēles: " + w.join(" un ") + " sadaļā „Jautājumi un iestatījumi”." : "";
     $("hp-err").textContent = "";
@@ -2205,7 +2417,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     hSaveNow();
     var imgs = H.imgs || {};
     var quiz = {child:c.child, timeLimit:c.timeLimit, sound:c.sound, title:quizTitle(c), eyebrow:fill(c.eyebrow || "", c), badge:tplById(c.tpl).badge || (tplById(c.tpl).age && c.age) || "", bg:c.bg,
-      questions: qs.map(function(q){ return {id:q.id, text:fill(q.text, c), options:normOpts(q.options), img: imgs[q.id] ? 1 : 0}; })};
+      questions: qs.map(function(q){ var o = {id:q.id, text:fill(q.text, c), options:normOpts(q.options), img: imgs[q.id] ? 1 : 0}; if(q.poll) o.poll = 1; return o; })};
     var withImg = qs.filter(function(q){ return imgs[q.id]; }).length;
     if(withImg) toast("Gatavo spēli un augšupielādē " + withImg + " " + plural(withImg, "bildi", "bildes") + "…");
     var tries = 0;
@@ -2229,7 +2441,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
   function hAttach(pin){
     H.sub.clear();
     H.inGame = true; H.pin = pin; H.quiz = null; H.state = undefined; H.players = {}; H.answers = {};
-    H.phase = ""; H.seen = null; H.armed = null; H.resTab = "win"; H.ansIdx = 0; H.ansShown = {}; H.confettiDone = false; H.gimgs = {};
+    H.phase = ""; H.seen = null; H.armed = null; H.resTab = "win"; H.ansIdx = 0; H.ansShown = {}; H.confettiDone = false; H.gimgs = {}; H.rev = {}; H.revSent = {};
     keepAwake(true);
     S.get("games/" + pin + "/img").then(function(v){
       if(H.pin !== pin) return;
@@ -2251,6 +2463,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     hTick(ph);
   }
   function hEnter(ph){
+    if(ph.k === "gap") hPublishReveal(ph.i);
     if(ph.k === "lobby"){ hRenderLobby(); show("hlobby"); }
     else if(ph.k === "reveal"){ hRenderResults(); show("hres"); }
     else { hRenderGame(ph); show("hgame"); }
@@ -2271,9 +2484,9 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
         else box.hidden = true;
       }catch(e){ box.hidden = true; }
     }
-    var aq = activeQs(H.cfg), sq = aq.filter(hasKey).length;
+    var aq = scorable(activeQs(H.cfg)), sq = aq.filter(hasKey).length;
     $("hlb-warn").hidden = sq >= aq.length;
-    $("hlb-warn").textContent = "Pareizā atbilde atzīmēta tikai " + sq + " no " + aq.length + " jautājumiem. Vari to izdarīt arī pēc spēles, pirms atklāj rezultātus.";
+    $("hlb-warn").textContent = "Pareizā atbilde atzīmēta tikai " + sq + " no " + aq.length + " jautājumiem. Bez tās pēc jautājuma nevarēs parādīt, vai atbilde bija pareiza.";
     hLobbyNames();
   }
   function hLobbyNames(){
@@ -2350,7 +2563,36 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     } else if(ph.k === "gap"){
       $("hg-count").textContent = "Jautājums " + (ph.i + 1) + " / " + n;
       $("hg-prog").style.width = Math.round((ph.i + 1) / n * 100) + "%";
-      body.append(h("h2", {class:"qtext", text: ph.early ? "Visi atbildējuši!" : "Laiks beidzās!"}), h("p", {class:"lede", id:"hg-next"}));
+      var rv = (H.rev || {})["q" + ph.i], gi = qs[ph.i] || {};
+      if(!rv){
+        body.append(h("h2", {class:"qtext", text: ph.early ? "Visi atbildējuši!" : "Laiks beidzās!"}), h("p", {class:"lede", id:"hg-next"}));
+      } else {
+        var dsum = listOf(rv.d).reduce(function(a, b){ return a + (b || 0); }, 0), dist = h("div", {class:"dist" + (rv.k >= 0 ? " revealed" : "")}), shownL = 0;
+        normOpts(gi.options).forEach(function(o, k){
+          if(!o.trim()) return;
+          var cnt = listOf(rv.d)[k] || 0, pct = dsum ? Math.round(cnt / dsum * 100) : 0, right = rv.k === k;
+          dist.append(h("div", {class:"drow c" + k + (right ? " right" : "")},
+            h("span", {class:"mini-tile", "aria-hidden":"true", text:LETTERS[shownL]}),
+            h("span", {class:"dlabel"}, o, right ? h("span", {class:"right-tag", text:"Pareizi"}) : null),
+            h("span", {class:"dcount", text: String(cnt)}),
+            h("div", {class:"bar"}, h("span", {style:"width:" + pct + "%"}))));
+          shownL++;
+        });
+        body.append(h("p", {class:"eyebrow", text: rv.k === -2 ? "Aptaujas rezultāts" : rv.k >= 0 ? "Pareizā atbilde" : "Kā atbildēja"}),
+          h("h2", {class:"qtext qtext-sm", text: gi.text || ""}), dist);
+        if(rv.k === -1) body.append(h("p", {class:"note", text:"Šim jautājumam pareizā atbilde nav atzīmēta, tāpēc punktus par to nedod."}));
+        var top = listOf(rv.top);
+        if(rv.any && top.length){
+          var ol = h("ol", {class:"board lead-board"});
+          top.forEach(function(x){
+            ol.append(h("li", {class:"brow"}, h("span", {class:"rank", text:String(x.r)}),
+              h("div", null, h("div", {class:"rname", text:x.n}), x.g ? h("div", {class:"rmeta gain", text:"+" + fmtPts(x.g)}) : null),
+              h("span", {class:"rscore", text:fmtPts(x.p)})));
+          });
+          body.append(h("h3", {class:"section-title", text:"Līderi"}), ol);
+        }
+        body.append(h("p", {class:"lede", id:"hg-next"}));
+      }
     } else {
       $("hg-count").textContent = "Jautājumi beigušies!";
       $("hg-prog").style.width = "100%";
@@ -2381,11 +2623,11 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
       $("hg-meter").hidden = false;
     }
   }
-  var EARLY_GAP = 2500;
+  var EARLY_GAP = GAP;
   /* everyone answered: start the next question after a short pause instead of waiting out the timer */
   function hMaybeAdvance(ph){
     if(!H.inGame || !H.state || H.state.status !== "playing" || ph.k !== "q") return;
-    if(ph.left < EARLY_GAP + 300) return;
+    if(ph.left < 1500) return;
     var ids = Object.keys(H.players);
     if(!ids.length) return;
     var all = ids.every(function(id){ var a = H.answers[id]; return a && a["q" + ph.i]; });
@@ -2415,6 +2657,52 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
       return S.update("games/" + H.pin + "/state", {status:"reveal", revealStep:0});
     }).catch(function(){ toast("Neizdevās. Pārbaudi internetu."); }).then(function(){ btn.disabled = false; });
   });
+
+  /* ---- result after each question ---- */
+  function keyMap(){ var m = {}; H.cfg.questions.forEach(function(q){ if(hasKey(q)) m[q.id] = q.correct; }); return m; }
+  /* scores counted up to and including question `upto`; `gained` is what that question added */
+  function scoreRows(upto){
+    var qs = quizQs(H.quiz), lim = (H.quiz.timeLimit || 10) * 1000, km = keyMap(), scored = [];
+    qs.forEach(function(q, i){ if(i <= upto && !q.poll && km[q.id] != null) scored.push({i:i, key:km[q.id]}); });
+    var rows = Object.keys(H.players).map(function(pid){
+      var ans = H.answers[pid] || {}, pts = 0, c = 0, tsum = 0, gained = 0;
+      scored.forEach(function(s){
+        var a = ans["q" + s.i];
+        if(a && a.a === s.key && a.t <= lim + 1500){
+          var p = BASE_PTS + Math.round(SPEED_PTS * Math.max(0, Math.min(1, 1 - a.t / lim)));
+          c++; tsum += a.t; pts += p; if(s.i === upto) gained = p;
+        }
+      });
+      return {pid:pid, name:String((H.players[pid] || {}).name || "?"), pts:pts, correct:c, tsum:tsum, gained:gained};
+    });
+    rows.sort(function(a, b){ return b.pts - a.pts || a.tsum - b.tsum || a.name.localeCompare(b.name, "lv"); });
+    var rank = 0, prev = null;
+    rows.forEach(function(r, i){ if(r.pts !== prev){ rank = i + 1; prev = r.pts; } r.rank = rank; });
+    return {rows:rows, scored:scored.length};
+  }
+  function hRevealData(i){
+    var q = quizQs(H.quiz)[i] || {}, km = keyMap(), d = [0, 0, 0, 0];
+    Object.keys(H.players).forEach(function(pid){ var a = (H.answers[pid] || {})["q" + i]; if(a && a.a >= 0 && a.a < 4) d[a.a]++; });
+    var sr = scoreRows(i), r = {};
+    sr.rows.forEach(function(x){ r[x.pid] = [x.rank, x.pts, x.gained]; });
+    return {k: q.poll ? -2 : (km[q.id] != null ? km[q.id] : -1), d:d, np:sr.rows.length, any:sr.scored,
+      top: sr.rows.slice(0, 5).map(function(x){ return {n:x.name, p:x.pts, g:x.gained, r:x.rank}; }), r:r};
+  }
+  /* shortly after a question closes (late answers still arrive), share the right answer and the scores with every phone */
+  function hPublishReveal(i){
+    if(!H.state || H.state.status !== "playing") return;
+    var pin = H.pin;
+    if(H.revSent[i]) return;
+    H.revSent[i] = true;
+    setTimeout(function(){
+      if(!H.inGame || H.pin !== pin) return;
+      var data = hRevealData(i);
+      H.rev["q" + i] = data;
+      S.set("games/" + pin + "/rev/q" + i, data).catch(function(){ H.revSent[i] = false; });
+      var ph = phaseOf(H.state, H.quiz, now());
+      if(cur === "hgame" && ph.k === "gap" && ph.i === i) hRenderGame(ph);
+    }, 900);
+  }
 
   /* ---- scoring and results ---- */
   function hCompute(){
@@ -2554,7 +2842,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
         h("div", {class:"bar"}, h("span", {style:"width:" + pct + "%"}))));
     });
     var card = h("article", {class:"qres"}, h("span", {class:"eyebrow", text: answered + " no " + n + " atbildēja laikā"}), h("h3", {text:item.text}), qImage((H.gimgs || {})["q" + i]), dist);
-    if(key == null) card.append(h("p", {class:"note", text:"Šim jautājumam pareizā atbilde nav atzīmēta."}));
+    if(key == null) card.append(h("p", {class:"note", text: item.poll ? "Aptauja: šim jautājumam nav pareizās atbildes, punkti netika doti." : "Šim jautājumam pareizā atbilde nav atzīmēta."}));
     else if(!open){
       var rev = h("button", {type:"button", class:"btn btn-go", text:"Atklāt pareizo atbildi"});
       rev.addEventListener("click", function(){ audioInit(); H.ansShown[i] = true; beep(880, 0.16, 0.2); hRenderQs(); });
@@ -2575,6 +2863,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
 
   /* ---- setup ---- */
   function statusChip(q){
+    if(q.poll) return h("span", {class:"chip info-chip", text:"Aptauja · bez pareizās atbildes"});
     return hasKey(q) ? h("span", {class:"chip ok", text:"Pareizā atbilde: " + q.options[q.correct]})
                      : h("span", {class:"chip warn", text:"Atzīmē pareizo atbildi"});
   }
@@ -2601,6 +2890,10 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
         });
         inputs.push(inp); optBox.append(row);
       });
+      var pollBox = h("input", {type:"checkbox", id:"q-" + q.id + "-poll", checked: !!q.poll});
+      var pollField = h("label", {class:"check poll-check", for:"q-" + q.id + "-poll"}, pollBox, h("span", null, "Aptauja: nav pareizās atbildes, punktus nedod"));
+      optBox.classList.toggle("is-poll", !!q.poll);
+      pollBox.addEventListener("change", function(){ optBox.classList.toggle("is-poll", pollBox.checked); });
       var err = h("p", {class:"err", "aria-live":"polite"});
       var saveBtn = h("button", {type:"button", class:"btn btn-primary btn-sm", text:"Saglabāt"});
       var cancelBtn = h("button", {type:"button", class:"btn btn-quiet btn-sm", text:"Atcelt"});
@@ -2611,7 +2904,8 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
         if(opts.filter(Boolean).length < 2){ err.textContent = "Vajag vismaz divus atbilžu variantus."; return; }
         if(txt !== shownText.replace(/\s+/g, " ").trim()) q.text = txt;
         q.options = opts;
-        q.correct = (pending != null && opts[pending]) ? pending : null;
+        q.poll = pollBox.checked ? 1 : 0;
+        q.correct = (!q.poll && pending != null && opts[pending]) ? pending : null;
         delete editingQ[q.id];
         hSave(); rebuild();
       });
@@ -2660,7 +2954,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
         h("div", {class:"field"}, h("label", {class:"lbl", for:"q-" + q.id + "-text"}, "Jautājums"), ta),
         imgField,
         h("div", {class:"field"}, h("span", {class:"lbl", text:"Atbilžu varianti"}),
-          h("p", {class:"hint", text:"Pārraksti variantus pēc sava prāta un ar aplīti atzīmē pareizo. Tukšu variantu viesi neredzēs."}), optBox),
+          h("p", {class:"hint", text:"Pārraksti variantus pēc sava prāta un ar aplīti atzīmē pareizo. Tukšu variantu viesi neredzēs."}), pollField, optBox),
         err, h("div", {class:"edit-actions"}, cancelBtn, saveBtn));
       setTimeout(function(){ try{ ta.focus(); }catch(e){} }, 30);
       return card;
@@ -2670,7 +2964,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     onBox.addEventListener("change", function(){ q.on = onBox.checked; card.classList.toggle("off", !q.on); hSave(); });
     var editBtn = h("button", {type:"button", class:"btn btn-quiet btn-sm edit-btn", text:"✎ Labot"});
     editBtn.addEventListener("click", function(){ editingQ[q.id] = true; rebuild(); });
-    var list = h("div", {class:"qbody"}), rows = [];
+    var list = h("div", {class:"qbody" + (q.poll ? " is-poll" : "")}), rows = [];
     q.options.forEach(function(o, i){
       if(!String(o).trim()) return;
       var rid_ = "q-" + q.id + "-c-" + i;
@@ -2787,6 +3081,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     gHome();
   }
   function boot(){
+    applyLang();
     if(!initStore()){ show("noconfig"); return; }
     var offT = null;
     S.onConnected(function(c){
