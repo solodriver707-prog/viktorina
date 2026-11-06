@@ -500,6 +500,34 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
 .note-x{appearance:none;width:32px;height:32px;border-radius:10px;border:0;background:transparent;color:var(--muted);font:700 22px/1 var(--body);cursor:pointer;margin:-4px -2px 0 0}
 .note-x:active{background:var(--line)}
 @media (max-width:360px){ .save-chip{padding:7px 8px;font-size:11px} .tb-title{font-size:18px} }
+
+/* host panel: the open quiz first, then all quizzes of this host */
+.cur-quiz{gap:16px}
+.cq-head{display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;align-items:center}
+.cq-thumb{display:block;width:84px}
+.cq-thumb .scene-sw{border:0;border-radius:14px}
+.cq-text{display:grid;gap:2px;min-width:0}
+.cq-title{font:900 clamp(22px,6.2vw,28px)/1.1 var(--display);overflow-wrap:anywhere}
+.cur-quiz .stat{background:var(--field);box-shadow:none}
+.cur-quiz .hp-resume{display:grid;gap:10px;background:var(--blue-soft);border-radius:16px;padding:14px}
+.cq-actions{display:grid;gap:10px}
+.cq-actions .btn-go{min-height:64px;font-size:21px}
+.cq-hint{text-align:center;margin-top:-4px}
+.quiz-list{display:grid;gap:8px}
+.qi{appearance:none;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;width:100%;text-align:left;font:inherit;color:var(--ink);
+  background:var(--field);border:2px solid var(--line);border-radius:16px;padding:8px 12px 8px 8px;cursor:pointer;transition:transform .08s,border-color .12s}
+.qi:active{transform:translateY(2px)}
+.qi.on{border-color:var(--green);cursor:default}
+.qi-thumb{display:block;width:62px}
+.qi-thumb .scene-sw{border:0;border-radius:10px}
+.qi-body{display:grid;gap:2px;min-width:0}
+.qi-title{font:800 17px/1.2 var(--body);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.qi-meta{font-size:13px;font-weight:700;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.qi-tag{font:800 12px/1 var(--body);padding:6px 9px;border-radius:99px;background:var(--green-soft);color:var(--green-ink)}
+.qi-go{font:900 26px/1 var(--display);color:var(--muted);padding-right:4px}
+.add-quiz{border-style:dashed}
+#hp-count:empty{display:none}
+.play-ic{width:20px;height:20px;fill:currentColor;flex:none}
 </style>
 </head>
 <body>
@@ -648,19 +676,32 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
   <section id="s-hpanel" class="screen" hidden>
     <header class="topbar">
       <span class="tb-mark" aria-hidden="true"><span class="c0"></span><span class="c1"></span><span class="c2"></span><span class="c3"></span></span>
-      <div class="tb-text"><p class="tb-eyebrow">Vadītāja panelis</p><h2 class="tb-title" id="hp-title">Viktorīnas vadība</h2></div>
+      <div class="tb-text"><p class="tb-eyebrow">quizmaker.fun</p><h2 class="tb-title">Vadītāja panelis</h2></div>
     </header>
-    <div class="stat-row" id="hp-stats"></div>
-    <p class="note" id="hp-note" hidden></p>
-    <div class="panel hp-resume" id="hp-resume" hidden>
-      <p class="lbl" id="hp-resume-text"></p>
-      <button class="btn btn-primary btn-sm" id="hp-resume-btn" type="button">Atgriezties spēlē</button>
+    <div class="panel cur-quiz">
+      <div class="cq-head">
+        <span class="cq-thumb" id="hp-thumb" aria-hidden="true"></span>
+        <div class="cq-text"><p class="eyebrow">Atvērtā viktorīna</p><h3 class="cq-title" id="hp-title">Viktorīna</h3><p class="hint" id="hp-tpl"></p></div>
+      </div>
+      <div class="stat-row" id="hp-stats"></div>
+      <p class="note" id="hp-note" hidden></p>
+      <div class="hp-resume" id="hp-resume" hidden>
+        <p class="lbl" id="hp-resume-text"></p>
+        <button class="btn btn-primary btn-sm" id="hp-resume-btn" type="button">Atgriezties spēlē</button>
+      </div>
+      <div class="cq-actions">
+        <button class="btn btn-go" id="hp-new" type="button"><svg class="play-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12.4-7.5a1 1 0 0 0 0-1.72L8.5 3.64A1 1 0 0 0 7 4.5z"/></svg> Sākt spēli</button>
+        <p class="hint cq-hint">Izveidos spēles PIN un QR kodu, ko parādīt viesiem.</p>
+        <button class="btn btn-quiet" id="hp-setup" type="button">Jautājumi un iestatījumi</button>
+      </div>
+      <p class="err" id="hp-err" aria-live="polite"></p>
     </div>
-    <div class="actions">
-      <button class="btn btn-go" id="hp-new" type="button">Sākt jaunu spēli</button>
-      <button class="btn btn-quiet" id="hp-setup" type="button">Jautājumi un pareizās atbildes</button>
+    <div class="panel">
+      <div class="row-between"><h3 class="section-title">Manas viktorīnas</h3><span class="chip" id="hp-count"></span></div>
+      <div class="quiz-list" id="hp-quizzes"></div>
+      <button class="btn btn-quiet add-quiz" id="hp-add" type="button"><span aria-hidden="true">+</span> Izveidot jaunu viktorīnu</button>
+      <p class="hint">Citam pasākumam vai citai tēmai. Esošās viktorīnas paliks saglabātas.</p>
     </div>
-    <p class="err" id="hp-err" aria-live="polite"></p>
     <div class="panel" id="hp-access">
       <h3 class="section-title">Atvērt citā ierīcē</h3>
       <p class="muted">Šī ir tava slepenā vadītāja saite. Atver to citā telefonā vai datorā, un būsi iekšā bez paroles. Nesūti to viesiem.</p>
@@ -746,6 +787,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
       <div class="qlist" id="qlist"></div>
       <button class="btn btn-quiet btn-sm" id="add-q" type="button">+ Pievienot savu jautājumu</button>
       <div><button class="btn-text" id="restore-q" type="button" hidden>Atjaunot izdzēstos tēmas jautājumus</button></div>
+      <div><button class="btn-text btn-danger" id="setup-del" type="button" hidden>Dzēst šo viktorīnu</button></div>
     </div>
     <div class="sticky-done"><button class="btn btn-primary" style="width:100%" id="setup-done" type="button">Gatavs</button></div>
   </section>
@@ -822,7 +864,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
   var GAP = 3000;          /* pause between questions */
   var PRE = 4000;          /* 3-2-1 before the first question */
   var BASE_PTS = 500, SPEED_PTS = 500;
-  var LS_JOIN = "vk-join", LS_HOST = "vk-host";
+  var LS_JOIN = "vk-join", LS_HOST = "vk-host", LS_HQ = "vk-hq";
   var BASE = [
     ["valstis2","Cik valstīs {N} paspēja pabūt laikā no 1 līdz 2 gadiem?",["Tikai Latvijā","2","3–4","5 un vairāk"]],
     ["karote","Cik mēnešu {vecs|veca} {N} bija, kad pirmo reizi pats paēda ar karoti?",["12–14 mēneši","15–17 mēneši","18–20 mēneši","Vēl mācās"]],
@@ -1272,6 +1314,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
       var ps = parts(p);
       if(ps[2] === "answers") return ps[0] + "-" + ps[1] + "-ans";
       if(ps[2] === "img") return ps[0] + "-" + ps[1] + "-img";   /* pictures are big: kept apart and read only when needed */
+      if(ps[0] === "hosts" && ps[2] === "q" && ps[4] === "img") return "hosts-" + ps[1] + "-q-" + ps[3] + "-img";
       return ps.slice(0, 2).join("-");
     }
     function isPrefix(a, b){ if(a.length > b.length) return false; for(var i = 0; i < a.length; i++) if(a[i] !== b[i]) return false; return true; }
@@ -1883,29 +1926,29 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     }
     var hid = lsGet(LS_HOST);
     if(typeof hid === "string" && hid){
-      S.get("hosts/" + hid + "/config").then(function(cfg){
-        if(cfg){ hOpen(hid, cfg); return; }
+      S.get("hosts/" + hid).then(function(rec){
+        if(hostExists(rec)){ hOpen(hid, rec, wantNew); return; }
         lsSet(LS_HOST, null);
-        if(wantNew){ H.tplFrom = "home"; hTemplates(); } else { hLoginScreen(); if(viaLink) $("hl-err").textContent = "Šī vadītāja saite vairs nav derīga."; }
+        if(wantNew){ H.tplFrom = "home"; hTemplates("new"); } else { hLoginScreen(); if(viaLink) $("hl-err").textContent = "Šī vadītāja saite vairs nav derīga."; }
       }).catch(function(){ hLoginScreen(); $("hl-err").textContent = "Neizdevās savienoties ar datubāzi. Pārbaudi internetu."; });
       return;
     }
-    if(wantNew){ H.tplFrom = "home"; hTemplates(); } else hLoginScreen();
+    if(wantNew){ H.tplFrom = "home"; hTemplates("new"); } else hLoginScreen();
   }
   function hLoginScreen(){
-    H.hid = null; H.cfg = null;
+    H.hid = null; H.cfg = null; H.qid = null; H.quizzes = [];
     $("hl-pass").value = "";
     $("hl-err").textContent = "";
     show("hlogin");
   }
-  $("hl-new").addEventListener("click", function(){ audioInit(); H.tplFrom = "login"; hTemplates(); });
+  $("hl-new").addEventListener("click", function(){ audioInit(); H.tplFrom = "login"; hTemplates("new"); });
   function findByPassword(pw){
     var legacy = sha256hex("vk-host-v1:" + pw).slice(0, 32);
-    return S.get("hosts/" + legacy + "/config").then(function(cfg){
-      if(cfg) return {hid:legacy, cfg:cfg};
+    return S.get("hosts/" + legacy).then(function(rec){
+      if(hostExists(rec)) return {hid:legacy, rec:rec};
       return S.get("aliases/" + aliasKey(pw)).then(function(a){
         if(!a || !a.hid) return null;
-        return S.get("hosts/" + a.hid + "/config").then(function(c2){ return c2 ? {hid:a.hid, cfg:c2} : null; });
+        return S.get("hosts/" + a.hid).then(function(r2){ return hostExists(r2) ? {hid:a.hid, rec:r2} : null; });
       });
     });
   }
@@ -1917,17 +1960,19 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     var btn = $("hl-go"); btn.disabled = true;
     findByPassword(pw).then(function(r){
       if(!r){ err.textContent = "Ar šo paroli viktorīna netika atrasta. Pārbaudi paroli vai izveido jaunu viktorīnu."; return; }
-      lsSet(LS_HOST, r.hid); hOpen(r.hid, r.cfg);
+      lsSet(LS_HOST, r.hid); hOpen(r.hid, r.rec);
     }).catch(function(e){
       console.warn(e);
       err.textContent = "Neizdevās savienoties ar datubāzi. Pārbaudi internetu un mēģini vēlreiz.";
     }).then(function(){ btn.disabled = false; });
   });
 
-  /* theme gallery: creates a new host the first time, or replaces the questions of the current one */
-  function hTemplates(){
+  /* theme gallery. mode "new": first quiz of a new host; "add": one more quiz for this host; "replace": new questions for the open quiz */
+  function hTemplates(mode){
     hLeaveGame();
-    var replace = !!(H.hid && H.cfg);
+    if(!H.hid) mode = "new";
+    H.tplMode = mode;
+    var replace = mode === "replace";
     $("tpl-warn").hidden = !replace;
     $("tpl-eyebrow").textContent = replace ? "Mainīt tēmu" : "Jauna viktorīna";
     $("tpl-err").textContent = "";
@@ -1952,7 +1997,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
   var armedTpl = null;
   function hPickTemplate(t, card, confirm){
     var err = $("tpl-err"); err.textContent = "";
-    if(H.hid && H.cfg){
+    if(H.tplMode === "replace" && H.hid && H.cfg){
       if(armedTpl !== card){
         if(armedTpl){ armedTpl.classList.remove("armed"); armedTpl.querySelector(".tpl-confirm").hidden = true; }
         armedTpl = card; card.classList.add("armed"); confirm.hidden = false;
@@ -1963,14 +2008,27 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
       var keep = H.cfg, cfg = cfgFromTemplate(t.id);
       cfg.child = keep.child; cfg.timeLimit = keep.timeLimit; cfg.sound = keep.sound; cfg.age = keep.age || "";
       H.cfg = normCfg(cfg); editingQ = {};
+      var ce = curEntry(); if(ce) ce.cfg = H.cfg;
       hSaveNow(); hSetup(true);
+      return;
+    }
+    if(H.tplMode === "add" && H.hid){
+      var qid = rid(), cfgA = cfgFromTemplate(t.id);
+      card.disabled = true;
+      S.set("hosts/" + H.hid + "/q/" + qid, {config:cfgA, created:S.ts()}).then(function(){
+        var e = {qid:qid, cfg:normCfg(cfgA), created:Date.now(), pin:null};
+        H.quizzes.push(e); hUseQuiz(e); hSetup(true);
+      }).catch(function(e){
+        console.warn(e); card.disabled = false;
+        err.textContent = "Neizdevās izveidot viktorīnu. Pārbaudi internetu un mēģini vēlreiz.";
+      });
       return;
     }
     var hid = randomHex(32), fresh = cfgFromTemplate(t.id);
     card.disabled = true;
     S.set("hosts/" + hid, {config:fresh, created:S.ts()}).then(function(){
       lsSet(LS_HOST, hid);
-      H.hid = hid; H.cfg = normCfg(fresh); H.imgs = {}; H.lastPin = null; editingQ = {};
+      H.hid = hid; H.quizzes = [{qid:"main", cfg:normCfg(fresh), created:Date.now(), pin:null}]; hUseQuiz(H.quizzes[0]);
       try{ history.replaceState(null, "", location.pathname + location.search + "#vaditajs"); }catch(e){}
       hSetup(true);
     }).catch(function(e){
@@ -1979,22 +2037,61 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     });
   }
   function tplBack(){
-    if(H.hid && H.cfg){ hSetup(); return; }
+    if(H.tplMode === "replace" && H.hid && H.cfg){ hSetup(); return; }
+    if(H.tplMode === "add" && H.hid && H.cfg){ hPanel(); return; }
     if(H.tplFrom === "login") hLoginScreen(); else location.href = "./";
   }
   $("tpl-back").addEventListener("click", tplBack);
   $("tpl-back-top").addEventListener("click", tplBack);
 
-  function hOpen(hid, raw){
-    H.hid = hid; H.cfg = normCfg(raw); H.imgs = {};
-    S.get("hosts/" + hid + "/img").then(function(v){ H.imgs = v || {}; if(cur === "hsetup") hRenderSetup(); }).catch(function(){});
-    S.get("hosts/" + hid + "/currentPin").then(function(p){ H.lastPin = p || null; hPanel(); }).catch(function(){ hPanel(); });
+  /* One host account keeps several quizzes: the first lives at hosts/<id>, more at hosts/<id>/q/<quiz id>.
+     The secret link and the password belong to the account, so they open all of them. */
+  function hostExists(rec){ return !!(rec && typeof rec === "object" && (rec.config || rec.q || rec.created)); }
+  function quizList(rec){
+    var out = [];
+    if(rec && rec.config) out.push({qid:"main", cfg:normCfg(rec.config), created:Number(rec.created) || 0, pin:rec.currentPin || null});
+    var q = rec && rec.q;
+    if(q && typeof q === "object") Object.keys(q).forEach(function(k){
+      var e = q[k]; if(e && e.config) out.push({qid:k, cfg:normCfg(e.config), created:Number(e.created) || 0, pin:e.currentPin || null});
+    });
+    out.sort(function(a, b){ if(a.qid === "main") return -1; if(b.qid === "main") return 1; return a.created - b.created; });
+    return out;
+  }
+  function qBase(qid){ qid = qid || H.qid || "main"; return qid === "main" ? "hosts/" + H.hid : "hosts/" + H.hid + "/q/" + qid; }
+  function curEntry(){ return (H.quizzes || []).filter(function(e){ return e.qid === H.qid; })[0] || null; }
+  function hUseQuiz(e){
+    H.qid = e.qid; H.cfg = e.cfg; H.imgs = {}; H.lastPin = e.pin || null; editingQ = {};
+    lsSet(LS_HQ, {hid:H.hid, qid:e.qid});
+    var qid = e.qid;
+    S.get(qBase(qid) + "/img").then(function(v){ if(H.qid !== qid) return; H.imgs = v || {}; if(cur === "hsetup") hRenderSetup(); }).catch(function(){});
+  }
+  function hOpen(hid, rec, wantNew){
+    H.hid = hid; H.quizzes = quizList(rec);
+    var saved = lsGet(LS_HQ), want = saved && saved.hid === hid ? saved.qid : null;
+    var pick = H.quizzes.filter(function(x){ return x.qid === want; })[0] || H.quizzes[0];
+    if(!pick){ H.qid = null; H.cfg = null; hTemplates("add"); return; }
+    hUseQuiz(pick);
+    if(wantNew){ try{ history.replaceState(null, "", location.pathname + location.search + "#vaditajs"); }catch(e){} hTemplates("add"); }
+    else hPanel();
+  }
+  function hSwitchQuiz(e){ hSaveNow(); hUseQuiz(e); hPanel(); }
+  function hDeleteQuiz(){
+    if(!H.quizzes || H.quizzes.length < 2) return;
+    var qid = H.qid, base = qBase(qid);
+    clearTimeout(H.saveT); H.dirty = false;
+    var ops = qid === "main" ? [S.remove(base + "/config"), S.remove(base + "/currentPin"), S.remove(base + "/img")] : [S.remove(base + "/img"), S.remove(base)];
+    Promise.all(ops).catch(function(){ toast("Neizdevās izdzēst. Pārbaudi internetu."); });
+    H.quizzes = H.quizzes.filter(function(e){ return e.qid !== qid; });
+    hUseQuiz(H.quizzes[0]); hPanel(); toast("Viktorīna izdzēsta.");
   }
   function hLeaveGame(){ H.inGame = false; H.sub.clear(); keepAwake(false); }
   function hPanel(){
     hLeaveGame();
     var c = H.cfg, aq = activeQs(c), sq = aq.filter(hasKey).length, nm = c.child.name.trim(), t = tplById(c.tpl);
     $("hp-title").textContent = quizTitle(c);
+    $("hp-tpl").textContent = t.title + " · fons „" + (sceneById(c.bg) || sceneById(BRAND_SCENE)).name + "”";
+    var th = $("hp-thumb"); th.textContent = ""; th.append(sceneThumb(sceneById(c.bg) || sceneById(BRAND_SCENE)));
+    hRenderQuizzes();
     var st = $("hp-stats"); st.textContent = "";
     [{n: aq.length, l: plural(aq.length, "jautājums", "jautājumi"), c:0},
      {n: sq + "/" + aq.length, l:"pareizās atbildes atzīmētas", c: sq === aq.length && aq.length ? 3 : 1},
@@ -2004,11 +2101,11 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
       st.append(h("div", {class:"stat c" + it.c}, n, h("span", {class:"l", text:it.l})));
     });
     var w = [];
-    if(t.name && !nm) w.push("ieraksti " + t.name.label.charAt(0).toLowerCase() + t.name.label.slice(1));
+    if(t.name && !nm) w.push("ieraksti " + (t.name.label.charAt(0).toLowerCase() + t.name.label.slice(1)).replace(/vārds$/, "vārdu").replace(/vārdi$/, "vārdus"));
     if(!aq.length) w.push("pievieno jautājumus");
     else if(sq < aq.length) w.push("atzīmē pareizās atbildes");
     $("hp-note").hidden = !w.length;
-    $("hp-note").textContent = w.length ? "Pirms spēles: " + w.join(" un ") + " sadaļā „Jautājumi un pareizās atbildes”." : "";
+    $("hp-note").textContent = w.length ? "Pirms spēles: " + w.join(" un ") + " sadaļā „Jautājumi un iestatījumi”." : "";
     $("hp-err").textContent = "";
     $("hp-resume").hidden = true;
     hRenderAccess();
@@ -2025,9 +2122,25 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
   }
   $("hp-resume-btn").addEventListener("click", function(){ if(H.lastPin) hAttach(H.lastPin); });
   $("hp-setup").addEventListener("click", function(){ hSetup(); });
+  $("hp-add").addEventListener("click", function(){ hSaveNow(); hTemplates("add"); });
+  function hRenderQuizzes(){
+    var box = $("hp-quizzes"); box.textContent = "";
+    (H.quizzes || []).forEach(function(e){
+      var c = e.cfg, n = activeQs(c).length, on = e.qid === H.qid;
+      var b = h("button", {type:"button", class:"qi" + (on ? " on" : ""), "aria-current": on ? "true" : null},
+        h("span", {class:"qi-thumb", "aria-hidden":"true"}, sceneThumb(sceneById(c.bg) || sceneById(BRAND_SCENE))),
+        h("span", {class:"qi-body"},
+          h("span", {class:"qi-title", text:quizTitle(c)}),
+          h("span", {class:"qi-meta", text: n + " " + plural(n, "jautājums", "jautājumi") + " · " + tplById(c.tpl).title})),
+        on ? h("span", {class:"qi-tag", text:"Atvērta"}) : h("span", {class:"qi-go", "aria-hidden":"true", text:"›"}));
+      if(!on) b.addEventListener("click", function(){ hSwitchQuiz(e); try{ window.scrollTo({top:0, behavior:"smooth"}); }catch(x){} });
+      box.append(b);
+    });
+    $("hp-count").textContent = (H.quizzes || []).length > 1 ? String(H.quizzes.length) : "";
+  }
   $("hp-new").addEventListener("click", function(){ hNewGame($("hp-err")); });
   armButton($("hp-logout"), "Tiešām iziet? Bez saites vai paroles viktorīnu vairs neatvērsi. Spied vēlreiz", function(){
-    hSaveNow(); hLeaveGame(); lsSet(LS_HOST, null); H.hid = null; H.cfg = null;
+    hSaveNow(); hLeaveGame(); lsSet(LS_HOST, null); lsSet(LS_HQ, null); H.hid = null; H.cfg = null; H.qid = null; H.quizzes = [];
     location.hash = "";
   });
 
@@ -2082,7 +2195,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     clearTimeout(H.saveT);
     if(!H.hid || !H.cfg) return;
     H.dirty = false;
-    S.set("hosts/" + H.hid + "/config", clone(H.cfg)).then(function(){ if(!H.dirty) saveChip("ok"); }).catch(function(){ saveChip("bad"); toast("Neizdevās saglabāt. Pārbaudi internetu."); });
+    S.set(qBase() + "/config", clone(H.cfg)).then(function(){ if(!H.dirty) saveChip("ok"); }).catch(function(){ saveChip("bad"); toast("Neizdevās saglabāt. Pārbaudi internetu."); });
   }
 
   function hNewGame(errEl){
@@ -2103,8 +2216,8 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
         return S.set("games/" + pin, {quiz:quiz, state:{status:"lobby", created:S.ts()}}).then(function(){
           return Promise.all(qs.map(function(q, i){ return imgs[q.id] ? S.set("games/" + pin + "/img/q" + i, imgs[q.id]) : null; }));
         }).then(function(){
-          return S.set("hosts/" + H.hid + "/currentPin", pin);
-        }).then(function(){ H.lastPin = pin; hAttach(pin); });
+          return S.set(qBase() + "/currentPin", pin);
+        }).then(function(){ H.lastPin = pin; var ce = curEntry(); if(ce) ce.pin = pin; hAttach(pin); });
       });
     }
     var btns = [$("hp-new"), $("hr-new")];
@@ -2203,8 +2316,8 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     hLeaveGame();
     S.remove("games/" + pin).catch(function(){});
     S.remove("games/" + pin + "/img").catch(function(){});
-    S.remove("hosts/" + H.hid + "/currentPin").catch(function(){});
-    H.lastPin = null; hPanel();
+    S.remove(qBase() + "/currentPin").catch(function(){});
+    H.lastPin = null; var ce = curEntry(); if(ce) ce.pin = null; hPanel();
   });
 
   /* ---- live game ---- */
@@ -2523,7 +2636,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
           var rm = h("button", {type:"button", class:"btn-text btn-danger", text:"Noņemt bildi"});
           rm.addEventListener("click", function(){
             q.img = 0; delete H.imgs[q.id];
-            S.remove("hosts/" + H.hid + "/img/" + q.id).catch(function(){});
+            S.remove(qBase() + "/img/" + q.id).catch(function(){});
             hSaveNow(); renderImgField();
           });
           row.append(rm);
@@ -2533,7 +2646,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
           if(!f) return;
           msg.textContent = "Apstrādā bildi…"; add.disabled = true;
           compressImage(f).then(function(data){
-            return S.set("hosts/" + H.hid + "/img/" + q.id, data).then(function(){ H.imgs[q.id] = data; q.img = 1; hSaveNow(); });
+            return S.set(qBase() + "/img/" + q.id, data).then(function(){ H.imgs[q.id] = data; q.img = 1; hSaveNow(); });
           }).then(function(){ renderImgField(); }).catch(function(e){
             add.disabled = false;
             msg.textContent = e && e.message === "decode" ? "Šo bildi neizdevās atvērt. Izvēlies JPG vai PNG bildi." : "Neizdevās saglabāt bildi. Pārbaudi internetu un mēģini vēlreiz.";
@@ -2613,6 +2726,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     $("ev-title").placeholder = fill(t.eventTitle, C);
     $("ev-eyebrow").value = C.eyebrow || "";
     hRenderScenes();
+    $("setup-del").hidden = !(H.quizzes && H.quizzes.length > 1);
     ["10","15","20"].forEach(function(v){ $("t-" + v).checked = String(C.timeLimit) === v; });
     $("snd-on").checked = C.sound !== false; $("snd-off").checked = C.sound === false;
     var list = $("qlist"); list.textContent = "";
@@ -2639,7 +2753,8 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
   $("ev-title").addEventListener("input", function(){ H.cfg.title = this.value; hSave(); $("hs-eyebrow").textContent = quizTitle(H.cfg); });
   $("ev-eyebrow").addEventListener("input", function(){ H.cfg.eyebrow = this.value; hSave(); });
   $("ev-age").addEventListener("input", function(){ var d = this.value.replace(/\D/g, "").slice(0, 3); if(d !== this.value) this.value = d; H.cfg.age = d; hSave(); });
-  $("setup-tpl").addEventListener("click", function(){ hSaveNow(); hTemplates(); });
+  $("setup-tpl").addEventListener("click", function(){ hSaveNow(); hTemplates("replace"); });
+  armButton($("setup-del"), "Tiešām dzēst šo viktorīnu? Spied vēlreiz", hDeleteQuiz);
   $("child-name").addEventListener("input", function(){ H.cfg.child.name = this.value; hSave(); refreshPreviews(); $("hs-eyebrow").textContent = quizTitle(H.cfg); });
   ["g-m","g-f"].forEach(function(id){ $(id).addEventListener("change", function(){ if(this.checked){ H.cfg.child.gender = this.value; hSave(); refreshPreviews(); } }); });
   ["10","15","20"].forEach(function(v){ $("t-" + v).addEventListener("change", function(){ if(this.checked){ H.cfg.timeLimit = Number(v); hSave(); } }); });
