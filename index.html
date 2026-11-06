@@ -358,9 +358,129 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
   .brand-mark span{border-radius:9px;font-size:15px;box-shadow:inset 0 -3px 0 rgba(0,0,0,.18)}
   .candle{grid-column:1;grid-row:1;font-size:78px;margin-top:26px}
 }
+
+/* ===== backgrounds ("fons") =====
+   Each scene is a committed look: its own palette on html[data-scene] plus a moving decoration layer.
+   "klasika" keeps the original palette that follows the phone's light or dark setting. */
+:root{--shadow:0 10px 26px -14px rgba(28,33,67,.32);--field:var(--paper);--fx-op:1}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--shadow:0 14px 30px -16px rgba(0,0,0,.65)}}
+:root[data-theme="dark"]{--shadow:0 14px 30px -16px rgba(0,0,0,.65)}
+
+/* light scenes share the light answer colours */
+:root:root[data-scene="baloni"],:root:root[data-scene="sirsninas"],:root:root[data-scene="makonisi"],:root:root[data-scene="ziedi"]{
+  --red:#e4513a;--yellow:#f2b22a;--blue:#3a7ddf;--green:#2e9c60;--on-yellow:#2b230c;
+  --blue-soft:#e3ecfc;--green-soft:#ddf3e6;--amber-soft:#fcefd2;--red-soft:#fde6e1;
+  --green-ink:#1b6b40;--amber-ink:#83570a;--red-ink:#b1341f;--red-shadow:#f5c2b8;--glow:rgba(255,174,31,.45);
+  --card:#ffffff;--field:#f4f6fb;--shadow:0 12px 28px -14px rgba(40,50,110,.34);color-scheme:light}
+/* dark scenes share the dark answer colours */
+:root:root[data-scene="konfeti"],:root:root[data-scene="ballite"],:root:root[data-scene="sniegs"],:root:root[data-scene="jura"]{
+  --red:#ef6a52;--yellow:#f5c24a;--blue:#5b97ee;--green:#45b878;--on-yellow:#2b230c;
+  --green-ink:#86dfae;--amber-ink:#f4cf7c;--red-ink:#ff9d8a;--glow:rgba(255,174,31,.6);--red-shadow:rgba(0,0,0,.35);
+  --field:rgba(0,0,0,.22);--shadow:0 16px 34px -16px rgba(0,0,0,.6);color-scheme:dark}
+
+:root:root[data-scene="konfeti"]{--paper:#250b63;--card:#3a1a8c;--line:#5735ae;--ink:#ffffff;--muted:#d3c6f7;
+  --blue-soft:#4a2ba6;--green-soft:#1f4d4c;--amber-soft:#55395a;--red-soft:#5a2363;
+  --bg:radial-gradient(120% 70% at 50% 0%,#6a35e0 0%,#3c159b 48%,#250b63 100%)}
+:root:root[data-scene="ballite"]{--paper:#0d0a24;--card:#1b1542;--line:#33296e;--ink:#f6f3ff;--muted:#b9b0e0;
+  --blue-soft:#25235c;--green-soft:#123b38;--amber-soft:#3b2f2a;--red-soft:#3f1b3e;
+  --bg:radial-gradient(70% 45% at 12% 8%,rgba(255,64,160,.34),transparent 70%),radial-gradient(60% 40% at 92% 32%,rgba(64,200,255,.26),transparent 70%),radial-gradient(90% 50% at 50% 108%,rgba(140,80,255,.38),transparent 70%),#0d0a24}
+:root:root[data-scene="sniegs"]{--paper:#0e382f;--card:#134237;--line:#22594b;--ink:#f1fbf7;--muted:#acd3c7;
+  --blue-soft:#17485a;--green-soft:#175239;--amber-soft:#40402a;--red-soft:#4a2a2c;
+  --bg:radial-gradient(80% 40% at 50% 0%,rgba(255,214,120,.18),transparent 70%),linear-gradient(180deg,#0a2722 0%,#0f3a31 60%,#14483c 100%)}
+:root:root[data-scene="jura"]{--paper:#052e52;--card:#0b4670;--line:#1b6292;--ink:#f0fbff;--muted:#acd8ee;
+  --blue-soft:#145a8c;--green-soft:#0f5150;--amber-soft:#3d4a4a;--red-soft:#4a3050;
+  --bg:radial-gradient(60% 30% at 30% 0%,rgba(255,255,255,.18),transparent 70%),linear-gradient(180deg,#0d7fb5 0%,#075585 45%,#052e52 100%)}
+:root:root[data-scene="baloni"]{--paper:#fff3dc;--ink:#1a2347;--muted:#4f5c7c;--line:#d6e3f1;
+  --bg:linear-gradient(180deg,#9fd8ff 0%,#cdeeff 46%,#fff3dc 100%)}
+:root:root[data-scene="sirsninas"]{--paper:#ffe9d6;--ink:#3b1a28;--muted:#7d5464;--line:#f2d3da;--red-soft:#ffe3ea;
+  --bg:linear-gradient(170deg,#ffd9e3 0%,#fff3ef 55%,#ffe9d6 100%)}
+:root:root[data-scene="ziedi"]{--paper:#fff1e0;--ink:#1f3324;--muted:#53685a;--line:#d6e7cf;
+  --bg:linear-gradient(180deg,#d4f3c9 0%,#f4fbe9 50%,#fff1e0 100%)}
+:root:root[data-scene="makonisi"]{--paper:#fde4ee;--ink:#22314a;--muted:#55677c;--line:#d5e6ea;
+  --bg:linear-gradient(180deg,#cdeaff 0%,#eaf7f1 50%,#fde4ee 100%)}
+
+#scene{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;background:var(--bg,var(--paper))}
+#scene-fx{position:absolute;inset:0;opacity:var(--fx-op)}
+.fx{position:absolute;top:0;left:0;will-change:transform}
+.fx>b{display:block}
+.fx>b>svg{display:block;color:var(--ink)}
+.fx.rise{animation:fx-rise var(--d) linear var(--dl) infinite}
+.fx.fall{animation:fx-fall var(--d) linear var(--dl) infinite}
+.fx.drift{animation:fx-drift var(--d) linear var(--dl) infinite}
+.fx>b.sway{animation:fx-sway var(--s,4s) ease-in-out var(--dl) infinite alternate}
+.fx>b.flip{animation:fx-flip var(--s,3s) linear var(--dl) infinite}
+.fx>b.tw{animation:fx-tw var(--d) ease-in-out var(--dl) infinite}
+.fx>b.spin{animation:fx-spin var(--s,6s) linear var(--dl) infinite}
+.fx>b.flake{border-radius:50%;background:#fff;box-shadow:0 0 6px rgba(255,255,255,.6)}
+.fx>b.bubble{border-radius:50%;border:1.5px solid rgba(255,255,255,.55);background:radial-gradient(circle at 32% 30%,rgba(255,255,255,.55) 0 14%,rgba(255,255,255,.08) 30%,transparent 70%)}
+.fx>b.glow{border-radius:50%;box-shadow:0 0 12px 3px currentColor;opacity:.75}
+@keyframes fx-rise{from{transform:translate3d(0,108vh,0)}to{transform:translate3d(0,-24vh,0)}}
+@keyframes fx-fall{from{transform:translate3d(0,-8vh,0)}to{transform:translate3d(0,106vh,0)}}
+@keyframes fx-drift{from{transform:translate3d(-190px,var(--y),0)}to{transform:translate3d(104vw,var(--y),0)}}
+@keyframes fx-sway{from{transform:translateX(-14px) rotate(-7deg)}to{transform:translateX(14px) rotate(7deg)}}
+@keyframes fx-flip{from{transform:translateX(-10px) rotate3d(.6,1,.2,0deg)}50%{transform:translateX(10px) rotate3d(.6,1,.2,180deg)}to{transform:translateX(-10px) rotate3d(.6,1,.2,360deg)}}
+@keyframes fx-spin{0%{transform:translateX(-14px) rotate(0)}50%{transform:translateX(14px) rotate(180deg)}100%{transform:translateX(-14px) rotate(360deg)}}
+@keyframes fx-tw{0%,100%{transform:scale(.35) rotate(0);opacity:.25}50%{transform:scale(1) rotate(25deg);opacity:1}}
+:root[data-scene="baloni"] #scene-fx{--fx-op:.9}
+:root[data-scene="sirsninas"] #scene-fx{--fx-op:.75}
+:root[data-scene="konfeti"] #scene-fx{--fx-op:.85}
+@media (prefers-reduced-motion: reduce){
+  .fx.rise,.fx.fall{animation:none;transform:translate3d(0,var(--y),0)}
+  .fx.drift{animation:none;transform:translate3d(var(--x),var(--y),0)}
+  .fx>b.sway,.fx>b.flip,.fx>b.tw,.fx>b.spin{animation:none}
+}
+
+/* cards lift off the background */
+.panel,.join,.stat,.qcard,.qres,.award,.brow,.tpl-card,.me-card,.score-card,.time-card{box-shadow:var(--shadow)}
+.big-input{background:var(--field)!important}
+.ring>span{background:var(--card)}
+.sticky-done{background:linear-gradient(to bottom,transparent,var(--paper) 45%)}
+
+/* answers: full colour blocks, the same four colours on every background */
+.opt.c0{--c:#e2462f}.opt.c1{--c:#f2ae1c}.opt.c2{--c:#2c6fd8}.opt.c3{--c:#1f8a4c}
+.opt{background:var(--c);color:#fff;border:0;border-bottom:6px solid rgba(0,0,0,.26);box-shadow:var(--shadow);min-height:68px;font-size:20px;font-weight:800}
+.opt.c1{color:#2b230c}
+.opt .tile{background:rgba(255,255,255,.24);color:inherit;box-shadow:none}
+.opt.c1 .tile{background:rgba(255,255,255,.45)}
+.opt.sel{background:var(--c);outline:4px solid var(--ink);outline-offset:3px;border-bottom-width:3px;transform:translateY(3px)}
+.opts.locked .opt:not(.sel){opacity:.32}
+@media (hover:hover){ .opt:not(:disabled):hover{filter:brightness(1.06)} }
+
+/* screens slide in */
+.screen:not([hidden]){animation:screen-in .32s cubic-bezier(.2,.8,.3,1)}
+@keyframes screen-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){ .screen:not([hidden]){animation:none} }
+
+/* light scenes: big type on the background gets a soft halo so it stays readable over moving shapes */
+:root[data-scene="baloni"] .hero h1,:root[data-scene="sirsninas"] .hero h1,:root[data-scene="makonisi"] .hero h1,:root[data-scene="ziedi"] .hero h1{text-shadow:0 2px 0 rgba(255,255,255,.55)}
+
+/* background picker */
+.scene-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.scene-opt{position:relative;display:grid;gap:6px;cursor:pointer}
+.scene-opt input{position:absolute;opacity:0;width:1px;height:1px}
+.scene-sw{position:relative;display:block;aspect-ratio:120/76;max-width:100%;border-radius:14px;overflow:hidden;border:3px solid transparent;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
+.scene-sw svg{position:absolute;inset:0;width:100%;height:100%}
+.scene-opt input:checked+.scene-sw{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-soft)}
+.scene-opt input:checked+.scene-sw::after{content:"✓";position:absolute;right:6px;top:6px;width:22px;height:22px;border-radius:50%;background:var(--blue);color:#fff;font:900 13px/22px var(--body);text-align:center}
+.scene-opt input:focus-visible+.scene-sw{outline:3px solid var(--blue);outline-offset:2px}
+.scene-name{font-weight:800;font-size:14px;text-align:center}
+
+/* theme gallery tile shows that theme's background */
+.tpl-tile{position:relative;overflow:hidden;width:64px;height:64px;padding:0;background:none}
+.tpl-tile .scene-sw{position:absolute;inset:0;border:0;border-radius:inherit;aspect-ratio:auto}
+.tpl-tile-t{position:relative;font:900 17px/1 var(--display);color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.45)}
+/* while a question is on screen the decorations calm down, so nothing moves behind the text */
+#scene-fx{transition:opacity .6s ease}
+:root[data-screen="gq"] #scene-fx,:root[data-screen="hgame"] #scene-fx{opacity:.3}
+/* answers that were not picked stay solid but fade toward the card colour */
+.opt{position:relative}
+.opts.locked .opt:not(.sel){opacity:1}
+.opts.locked .opt:not(.sel)::after{content:"";position:absolute;inset:0 0 -6px;border-radius:inherit;background:var(--card);opacity:.7}
+.tpl-tile-t{background:rgba(18,14,48,.62);padding:4px 7px;border-radius:9px;text-shadow:none;font-size:15px}
 </style>
 </head>
 <body>
+<div id="scene" aria-hidden="true"><div id="scene-fx"></div></div>
 <div class="net" id="net" hidden role="status">Nav savienojuma ar internetu. Mēģinām pieslēgties…</div>
 <main class="wrap" id="app">
 
@@ -560,6 +680,10 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
       </div>
     </div>
     <div class="panel">
+      <div><h3 class="section-title" id="bg-lbl">Fons</h3><p class="hint">Fonu redzēs arī viesi savos telefonos un lielajā ekrānā.</p></div>
+      <div class="scene-grid" id="scene-grid" role="radiogroup" aria-labelledby="bg-lbl"></div>
+    </div>
+    <div class="panel">
       <h3 class="section-title">Laiks un skaņa</h3>
       <div class="field">
         <span class="lbl" id="tl-lbl">Laiks atbildei uz vienu jautājumu</span>
@@ -679,11 +803,11 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
   /* Themes a new host can start from. {N} is always used in the nominative; {a|b} picks the boy|girl form.
      A fourth item in a question is the index of the correct answer (trivia themes come with answers). */
   var TEMPLATES = [
-    {id:"baby12", tile:"1–2", c:0, title:"Mazuļa jubileja", sub:"Bērnam 1–2 gadi",
+    {id:"baby12", tile:"1–2", c:0, bg:"baloni", title:"Mazuļa jubileja", sub:"Bērnam 1–2 gadi",
      desc:"Cik labi viesi zina, kā mazulis pavadīja laiku no 1 līdz 2 gadiem.",
      name:{label:"Bērna vārds", ph:"Piemēram, Rudolfs", fb:["jubilārs","jubilāre"]}, gender:true, badge:"2",
      eventTitle:"{N} · 2 gadi", eyebrow:"Laiks no 1 līdz 2 gadiem", q:BASE},
-    {id:"kid", tile:"3–10", c:1, title:"Bērna dzimšanas diena", sub:"Bērnam 3–10 gadi",
+    {id:"kid", tile:"3–10", c:1, bg:"konfeti", title:"Bērna dzimšanas diena", sub:"Bērnam 3–10 gadi",
      desc:"Mīļākās krāsas, rotaļas, ēdieni un sapņi.",
      name:{label:"Bērna vārds", ph:"Piemēram, Elza", fb:["jubilārs","jubilāre"]}, gender:true,
      eventTitle:"{N} dzimšanas diena", eyebrow:"", q:[
@@ -700,7 +824,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
       ["kd-vards","Kuru vārdu {N} saka visbiežāk?",["Kāpēc?","Nē!","Vēl!","Es pats!"]],
       ["kd-brivdienas","Kur {N} vislabprātāk pavada brīvdienas?",["Pie jūras","Pie vecvecākiem","Atrakciju parkā","Mājās"]]
     ]},
-    {id:"adult", tile:"18+", c:2, title:"Dzimšanas diena", sub:"Pieaugušajam",
+    {id:"adult", tile:"18+", c:2, bg:"ballite", title:"Dzimšanas diena", sub:"Pieaugušajam",
      desc:"Cik labi draugi un radi pazīst jubilāru.",
      name:{label:"Jubilāra vārds", ph:"Piemēram, Andris", fb:["jubilārs","jubilāre"]}, gender:true,
      eventTitle:"{N} dzimšanas diena", eyebrow:"", q:[
@@ -717,7 +841,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
       ["ad-rits","Ko {N} dara vispirms no rīta?",["Dzer kafiju","Skatās telefonā","Iet dušā","Ieslēdz ziņas"]],
       ["ad-filmas","Kāda žanra filmas {N} skatās visbiežāk?",["Komēdijas","Trillerus","Romantiskās","Dokumentālās"]]
     ]},
-    {id:"wedding", tile:"♥", c:0, title:"Kāzas", sub:"Cik labi pazīsti pāri?",
+    {id:"wedding", tile:"♥", c:0, bg:"sirsninas", title:"Kāzas", sub:"Cik labi pazīsti pāri?",
      desc:"Kā viņi satikās, kurš kavē un kur dosies medusmēnesī.",
      name:{label:"Pāra vārdi", ph:"Piemēram, Anna un Jānis", fb:["pāris","pāris"]}, gender:false,
      eventTitle:"Kāzu viktorīna", eyebrow:"", q:[
@@ -732,7 +856,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
       ["kz-aizmieg","Kurš vakarā aizmieg pirmais?",["Līgava","Līgavainis","Abi reizē","Atkarīgs no dienas"]],
       ["kz-datums","Kurš izvēlējās kāzu datumu?",["Līgava","Līgavainis","Abi kopā","Vecāki"]]
     ]},
-    {id:"babyshower", tile:"9 m", c:1, title:"Gaidību ballīte", sub:"Viss par mazuļiem",
+    {id:"babyshower", tile:"9 m", c:1, bg:"makonisi", title:"Gaidību ballīte", sub:"Viss par mazuļiem",
      desc:"Jautājumi par mazuļiem. Pareizās atbildes jau atzīmētas.",
      name:null, gender:false, eventTitle:"Gaidību ballītes viktorīna", eyebrow:"", q:[
       ["bs-miegs","Cik stundu diennaktī parasti guļ jaundzimušais?",["8–10","11–13","14–17","20–22"],2],
@@ -745,7 +869,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
       ["bs-baro","Cik reižu diennaktī jaundzimušo parasti baro?",["3–4","5–6","8–12","15–20"],2],
       ["bs-redze","Kura maņa jaundzimušajam ir vismazāk attīstīta?",["Dzirde","Redze","Oža","Garša"],1]
     ]},
-    {id:"xmas", tile:"★", c:3, title:"Ziemassvētki", sub:"Svētku viktorīna",
+    {id:"xmas", tile:"★", c:3, bg:"sniegs", title:"Ziemassvētki", sub:"Svētku viktorīna",
      desc:"Tradīcijas un svētku fakti. Pareizās atbildes jau atzīmētas.",
      name:null, gender:false, eventTitle:"Ziemassvētku viktorīna", eyebrow:"", q:[
       ["xm-egle","Kurā pilsētā, kā vēsta leģenda, 1510. gadā rotāja vienu no pirmajām Ziemassvētku eglēm?",["Tallinā","Rīgā","Viļņā","Berlīnē"],1],
@@ -759,11 +883,147 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
       ["xm-terps","Kādā krāsā parasti attēlo Ziemassvētku vecīša tērpu?",["Zilā","Sarkanā","Zaļā","Violetā"],1],
       ["xm-piparkukas","Kura garšviela piparkūkās parasti nav?",["Kanēlis","Krustnagliņas","Ingvers","Kurkuma"],3]
     ]},
-    {id:"blank", tile:"+", c:2, title:"Tukša viktorīna", sub:"Raksti savus jautājumus",
+    {id:"blank", tile:"+", c:2, bg:"konfeti", title:"Tukša viktorīna", sub:"Raksti savus jautājumus",
      desc:"Sāc no nulles un pievieno savus jautājumus un bildes.",
      name:null, gender:false, eventTitle:"Mana viktorīna", eyebrow:"", q:[]}
   ];
   function tplById(id){ for(var i = 0; i < TEMPLATES.length; i++) if(TEMPLATES[i].id === id) return TEMPLATES[i]; return TEMPLATES[0]; }
+
+  /* Backgrounds ("fons"). Each one sets its own colours in CSS (html[data-scene]) and a moving decoration layer.
+     Guests get the background the host picked, because it travels with the game. */
+  var BRAND_SCENE = "konfeti";
+  var SCENES = [
+    {id:"konfeti",   name:"Konfeti",    fx:"confetti", top:"#5a29cf", sw:"radial-gradient(120% 90% at 50% 0%,#6a35e0,#3c159b 55%,#250b63)", dark:true},
+    {id:"baloni",    name:"Baloni",     fx:"balloons", top:"#9fd8ff", sw:"linear-gradient(180deg,#9fd8ff,#cdeeff 50%,#fff3dc)", dark:false},
+    {id:"ballite",   name:"Ballīte",    fx:"stars",    top:"#140c33", sw:"radial-gradient(70% 60% at 20% 15%,rgba(255,64,160,.55),transparent 70%),radial-gradient(60% 60% at 90% 40%,rgba(64,200,255,.45),transparent 70%),#0d0a24", dark:true},
+    {id:"sirsninas", name:"Sirsniņas",  fx:"hearts",   top:"#ffe3ea", sw:"linear-gradient(170deg,#ffd9e3,#fff3ef 55%,#ffe9d6)", dark:false},
+    {id:"makonisi",  name:"Mākonīši",   fx:"clouds",   top:"#d2edff", sw:"linear-gradient(180deg,#cdeaff,#eaf7f1 50%,#fde4ee)", dark:false},
+    {id:"sniegs",    name:"Sniegs",     fx:"snow",     top:"#0a2722", sw:"radial-gradient(80% 50% at 50% 0%,rgba(255,214,120,.22),transparent 70%),linear-gradient(180deg,#0a2722,#0f3a31 60%,#14483c)", dark:true},
+    {id:"ziedi",     name:"Ziedi",      fx:"flowers",  top:"#d9f5d0", sw:"linear-gradient(180deg,#d4f3c9,#f4fbe9 50%,#fff1e0)", dark:false},
+    {id:"jura",      name:"Jūra",       fx:"bubbles",  top:"#0d7fb5", sw:"linear-gradient(180deg,#0d7fb5,#075585 45%,#052e52)", dark:true},
+    {id:"klasika",   name:"Klasika",    fx:"dots",     top:"#11162f", sw:"linear-gradient(180deg,#1a2145,#11162f)", dark:true}
+  ];
+  function sceneById(id){ for(var i = 0; i < SCENES.length; i++) if(SCENES[i].id === id) return SCENES[i]; return null; }
+  function rnd(a, b){ return a + Math.random() * (b - a); }
+  function pick(arr){ return arr[Math.floor(Math.random() * arr.length)]; }
+  var SVGNS = "http://www.w3.org/2000/svg";
+  function svgEl(tag, attrs){ var e = document.createElementNS(SVGNS, tag); for(var k in attrs) e.setAttribute(k, attrs[k]); return e; }
+  function svgBox(w, hh, kids){ var s = svgEl("svg", {viewBox:"0 0 " + w + " " + hh, width:w, height:hh, "aria-hidden":"true"}); kids.forEach(function(k){ s.append(k); }); return s; }
+  var HEART = "M12 21s-7.5-4.6-10-9.3C.3 8.3 2.2 4 6.3 4c2.4 0 4.2 1.4 5.7 3.4C13.5 5.4 15.3 4 17.7 4 21.8 4 23.7 8.3 22 11.7 19.5 16.4 12 21 12 21z";
+  var SPARK = "M12 0c.9 6.3 4.7 10.1 12 12-7.3 1.9-11.1 5.7-12 12-.9-6.3-4.7-10.1-12-12C7.3 10.1 11.1 6.3 12 0z";
+  var CLOUD = "M25 52h86a20 20 0 0 0 2-40 28 28 0 0 0-52-6 22 22 0 0 0-34 14A16 16 0 0 0 25 52z";
+  function flowerSvg(col, mid){
+    var kids = [];
+    for(var k = 0; k < 5; k++) kids.push(svgEl("ellipse", {cx:"12", cy:"6.2", rx:"3.9", ry:"5.6", fill:col, transform:"rotate(" + (k * 72) + " 12 12)"}));
+    kids.push(svgEl("circle", {cx:"12", cy:"12", r:"3.3", fill:mid}));
+    return svgBox(24, 24, kids);
+  }
+  function balloonSvg(col, w){
+    var hh = Math.round(w * 1.9);
+    return svgBox(40, 76, [
+      svgEl("path", {d:"M20 50 q-4 8 2 14 q5 6 -1 12", fill:"none", stroke:"currentColor", "stroke-width":"1.2", opacity:".55"}),
+      svgEl("ellipse", {cx:"20", cy:"22", rx:"18", ry:"21", fill:col}),
+      svgEl("path", {d:"M17 42h6l-3 5z", fill:col}),
+      svgEl("ellipse", {cx:"13", cy:"14", rx:"4", ry:"7", fill:"#fff", opacity:".38", transform:"rotate(-20 13 14)"})
+    ]);
+  }
+  function fxItem(cls, vars, inner){
+    var el = document.createElement("i"); el.className = "fx " + cls;
+    var st = ""; for(var k in vars) st += k + ":" + vars[k] + ";";
+    el.setAttribute("style", st);
+    var b = document.createElement("b"); b.className = inner.cls || ""; if(inner.style) b.setAttribute("style", inner.style);
+    if(inner.node) b.append(inner.node);
+    el.append(b);
+    return el;
+  }
+  var FX = {
+    confetti: function(box){
+      var cols = ["#ff5a5f","#ffc93c","#3fa9ff","#3ddc84","#ff7ad9","#ffffff"];
+      for(var i = 0; i < 30; i++){ var d = rnd(9, 17), w = rnd(7, 13), round = Math.random() < .25;
+        box.append(fxItem("fall", {left:rnd(-2, 100).toFixed(1) + "%", "--d":d.toFixed(1) + "s", "--dl":(-rnd(0, d)).toFixed(1) + "s", "--y":rnd(0, 95).toFixed(0) + "vh", "--s":rnd(2, 4.5).toFixed(1) + "s"},
+          {cls:"flip", style:"width:" + w.toFixed(0) + "px;height:" + (round ? w : w * rnd(.4, .6)).toFixed(0) + "px;border-radius:" + (round ? "50%" : "2px") + ";background:" + pick(cols)})); }
+    },
+    balloons: function(box){
+      var cols = ["#ef5b45","#f5b82e","#3f86ea","#36b26d","#ff79b0","#9b6bff"];
+      for(var i = 0; i < 9; i++){ var d = rnd(18, 30), w = rnd(34, 60);
+        var node = balloonSvg(pick(cols), w); node.setAttribute("width", w.toFixed(0)); node.setAttribute("height", (w * 1.9).toFixed(0));
+        box.append(fxItem("rise", {left:(i / 9 * 100 + rnd(-3, 6)).toFixed(1) + "%", "--d":d.toFixed(1) + "s", "--dl":(-rnd(0, d)).toFixed(1) + "s", "--y":rnd(5, 85).toFixed(0) + "vh", "--s":rnd(3, 5).toFixed(1) + "s"},
+          {cls:"sway", node:node})); }
+    },
+    hearts: function(box){
+      var cols = ["#ff6b8f","#ff8fab","#f2b8c6","#e8475f","#f3c562"];
+      for(var i = 0; i < 16; i++){ var d = rnd(14, 26), w = rnd(14, 34);
+        box.append(fxItem("rise", {left:rnd(0, 97).toFixed(1) + "%", "--d":d.toFixed(1) + "s", "--dl":(-rnd(0, d)).toFixed(1) + "s", "--y":rnd(0, 90).toFixed(0) + "vh", "--s":rnd(3, 5).toFixed(1) + "s"},
+          {cls:"sway", node: svgBox(24, 24, [svgEl("path", {d:HEART, fill:pick(cols)})])}));
+        box.lastChild.querySelector("svg").setAttribute("width", w.toFixed(0)); box.lastChild.querySelector("svg").setAttribute("height", w.toFixed(0)); }
+    },
+    stars: function(box){
+      var cols = ["#ffffff","#ff7ad9","#5fe1ff","#ffd65a","#b494ff"];
+      for(var i = 0; i < 26; i++){ var w = rnd(7, 22), d = rnd(2.2, 5);
+        var node = svgBox(24, 24, [svgEl("path", {d:SPARK, fill:pick(cols)})]); node.setAttribute("width", w.toFixed(0)); node.setAttribute("height", w.toFixed(0));
+        box.append(fxItem("twinkle", {left:rnd(0, 97).toFixed(1) + "%", top:rnd(0, 96).toFixed(1) + "%", "--d":d.toFixed(1) + "s", "--dl":(-rnd(0, d)).toFixed(1) + "s"}, {cls:"tw", node:node})); }
+      for(var j = 0; j < 8; j++){ var d2 = rnd(20, 34), s2 = rnd(4, 9);
+        box.append(fxItem("rise", {left:rnd(0, 97).toFixed(1) + "%", "--d":d2.toFixed(1) + "s", "--dl":(-rnd(0, d2)).toFixed(1) + "s", "--y":rnd(0, 90).toFixed(0) + "vh", "--s":"4s"},
+          {cls:"sway glow", style:"width:" + s2.toFixed(0) + "px;height:" + s2.toFixed(0) + "px;background:" + pick(cols)})); }
+    },
+    clouds: function(box){
+      for(var i = 0; i < 6; i++){ var d = rnd(45, 80), w = rnd(90, 170);
+        var node = svgBox(136, 56, [svgEl("path", {d:CLOUD, fill:"#ffffff"})]); node.setAttribute("width", w.toFixed(0)); node.setAttribute("height", (w * 56 / 136).toFixed(0));
+        box.append(fxItem("drift", {"--d":d.toFixed(1) + "s", "--dl":(-rnd(0, d)).toFixed(1) + "s", "--y":(i / 6 * 92 + rnd(0, 8)).toFixed(0) + "vh", "--x":rnd(0, 80).toFixed(0) + "vw"}, {cls:"", node:node})); }
+      var cols = ["#ffc94d","#ff9fc0","#8fd3ff","#9be3c2"];
+      for(var j = 0; j < 14; j++){ var w2 = rnd(8, 16), d2 = rnd(2.5, 5);
+        var n2 = svgBox(24, 24, [svgEl("path", {d:SPARK, fill:pick(cols)})]); n2.setAttribute("width", w2.toFixed(0)); n2.setAttribute("height", w2.toFixed(0));
+        box.append(fxItem("twinkle", {left:rnd(0, 97).toFixed(1) + "%", top:rnd(0, 96).toFixed(1) + "%", "--d":d2.toFixed(1) + "s", "--dl":(-rnd(0, d2)).toFixed(1) + "s"}, {cls:"tw", node:n2})); }
+    },
+    snow: function(box){
+      for(var i = 0; i < 44; i++){ var d = rnd(10, 22), w = Math.random() < .7 ? rnd(3, 7) : rnd(7, 11);
+        box.append(fxItem("fall", {left:rnd(-2, 100).toFixed(1) + "%", "--d":d.toFixed(1) + "s", "--dl":(-rnd(0, d)).toFixed(1) + "s", "--y":rnd(0, 95).toFixed(0) + "vh", "--s":rnd(3, 6).toFixed(1) + "s"},
+          {cls:"sway flake", style:"width:" + w.toFixed(1) + "px;height:" + w.toFixed(1) + "px;opacity:" + rnd(.45, .95).toFixed(2)})); }
+    },
+    flowers: function(box){
+      var cols = [["#ff8fb8","#ffd23f"],["#ffffff","#ffb300"],["#c79bff","#ffe27a"],["#ff9a7a","#fff3c4"],["#ffd23f","#ff8a3d"]];
+      for(var i = 0; i < 16; i++){ var d = rnd(13, 24), w = rnd(16, 32), c = pick(cols);
+        var node = flowerSvg(c[0], c[1]); node.setAttribute("width", w.toFixed(0)); node.setAttribute("height", w.toFixed(0));
+        box.append(fxItem("fall", {left:rnd(-2, 98).toFixed(1) + "%", "--d":d.toFixed(1) + "s", "--dl":(-rnd(0, d)).toFixed(1) + "s", "--y":rnd(0, 92).toFixed(0) + "vh", "--s":rnd(5, 9).toFixed(1) + "s"}, {cls:"spin", node:node})); }
+    },
+    bubbles: function(box){
+      for(var i = 0; i < 18; i++){ var d = rnd(9, 20), w = rnd(8, 34);
+        box.append(fxItem("rise", {left:rnd(0, 97).toFixed(1) + "%", "--d":d.toFixed(1) + "s", "--dl":(-rnd(0, d)).toFixed(1) + "s", "--y":rnd(0, 90).toFixed(0) + "vh", "--s":rnd(2.5, 4.5).toFixed(1) + "s"},
+          {cls:"sway bubble", style:"width:" + w.toFixed(0) + "px;height:" + w.toFixed(0) + "px"})); }
+    },
+    dots: function(box){
+      var cols = ["var(--red)","var(--yellow)","var(--blue)","var(--green)"];
+      for(var i = 0; i < 14; i++){ var d = rnd(22, 36), w = rnd(6, 13);
+        box.append(fxItem("rise", {left:rnd(0, 97).toFixed(1) + "%", "--d":d.toFixed(1) + "s", "--dl":(-rnd(0, d)).toFixed(1) + "s", "--y":rnd(0, 90).toFixed(0) + "vh", "--s":"5s"},
+          {cls:"sway", style:"width:" + w.toFixed(0) + "px;height:" + w.toFixed(0) + "px;border-radius:50%;opacity:.4;background:" + cols[i % 4]})); }
+    }
+  };
+  var sceneNow = null;
+  function applyScene(id){
+    var sc = sceneById(id) || sceneById(BRAND_SCENE);
+    if(sceneNow === sc.id) return;
+    sceneNow = sc.id;
+    document.documentElement.setAttribute("data-scene", sc.id);
+    var box = document.getElementById("scene-fx");
+    if(box){ box.textContent = ""; try{ FX[sc.fx](box); }catch(e){} }
+    var m = document.querySelector('meta[name="theme-color"]'); if(m) m.setAttribute("content", sc.top);
+  }
+  /* small still picture of a background, for the picker and the theme gallery */
+  function sceneThumb(sc, big){
+    var w = 120, hh = 76, kids = [];
+    var add = function(e){ kids.push(e); };
+    if(sc.fx === "confetti"){ [["#ffc93c",14,12,20],["#3fa9ff",40,30,-25],["#ff5a5f",72,14,35],["#3ddc84",96,40,-10],["#ff7ad9",28,58,15],["#ffffff",86,64,40],["#ffc93c",60,52,-30]].forEach(function(c){ add(svgEl("rect", {x:c[1], y:c[2], width:"10", height:"5", rx:"1.5", fill:c[0], transform:"rotate(" + c[3] + " " + (c[1] + 5) + " " + (c[2] + 2) + ")"})); }); }
+    else if(sc.fx === "balloons"){ [["#ef5b45",18,14,.9],["#3f86ea",52,30,1.1],["#f5b82e",86,10,.85],["#36b26d",100,40,.7]].forEach(function(c){ var g = svgEl("g", {transform:"translate(" + c[1] + " " + c[2] + ") scale(" + (c[3] * .55) + ")"}); g.append(svgEl("ellipse", {cx:"20", cy:"22", rx:"18", ry:"21", fill:c[0]})); g.append(svgEl("path", {d:"M20 43 q-4 8 2 14 q5 6 -1 12", fill:"none", stroke:"#1a2347", "stroke-width":"1.6", opacity:".45"})); add(g); }); }
+    else if(sc.fx === "hearts"){ [["#ff6b8f",14,14,1.1],["#e8475f",54,34,1.5],["#f3c562",92,12,.9],["#ff8fab",88,48,1.2],["#f2b8c6",26,50,.8]].forEach(function(c){ add(svgEl("path", {d:HEART, fill:c[0], transform:"translate(" + c[1] + " " + c[2] + ") scale(" + c[3] + ")"})); }); }
+    else if(sc.fx === "stars"){ [["#ffffff",12,10,.7],["#ff7ad9",50,28,1.1],["#5fe1ff",92,12,.8],["#ffd65a",84,50,.6],["#b494ff",22,50,.9],["#ffffff",66,8,.4]].forEach(function(c){ add(svgEl("path", {d:SPARK, fill:c[0], transform:"translate(" + c[1] + " " + c[2] + ") scale(" + c[3] + ")"})); }); }
+    else if(sc.fx === "clouds"){ add(svgEl("path", {d:CLOUD, fill:"#fff", transform:"translate(-6 6) scale(.55)"})); add(svgEl("path", {d:CLOUD, fill:"#fff", transform:"translate(56 34) scale(.45)"})); add(svgEl("path", {d:SPARK, fill:"#ffc94d", transform:"translate(92 8) scale(.6)"})); add(svgEl("path", {d:SPARK, fill:"#ff9fc0", transform:"translate(20 52) scale(.45)"})); }
+    else if(sc.fx === "snow"){ [[8,10,2],[26,30,3],[44,8,1.6],[60,40,2.4],[80,14,3.2],[100,34,2],[112,8,1.6],[14,52,3],[36,64,1.8],[54,58,2.6],[72,66,1.6],[92,56,3],[110,68,2.2],[20,26,1.4],[86,40,1.4],[48,26,1.4]].forEach(function(c){ add(svgEl("circle", {cx:c[0], cy:c[1], r:c[2], fill:"#fff", opacity:c[2] > 2.5 ? ".95" : ".7"})); }); }
+    else if(sc.fx === "flowers"){ [["#ff8fb8","#ffd23f",6,6,1],["#ffffff","#ffb300",44,30,1.25],["#c79bff","#ffe27a",88,6,.9],["#ff9a7a","#fff3c4",92,46,1.05],["#ffd23f","#ff8a3d",16,46,.8]].forEach(function(c){ var g = svgEl("g", {transform:"translate(" + c[2] + " " + c[3] + ") scale(" + c[4] + ")"}); flowerSvg(c[0], c[1]).childNodes.forEach(function(n){ g.append(n.cloneNode(true)); }); add(g); }); }
+    else if(sc.fx === "bubbles"){ [[18,58,9],[40,30,6],[62,50,12],[88,22,8],[100,56,5],[30,10,4]].forEach(function(c){ add(svgEl("circle", {cx:c[0], cy:c[1], r:c[2], fill:"rgba(255,255,255,.12)", stroke:"rgba(255,255,255,.7)", "stroke-width":"1.4"})); }); }
+    else { [["#ef6a52",20,18],["#f5c24a",60,40],["#5b97ee",96,16],["#45b878",36,58],["#ef6a52",100,60]].forEach(function(c){ add(svgEl("circle", {cx:c[1], cy:c[2], r:"5", fill:c[0], opacity:".7"})); }); }
+    var s = svgBox(w, hh, kids); s.setAttribute("preserveAspectRatio", "xMidYMid slice"); s.removeAttribute("width"); s.removeAttribute("height");
+    return h("span", {class:"scene-sw" + (sc.dark ? " dark" : ""), style:"background:" + sc.sw}, s);
+  }
 
   /* ================= small helpers ================= */
   function $(id){ return document.getElementById(id); }
@@ -840,7 +1100,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
   function preload(map){ Object.keys(map || {}).forEach(function(k){ var im = new Image(); im.src = map[k]; }); }
   function cfgFromTemplate(id){
     var t = tplById(id);
-    return {tpl:t.id, title:t.eventTitle, eyebrow:t.eyebrow, child:{name:"", gender:"m"}, timeLimit:10, sound:true, questions:t.q.map(freshQ)};
+    return {tpl:t.id, bg:t.bg || BRAND_SCENE, title:t.eventTitle, eyebrow:t.eyebrow, child:{name:"", gender:"m"}, timeLimit:10, sound:true, questions:t.q.map(freshQ)};
   }
   function defaultCfg(){ return cfgFromTemplate("baby12"); }
   function listOf(v){
@@ -861,6 +1121,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     var t = tplById(c.tpl || "baby12");
     return {
       tpl: t.id,
+      bg: sceneById(c.bg) ? c.bg : (t.bg || BRAND_SCENE),
       title: typeof c.title === "string" ? c.title : t.eventTitle,
       eyebrow: typeof c.eyebrow === "string" ? c.eyebrow : t.eyebrow,
       child:{name: typeof child.name === "string" ? child.name : "", gender: child.gender === "f" ? "f" : "m"},
@@ -1133,6 +1394,15 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     if(cur !== name){ try{ window.scrollTo(0, 0); }catch(e){} }
     cur = name;
     SCREENS.forEach(function(s){ var el = $("s-" + s); if(el) el.hidden = (s !== name); });
+    document.documentElement.setAttribute("data-screen", name);
+    syncScene();
+  }
+  function syncScene(){
+    var id = BRAND_SCENE;
+    if(cur === "hlobby" || cur === "hgame" || cur === "hres") id = (H.quiz && H.quiz.bg) || (H.cfg && H.cfg.bg) || BRAND_SCENE;
+    else if(cur === "hpanel" || cur === "hsetup") id = (H.cfg && H.cfg.bg) || BRAND_SCENE;
+    else if(cur !== "hlogin" && cur !== "htpl" && cur !== "noconfig") id = G.scene || BRAND_SCENE;
+    applyScene(id);
   }
   function quizQs(quiz){ return listOf(quiz && quiz.questions); }
   /* every phone works out the same moment from one shared start time, so no one needs the host to stay online */
@@ -1231,6 +1501,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     $("home-title").textContent = "Pievienojies spēlei";
     $("home-sub").textContent = "quizmaker.fun";
     setHero("");
+    G.scene = null;
     document.title = "Quizmaker";
     show("home");
     if(pin){
@@ -1240,6 +1511,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
           $("home-sub").textContent = "Spēle " + fmtPin(pin);
           setHero(q.badge || "");
           document.title = gameTitle(q) + " · Quizmaker";
+          G.scene = q.bg || null; syncScene();
         } else {
           $("pin-field").hidden = false; $("j-pin").value = "";
           $("j-err").textContent = "Spēle ar šo kodu vairs nav atrasta. Noskenē jaunāko QR kodu vai ieraksti PIN.";
@@ -1289,7 +1561,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
       G.imgs = v || {}; preload(G.imgs);
       if(cur === "gq"){ G.phase = ""; gUpdate(); }
     }).catch(function(){});
-    S.get("games/" + pin + "/quiz").then(function(q){ G.quiz = q; soundOn = !q || q.sound !== false; if(q) document.title = gameTitle(q) + " · Quizmaker"; gUpdate(); });
+    S.get("games/" + pin + "/quiz").then(function(q){ G.quiz = q; soundOn = !q || q.sound !== false; if(q){ document.title = gameTitle(q) + " · Quizmaker"; G.scene = q.bg || null; syncScene(); } gUpdate(); });
     G.sub.on("games/" + pin + "/state", function(v){ G.state = v; gUpdate(); });
     G.sub.on("games/" + pin + "/players", function(v){
       G.players = v || {};
@@ -1555,7 +1827,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
       var meta = n ? n + " " + plural(n, "jautājums", "jautājumi") + (withAns ? " · ar atbildēm" : "") : "Bez jautājumiem";
       var confirm = h("span", {class:"tpl-confirm", text:"Spied vēlreiz, lai aizstātu jautājumus", hidden:true});
       var card = h("button", {type:"button", class:"tpl-card c" + t.c + (replace && H.cfg.tpl === t.id ? " current" : "")},
-        h("span", {class:"tpl-tile", "aria-hidden":"true", text:t.tile}),
+        h("span", {class:"tpl-tile", "aria-hidden":"true"}, sceneThumb(sceneById(t.bg) || sceneById(BRAND_SCENE)), h("span", {class:"tpl-tile-t", text:t.tile})),
         h("span", {class:"tpl-body"},
           h("span", {class:"tpl-title", text:t.title}),
           h("span", {class:"tpl-sub", text:t.sub}),
@@ -1699,7 +1971,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     if(!qs.length){ if(errEl) errEl.textContent = "Nav neviena jautājuma. Pievieno vai ieslēdz jautājumus."; return; }
     hSaveNow();
     var imgs = H.imgs || {};
-    var quiz = {child:c.child, timeLimit:c.timeLimit, sound:c.sound, title:quizTitle(c), eyebrow:fill(c.eyebrow || "", c), badge:tplById(c.tpl).badge || "",
+    var quiz = {child:c.child, timeLimit:c.timeLimit, sound:c.sound, title:quizTitle(c), eyebrow:fill(c.eyebrow || "", c), badge:tplById(c.tpl).badge || "", bg:c.bg,
       questions: qs.map(function(q){ return {id:q.id, text:fill(q.text, c), options:normOpts(q.options), img: imgs[q.id] ? 1 : 0}; })};
     var withImg = qs.filter(function(q){ return imgs[q.id]; }).length;
     if(withImg) toast("Gatavo spēli un augšupielādē " + withImg + " " + plural(withImg, "bildi", "bildes") + "…");
@@ -1731,7 +2003,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
       H.gimgs = v || {}; preload(H.gimgs);
       if(cur === "hgame"){ H.phase = ""; hUpdate(); }
     }).catch(function(){});
-    S.get("games/" + pin + "/quiz").then(function(q){ H.quiz = q; hUpdate(); });
+    S.get("games/" + pin + "/quiz").then(function(q){ H.quiz = q; syncScene(); hUpdate(); });
     H.sub.on("games/" + pin + "/state", function(v){ H.state = v; hUpdate(); });
     H.sub.on("games/" + pin + "/players", function(v){ H.players = v || {}; hLobbyNames(); hMeter(); if(cur === "hres") hRenderResults(); });
     H.sub.on("games/" + pin + "/answers", function(v){ H.answers = v || {}; hMeter(); if(cur === "hres" && H.resTab === "qs") hRenderQs(); });
@@ -2210,6 +2482,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     $("ev-title").value = titleFieldValue(C);
     $("ev-title").placeholder = fill(t.eventTitle, C);
     $("ev-eyebrow").value = C.eyebrow || "";
+    hRenderScenes();
     ["10","15","20"].forEach(function(v){ $("t-" + v).checked = String(C.timeLimit) === v; });
     $("snd-on").checked = C.sound !== false; $("snd-off").checked = C.sound === false;
     var list = $("qlist"); list.textContent = "";
@@ -2217,6 +2490,14 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     if(!C.questions.length) list.append(h("p", {class:"panel muted", text:"Vēl nav neviena jautājuma. Spied „+ Pievienot savu jautājumu”."}));
     var miss = missingBase(C).length, rb = $("restore-q");
     rb.hidden = !miss; rb.textContent = "Atjaunot izdzēstos tēmas jautājumus (" + miss + ")";
+  }
+  function hRenderScenes(){
+    var grid = $("scene-grid"); grid.textContent = "";
+    SCENES.forEach(function(sc){
+      var inp = h("input", {type:"radio", name:"scene", value:sc.id, id:"sc-" + sc.id, checked: H.cfg.bg === sc.id});
+      inp.addEventListener("change", function(){ if(!this.checked) return; H.cfg.bg = sc.id; hSave(); applyScene(sc.id); });
+      grid.append(h("label", {class:"scene-opt", for:"sc-" + sc.id}, inp, sceneThumb(sc), h("span", {class:"scene-name", text:sc.name})));
+    });
   }
   function refreshPreviews(){
     H.cfg.questions.forEach(function(q){
