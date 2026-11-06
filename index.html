@@ -3,11 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Quizmaker</title>
-<meta name="description" content="Izveido viktorīnu savam pasākumam. Viesi noskenē QR kodu un spēlē savos telefonos.">
+<title>Quizmaker — viktorīna dzimšanas dienai, kāzām un ballītēm</title>
+<meta name="description" content="Izveido viktorīnu savam pasākumam: dzimšanas dienai, kāzām, kolēģu ballītei. Viesi noskenē QR kodu un spēlē savos telefonos, bez lietotnes un reģistrācijas.">
 <meta name="theme-color" content="#5a29cf">
-<meta name="robots" content="noindex">
+<link rel="canonical" href="https://quizmaker.fun/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Quizmaker">
+<meta property="og:title" content="Quizmaker — viktorīna tavam pasākumam">
+<meta property="og:description" content="Viesi spēlē savos telefonos. Bez lietotnes un reģistrācijas. Rezultāti pēc katra jautājuma un pjedestāls beigās.">
+<meta property="og:url" content="https://quizmaker.fun/">
+<meta property="og:image" content="https://quizmaker.fun/og.png">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='2' y='2' width='28' height='28' rx='8' fill='%23e4513a'/%3E%3Crect x='34' y='2' width='28' height='28' rx='8' fill='%23f2b22a'/%3E%3Crect x='2' y='34' width='28' height='28' rx='8' fill='%233a7ddf'/%3E%3Crect x='34' y='34' width='28' height='28' rx='8' fill='%232e9c60'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="/icon-180.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Quizmaker","url":"https://quizmaker.fun/","applicationCategory":"GameApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"inLanguage":"lv"}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap">
@@ -609,6 +619,30 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
 .tv-host{gap:10px}
 .tv-ic{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;flex:none}
 .tv-code-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px}
+
+/* ===== for new hosts, under the join form ===== */
+.promo{display:grid;gap:22px;margin-top:26px;padding-top:26px;border-top:2px dashed var(--line)}
+.promo-hero{display:grid;gap:10px;justify-items:start}
+.promo-title{font:900 clamp(28px,7.4vw,40px)/1.08 var(--display);margin:0}
+.promo-steps{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.promo-steps li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:start;background:var(--card);border:2px solid var(--line);border-radius:18px;padding:14px;box-shadow:var(--shadow)}
+.promo-steps strong{font:900 18px/1.2 var(--display)}
+.promo-steps p{margin:4px 0 0;color:var(--muted);font-size:15px;line-height:1.45}
+.promo-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.promo-card{position:relative;overflow:hidden;background:var(--card);border:2px solid var(--line);border-radius:16px;padding:16px 14px 14px;box-shadow:var(--shadow)}
+.promo-card::before{content:"";position:absolute;inset:0 0 auto 0;height:6px;background:var(--c)}
+.promo-card strong{font:900 16px/1.2 var(--display)}
+.promo-card p{margin:6px 0 0;font-size:14px;line-height:1.4;color:var(--muted)}
+@media (max-width:380px){ .promo-grid{grid-template-columns:1fr} }
+.faq{display:grid;gap:8px}
+.faq details{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:12px 16px}
+.faq summary{font-weight:800;cursor:pointer;list-style-position:inside}
+.faq details p{margin:8px 0 0;color:var(--muted);line-height:1.45}
+.promo-links{display:flex;flex-wrap:wrap;gap:8px}
+.promo-links a{font-weight:800;font-size:14px;color:var(--ink);background:var(--card);border:2px solid var(--line);border-radius:99px;padding:8px 14px;text-decoration:none}
+.site-foot{display:flex;justify-content:space-between;gap:12px;font-size:13px;color:var(--muted);padding-bottom:8px}
+.site-foot a{color:var(--muted)}
+.share-btn{width:100%}
 </style>
 </head>
 <body>
@@ -627,7 +661,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
 
   <!-- ===== GUEST ===== -->
   <section id="s-home" class="screen" hidden>
-    <div class="lang-switch" role="group" aria-label="Valoda / Language / Язык"><button type="button" data-lang="lv">LV</button><button type="button" data-lang="en">EN</button><button type="button" data-lang="ru">RU</button></div>
+    <div class="lang-switch" role="group" aria-label="Valoda / Language"><button type="button" data-lang="lv">LV</button><button type="button" data-lang="en">EN</button></div>
     <div class="hero">
       <div class="candle" id="home-candle" aria-hidden="true" hidden><span class="flame"></span><span class="wick"></span><span class="two" id="home-badge">2</span></div>
       <div class="brand-mark" id="home-brand" aria-hidden="true"><span class="c0">A</span><span class="c1">B</span><span class="c2">C</span><span class="c3">D</span></div>
@@ -661,10 +695,44 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
       <a class="btn btn-quiet btn-sm" href="#jauna" data-i18n="home.create">Izveidot savu viktorīnu</a>
       <a class="btn-text" href="#vaditajs" data-i18n="home.host">Vadītāja ieeja</a>
     </div>
+    <div class="promo" id="promo">
+      <div class="promo-hero">
+        <p class="eyebrow">Vadītājiem</p>
+        <h2 class="promo-title">Viktorīna tavam pasākumam divās minūtēs</h2>
+        <p class="lede">Dzimšanas dienai, kāzām, kolēģu ballītei vai svētkiem. Viesi spēlē savos telefonos, bez lietotnes un reģistrācijas, un uzvarētāju redz visi reizē.</p>
+        <a class="btn btn-go" href="#jauna">Izveidot bez maksas</a>
+      </div>
+      <ol class="promo-steps">
+        <li><span class="num c0">1</span><div><strong>Izvēlies tēmu</strong><p>Gatavi jautājumi dzimšanas dienai, kāzām, mazuļa jubilejai, kolēģiem un Latvijas viktorīnai. Vai sāc no tukšas lapas.</p></div></li>
+        <li><span class="num c1">2</span><div><strong>Pielāgo savus jautājumus</strong><p>Ieraksti vārdu, maini variantus, pievieno bildes un aptaujas. Izvēlies fonu: balonus, sirsniņas, sniegu un citus.</p></div></li>
+        <li><span class="num c2">3</span><div><strong>Viesi noskenē QR kodu</strong><p>Tu nospied START, un jautājumi sākas visiem reizē. Pēc katra jautājuma redzama pareizā atbilde un līderi.</p></div></li>
+      </ol>
+      <div class="promo-grid">
+        <div class="promo-card c0"><strong>Bez reģistrācijas</strong><p>Ne vadītājam, ne viesiem nav jāveido konts vai jāinstalē lietotne.</p></div>
+        <div class="promo-card c1"><strong>Uz lielā ekrāna</strong><p>Atver quizmaker.fun/tv televizorā vai datorā un vadi spēli no telefona.</p></div>
+        <div class="promo-card c2"><strong>Punkti par ātrumu</strong><p>Jo ātrāk pareiza atbilde, jo vairāk punktu. Beigās pjedestāls un konfeti.</p></div>
+        <div class="promo-card c3"><strong>Arī angliski</strong><p>Ārzemju viesi var pārslēgt savus ekrānus uz angļu valodu.</p></div>
+      </div>
+      <div class="faq">
+        <h3 class="section-title">Biežāk uzdotie jautājumi</h3>
+        <details><summary>Vai tas maksā?</summary><p>Nē. Viktorīnu var izveidot un spēlēt bez maksas.</p></details>
+        <details><summary>Cik viesu var spēlēt reizē?</summary><p>Līdz 50 spēlētājiem vienā spēlē. Katrs spēlē savā telefonā.</p></details>
+        <details><summary>Vai viesiem kaut kas jāinstalē?</summary><p>Nē. Pietiek noskenēt QR kodu vai atvērt quizmaker.fun un ierakstīt spēles PIN.</p></details>
+        <details><summary>Vai var pievienot savus jautājumus un bildes?</summary><p>Jā. Katru jautājumu var mainīt vai izdzēst, pievienot savus, arī ar bildi, un aptaujas bez pareizās atbildes.</p></details>
+        <details><summary>Kā atvērt savu viktorīnu citā ierīcē?</summary><p>Vadītāja panelī ir slepenā saite un QR kods. Var arī iestatīt paroli.</p></details>
+      </div>
+      <nav class="promo-links" aria-label="Viktorīnas pasākumiem">
+        <a href="/viktorina-dzimsanas-dienai/">Viktorīna dzimšanas dienai</a>
+        <a href="/kazu-viktorina/">Kāzu viktorīna</a>
+        <a href="/kolegu-viktorina/">Kolēģu viktorīna</a>
+        <a href="/ziemassvetku-viktorina/">Ziemassvētku viktorīna</a>
+      </nav>
+      <footer class="site-foot"><span>© quizmaker.fun</span><a href="/privatums/">Privātums</a></footer>
+    </div>
   </section>
 
   <section id="s-globby" class="screen center-screen" hidden>
-    <div class="lang-switch" role="group" aria-label="Valoda / Language / Язык"><button type="button" data-lang="lv">LV</button><button type="button" data-lang="en">EN</button><button type="button" data-lang="ru">RU</button></div>
+    <div class="lang-switch" role="group" aria-label="Valoda / Language"><button type="button" data-lang="lv">LV</button><button type="button" data-lang="en">EN</button></div>
     <p class="eyebrow" data-i18n="lobby.in">Tu esi spēlē!</p>
     <h2 class="big-name" id="gl-name">Anna</h2>
     <p class="lede" data-i18n="lobby.wait">Gaidi, kamēr vadītājs nospiedīs START. Jautājumi parādīsies visiem reizē.</p>
@@ -962,6 +1030,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
   var GAP = 7000;          /* pause between questions: shows the right answer, points and the top five */
   var PRE = 4000;          /* 3-2-1 before the first question */
   var BASE_PTS = 500, SPEED_PTS = 500;
+  var MAX_PLAYERS = 50;    /* per game on the free plan */
   var LS_JOIN = "vk-join", LS_HOST = "vk-host", LS_HQ = "vk-hq";
   var BASE = [
     ["valstis2","Cik valstīs {N} paspēja pabūt laikā no 1 līdz 2 gadiem?",["Tikai Latvijā","2","3–4","5 un vairāk"]],
@@ -1128,15 +1197,15 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
      Guests get the background the host picked, because it travels with the game. */
   var BRAND_SCENE = "konfeti";
   var SCENES = [
-    {id:"konfeti",   name:"Konfeti",    fx:"confetti", top:"#5a29cf", sw:"radial-gradient(120% 90% at 50% 0%,#6a35e0,#3c159b 55%,#250b63)", dark:true},
-    {id:"baloni",    name:"Baloni",     fx:"balloons", top:"#9fd8ff", sw:"linear-gradient(180deg,#9fd8ff,#cdeeff 50%,#fff3dc)", dark:false},
-    {id:"ballite",   name:"Ballīte",    fx:"stars",    top:"#140c33", sw:"radial-gradient(70% 60% at 20% 15%,rgba(255,64,160,.55),transparent 70%),radial-gradient(60% 60% at 90% 40%,rgba(64,200,255,.45),transparent 70%),#0d0a24", dark:true},
-    {id:"sirsninas", name:"Sirsniņas",  fx:"hearts",   top:"#ffe3ea", sw:"linear-gradient(170deg,#ffd9e3,#fff3ef 55%,#ffe9d6)", dark:false},
-    {id:"makonisi",  name:"Mākonīši",   fx:"clouds",   top:"#d2edff", sw:"linear-gradient(180deg,#cdeaff,#eaf7f1 50%,#fde4ee)", dark:false},
-    {id:"sniegs",    name:"Sniegs",     fx:"snow",     top:"#0a2722", sw:"radial-gradient(80% 50% at 50% 0%,rgba(255,214,120,.22),transparent 70%),linear-gradient(180deg,#0a2722,#0f3a31 60%,#14483c)", dark:true},
-    {id:"ziedi",     name:"Ziedi",      fx:"flowers",  top:"#d9f5d0", sw:"linear-gradient(180deg,#d4f3c9,#f4fbe9 50%,#fff1e0)", dark:false},
-    {id:"jura",      name:"Jūra",       fx:"bubbles",  top:"#0d7fb5", sw:"linear-gradient(180deg,#0d7fb5,#075585 45%,#052e52)", dark:true},
-    {id:"klasika",   name:"Klasika",    fx:"dots",     top:"#11162f", sw:"linear-gradient(180deg,#1a2145,#11162f)", dark:true}
+    {id:"konfeti",   name:"Konfeti",    fx:"confetti", top:"#5a29cf", bot:"#250b63", sw:"radial-gradient(120% 90% at 50% 0%,#6a35e0,#3c159b 55%,#250b63)", dark:true},
+    {id:"baloni",    name:"Baloni",     fx:"balloons", top:"#9fd8ff", bot:"#fff3dc", sw:"linear-gradient(180deg,#9fd8ff,#cdeeff 50%,#fff3dc)", dark:false},
+    {id:"ballite",   name:"Ballīte",    fx:"stars",    top:"#140c33", bot:"#0d0a24", sw:"radial-gradient(70% 60% at 20% 15%,rgba(255,64,160,.55),transparent 70%),radial-gradient(60% 60% at 90% 40%,rgba(64,200,255,.45),transparent 70%),#0d0a24", dark:true},
+    {id:"sirsninas", name:"Sirsniņas",  fx:"hearts",   top:"#ffe3ea", bot:"#ffe9d6", sw:"linear-gradient(170deg,#ffd9e3,#fff3ef 55%,#ffe9d6)", dark:false},
+    {id:"makonisi",  name:"Mākonīši",   fx:"clouds",   top:"#d2edff", bot:"#fde4ee", sw:"linear-gradient(180deg,#cdeaff,#eaf7f1 50%,#fde4ee)", dark:false},
+    {id:"sniegs",    name:"Sniegs",     fx:"snow",     top:"#0a2722", bot:"#14483c", sw:"radial-gradient(80% 50% at 50% 0%,rgba(255,214,120,.22),transparent 70%),linear-gradient(180deg,#0a2722,#0f3a31 60%,#14483c)", dark:true},
+    {id:"ziedi",     name:"Ziedi",      fx:"flowers",  top:"#d9f5d0", bot:"#fff1e0", sw:"linear-gradient(180deg,#d4f3c9,#f4fbe9 50%,#fff1e0)", dark:false},
+    {id:"jura",      name:"Jūra",       fx:"bubbles",  top:"#0d7fb5", bot:"#052e52", sw:"linear-gradient(180deg,#0d7fb5,#075585 45%,#052e52)", dark:true},
+    {id:"klasika",   name:"Klasika",    fx:"dots",     top:"#11162f", bot:"#11162f", sw:"linear-gradient(180deg,#1a2145,#11162f)", dark:true}
   ];
   function sceneById(id){ for(var i = 0; i < SCENES.length; i++) if(SCENES[i].id === id) return SCENES[i]; return null; }
   function rnd(a, b){ return a + Math.random() * (b - a); }
@@ -1285,10 +1354,10 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
   function clone(o){ return JSON.parse(JSON.stringify(o)); }
   function plural(n, one, many){ return (n % 10 === 1 && n % 100 !== 11) ? one : many; }
   function curLang(){ try{ return lang; }catch(e){ return "lv"; } }
-  function fmtPts(n){ var L = curLang(); try{ return Number(n).toLocaleString(L === "en" ? "en-GB" : L === "ru" ? "ru-RU" : "lv-LV"); }catch(e){ return String(n); } }
-  function secUnit(){ return curLang() === "ru" ? " с" : " s"; }
+  function fmtPts(n){ var L = curLang(); try{ return Number(n).toLocaleString(L === "en" ? "en-GB" : "lv-LV"); }catch(e){ return String(n); } }
+  function secUnit(){ return " s"; }
   function fmtSec(ms){ var v = (Math.max(0, ms) / 1000).toFixed(1); return (curLang() === "en" ? v : v.replace(".", ",")) + secUnit(); }
-  function fmtTime(ms){ var s = Math.round(ms / 1000), mu = curLang() === "ru" ? " мин" : " min"; if(s < 60) return s + secUnit(); var m = Math.floor(s / 60), r = s % 60; return m + mu + (r ? " " + r + secUnit() : ""); }
+  function fmtTime(ms){ var s = Math.round(ms / 1000), mu = " min"; if(s < 60) return s + secUnit(); var m = Math.floor(s / 60), r = s % 60; return m + mu + (r ? " " + r + secUnit() : ""); }
   function fmtPin(p){ return String(p || "").replace(/^(\d{3})(\d{3})$/, "$1 $2"); }
   function rid(){ return Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4); }
   function lsGet(k){ try{ return JSON.parse(localStorage.getItem(k) || "null"); }catch(e){ return null; } }
@@ -1313,7 +1382,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
 
 
   /* ================= guest languages ================= */
-  /* Guests can switch the screens to English or Russian; the host's own questions stay as written. */
+  /* Guests can switch the screens to English; the host's own questions stay as written. */
   var I18N = {
     lv:{
       "net":"Nav savienojuma ar internetu. Mēģinām pieslēgties…",
@@ -1378,49 +1447,15 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
       "pod.tie":"shared place","pod.hidden":"Not revealed yet",
       "bye.over":"Game over","bye.closed":"The host has closed this game.","bye.kicked":"You were removed from the game","bye.kickedText":"If that was a mistake, join again.",
       "bye.home":"Join a game","toast.copied":"Copied."
-    },
-    ru:{
-      "net":"Нет подключения к интернету. Пытаемся подключиться…",
-      "home.title":"Присоединяйся к игре","home.lede":"Введи своё имя и жди, пока ведущий нажмёт START.",
-      "home.pin":"PIN игры","home.name":"Твоё имя","home.namePh":"Например, Анна","home.join":"Присоединиться",
-      "home.how":"Как играть","home.how1":"Введи имя и нажми «Присоединиться».","home.how2":"Когда ведущий нажмёт START, вопросы начнутся у всех одновременно.",
-      "home.how3":"Чем быстрее правильный ответ, тем больше очков. После каждого вопроса увидишь, верно ли ответил.",
-      "home.create":"Создать свою викторину","home.host":"Вход для ведущего","home.game":"Игра {pin}",
-      "err.pin":"Введи 6-значный PIN игры.","err.name":"Введи своё имя.","err.notFound":"Игра с таким PIN не найдена. Проверь цифры.",
-      "err.over":"Эта игра уже закончилась.","err.dup":"В игре уже есть «{name}». Добавь букву фамилии, например «{name} К.»",
-      "err.net":"Не удалось присоединиться. Проверь интернет и попробуй ещё раз.","err.gone":"Эта игра больше не доступна. Отсканируй новый QR-код или введи PIN.",
-      "err.full":"В этой игре уже максимальное число игроков ({n}).",
-      "lobby.in":"Ты в игре!","lobby.wait":"Жди, пока ведущий нажмёт START. Вопросы появятся у всех одновременно.",
-      "lobby.players_one":"В игре уже {n} участник","lobby.players_few":"В игре уже {n} участника","lobby.players_many":"В игре уже {n} участников",
-      "lobby.leave":"Выйти из игры","lobby.leaveSure":"Точно выйти? Нажми ещё раз",
-      "count.go":"Начинаем!","count.q_one":"{n} вопрос","count.q_few":"{n} вопроса","count.q_many":"{n} вопросов","count.each":"по {s} сек. на вопрос",
-      "q.timer":"Осталось секунд","q.done":"Ответ принят · {t}. Ждём остальных…","q.sendFail":"Не удалось отправить ответ. Проверь интернет.",
-      "gap.next":"Следующий вопрос через {s} с","gap.last":"Это был последний вопрос!","gap.allIn":"Все ответили!",
-      "gap.got":"Ответ принят!","gap.late":"Время вышло!","gap.yourTime":"Ты ответил за {t}.","gap.noAnswer":"Ответ на этот вопрос не получен.",
-      "gap.atEnd":"Верно ли — узнаешь в конце.","gap.right":"Правильно!","gap.wrong":"Неверно","gap.correctWas":"Правильный ответ: {a}",
-      "gap.poll":"Спасибо за голос!","gap.pollTop":"Больше всего голосов: {a}","gap.pollNone":"В этот раз никто не проголосовал.",
-      "gap.rank":"{r}-е место из {n}",
-      "pts_one":"{n} очко","pts_few":"{n} очка","pts_many":"{n} очков","plus_one":"+{n} очко","plus_few":"+{n} очка","plus_many":"+{n} очков",
-      "end.title":"Молодец, {name}!","end.timeLabel":"Твоё общее время ответов","end.meta":"Ты ответил на {a} из {n} · в среднем {t} на вопрос",
-      "end.wait":"Теперь подожди. Когда ведущий объявит победителей, ты увидишь это и на своём телефоне.",
-      "rev.label":"Результаты","rev.waitTitle":"Ждём результаты","rev.wait":"Ведущий готовится объявить победителей…",
-      "rev.winners":"Победители","rev.revealing":"Ведущий объявляет места…","rev.won":"Ты победил!","rev.yours":"Твоё место","rev.place":"{r}-е место",
-      "rev.correct":"{c} из {s} верно","players_one":"всего {n} игрок","players_few":"всего {n} игрока","players_many":"всего {n} игроков",
-      "rev.again":"Присоединиться к другой игре","rev.share":"Поделиться результатом","rev.shareText":"Я занял {r}-е место в викторине «{q}»! Создай свою: quizmaker.fun",
-      "pod.tie":"общее место","pod.hidden":"Ещё не открыто",
-      "bye.over":"Игра окончена","bye.closed":"Ведущий закрыл эту игру.","bye.kicked":"Тебя удалили из игры","bye.kickedText":"Если это ошибка, присоединись снова.",
-      "bye.home":"Присоединиться к игре","toast.copied":"Скопировано."
     }
   };
   var LS_LANG = "vk-lang";
   var lang = (function(){
     var s = lsGet(LS_LANG); if(s && I18N[s]) return s;
-    var nav = ((navigator.languages && navigator.languages[0]) || navigator.language || "lv").toLowerCase();
-    return nav.indexOf("ru") === 0 ? "ru" : "lv";
+    return "lv";
   })();
   function pluralKey(n){
     n = Math.abs(Math.round(Number(n) || 0));
-    if(lang === "ru"){ var a = n % 10, b = n % 100; if(a === 1 && b !== 11) return "one"; if(a >= 2 && a <= 4 && (b < 12 || b > 14)) return "few"; return "many"; }
     if(lang === "en") return n === 1 ? "one" : "many";
     return (n % 10 === 1 && n % 100 !== 11) ? "one" : "many";
   }
@@ -1928,6 +1963,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
       var low = name.toLocaleLowerCase("lv");
       var dup = Object.keys(players).some(function(k){ return String((players[k] || {}).name || "").toLocaleLowerCase("lv") === low; });
       if(dup){ err.textContent = tr("err.dup", {name:name}); return null; }
+      if(Object.keys(players).length >= MAX_PLAYERS){ err.textContent = tr("err.full", {n: MAX_PLAYERS}); return null; }
       var pid = rid();
       return S.set("games/" + pin + "/players/" + pid, {name:name, joinedAt:S.ts()}).then(function(){
         lsSet(LS_JOIN, {pin:pin, pid:pid, name:name, at:Date.now()});
@@ -2148,11 +2184,58 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     }
     var sv = lsGet(LS_JOIN);
     if(sv && sv.pin === G.pin && !sv.doneAt){ sv.doneAt = Date.now(); lsSet(LS_JOIN, sv); }
+    if(me){
+      var shareBtn = h("button", {type:"button", class:"btn btn-go share-btn", text:tr("rev.share")});
+      shareBtn.addEventListener("click", function(){ shareResult(me, R, shareBtn); });
+      body.append(shareBtn);
+    }
     var again = h("button", {type:"button", class:"btn btn-primary", text:tr("rev.again")});
     again.addEventListener("click", function(){ gForget(); try{ history.replaceState(null, "", location.pathname); }catch(e){} gHome(); });
     body.append(h("div", {class:"actions after-game"}, again,
       h("a", {class:"btn btn-quiet", href:"#jauna", text:tr("home.create"), onclick:function(){ lsSet(LS_JOIN, null); }})));
     if(!G.confettiDone){ G.confettiDone = true; confetti(); beep(990, 0.25, 0.2); }
+  }
+
+  /* a picture of my result to send to friends: place, name, points and the quiz name */
+  function resultPicture(me, R){
+    var W = 1080, Hh = 1350, c = document.createElement("canvas"); c.width = W; c.height = Hh;
+    var x = c.getContext("2d"), sc = sceneById(G.scene) || sceneById(BRAND_SCENE), ink = sc.dark ? "#ffffff" : "#1a2347", soft = sc.dark ? "rgba(255,255,255,.75)" : "rgba(26,35,71,.7)";
+    var gr = x.createLinearGradient(0, 0, 0, Hh); gr.addColorStop(0, sc.top); gr.addColorStop(1, sc.bot || sc.top);
+    x.fillStyle = gr; x.fillRect(0, 0, W, Hh);
+    var cols = ["#ef5b45","#f5b82e","#3f86ea","#36b26d","#ff79b0"];
+    for(var i = 0; i < 70; i++){ x.save(); x.globalAlpha = .55; x.fillStyle = cols[i % 5]; x.translate((i * 157) % W, (i * 263) % Hh); x.rotate(i); x.fillRect(-9, -4, 18, 8); x.restore(); }
+    function txt(s, y, size, col, weight){ x.fillStyle = col; x.font = (weight || 900) + " " + size + "px Nunito, system-ui, sans-serif"; x.textAlign = "center";
+      var words = String(s).split(" "), line = "", lines = [];
+      words.forEach(function(w){ var tst = line ? line + " " + w : w; if(x.measureText(tst).width > W - 140 && line){ lines.push(line); line = w; } else line = tst; });
+      lines.push(line); lines.forEach(function(l, k){ x.fillText(l, W / 2, y + k * size * 1.1); }); return y + lines.length * size * 1.1; }
+    var y = txt("QUIZMAKER.FUN", 120, 40, soft, 800);
+    y = txt(gameTitle(G.quiz), y + 30, 54, ink);
+    var medal = me.rank === 1 ? "🏆" : me.rank === 2 ? "🥈" : me.rank === 3 ? "🥉" : "⭐";
+    x.font = "220px system-ui, sans-serif"; x.textAlign = "center"; x.fillText(medal, W / 2, y + 250);
+    y = txt(tr("rev.place", {r: me.rank}), y + 430, 150, ink);
+    y = txt(G.name, y + 10, 70, ink, 800);
+    y = txt(trn("pts", me.pts) + " · " + tr("rev.correct", {c: me.correct, s: R.scored || 0}), y + 20, 44, soft, 800);
+    var tw = 72, gap = 12, gx = W / 2 - tw - gap / 2, gy = Math.max(y + 40, Hh - 290);
+    [["#ef5b45",0,0],["#f5b82e",1,0],["#3f86ea",0,1],["#36b26d",1,1]].forEach(function(t){ var px = gx + t[1] * (tw + gap), py = gy + t[2] * (tw + gap); x.fillStyle = t[0]; x.beginPath(); if(x.roundRect) x.roundRect(px, py, tw, tw, 16); else x.rect(px, py, tw, tw); x.fill(); });
+    txt(lang === "en" ? "Make your own quiz: quizmaker.fun" : "Izveido savu viktorīnu: quizmaker.fun", Hh - 50, 40, ink, 800);
+    return c;
+  }
+  function shareResult(me, R, btn){
+    var text = tr("rev.shareText", {r: me.rank, q: gameTitle(G.quiz)});
+    btn.disabled = true;
+    var ready = (document.fonts && document.fonts.load) ? document.fonts.load("900 60px Nunito").catch(function(){}) : Promise.resolve();
+    ready.then(function(){
+      var c = resultPicture(me, R);
+      c.toBlob(function(blob){
+        btn.disabled = false;
+        if(!blob) return;
+        var file = null; try{ file = new File([blob], "quizmaker-rezultats.png", {type:"image/png"}); }catch(e){}
+        if(file && navigator.canShare && navigator.canShare({files:[file]})){ navigator.share({files:[file], text:text}).catch(function(){}); return; }
+        if(navigator.share){ navigator.share({text:text, url:"https://quizmaker.fun/"}).catch(function(){}); return; }
+        var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "quizmaker-rezultats.png"; document.body.append(a); a.click();
+        setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 2000);
+      }, "image/png");
+    });
   }
 
   /* ================= HOST ================= */
