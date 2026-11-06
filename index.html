@@ -10,7 +10,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23e4513a'/%3E%3Ctext x='32' y='49' font-family='Arial Black,Arial' font-weight='900' font-size='46' text-anchor='middle' fill='white'%3E2%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap">
 <style>
 /* Layout: one centred party-card column; answers and stats are chunky toy blocks; the candle "2" is the single flourish */
 :root{
@@ -307,6 +307,10 @@ button.name-chip{cursor:pointer}
 .score-card{display:grid;gap:4px;justify-items:center;text-align:center;padding:22px 18px}
 .score-meta{font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(18px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--paper);font-weight:800;padding:12px 18px;border-radius:14px;z-index:60;max-width:calc(100% - 32px);text-align:center}
+/* display face: Nunito has full Latvian diacritics (ā ē ī ū č ģ ķ ļ ņ š ž) */
+:root{--display:"Nunito",ui-rounded,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+h1,h2,h3{font-weight:900;letter-spacing:-.01em}
+.candle,.ready-num,.pin-big,.big-name,.me-rank,.time-big,.done-mark,.state-tile{font-weight:900}
 </style>
 </head>
 <body>
