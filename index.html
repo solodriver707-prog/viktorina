@@ -311,6 +311,13 @@ button.name-chip{cursor:pointer}
 :root{--display:"Nunito",ui-rounded,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 h1,h2,h3{font-weight:900;letter-spacing:-.01em}
 .candle,.ready-num,.pin-big,.big-name,.me-rank,.time-big,.done-mark,.state-tile{font-weight:900}
+/* question pictures */
+.q-img-wrap{display:grid}
+.q-img{display:block;width:100%;max-height:27vh;max-height:27dvh;object-fit:contain;border-radius:18px;background:var(--card);border:2px solid var(--line)}
+.q-img-host{max-height:46vh;max-height:46dvh}
+.img-row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.thumb{width:76px;height:76px;object-fit:cover;border-radius:12px;border:2px solid var(--line)}
+.thumb-wide{display:block;width:100%;max-height:180px;object-fit:cover;border-radius:12px;border:2px solid var(--line)}
 </style>
 </head>
 <body>
@@ -382,6 +389,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     </div>
     <div class="prog" aria-hidden="true"><span id="gq-prog"></span></div>
     <div style="display:grid;gap:8px"><p class="eyebrow">Laiks no 1 līdz 2 gadiem</p><h2 class="qtext" id="gq-q"></h2></div>
+    <div class="q-img-wrap" id="gq-img" hidden></div>
     <p class="answered-banner" id="gq-done" hidden></p>
     <div class="opts" id="gq-opts"></div>
   </section>
@@ -634,7 +642,30 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
   }
 
   /* ================= quiz config ================= */
-  function freshQ(b){ return {id:b[0], text:b[1], options:b[2].slice(), correct:null, on:true}; }
+  function freshQ(b){ return {id:b[0], text:b[1], options:b[2].slice(), correct:null, on:true, img:0}; }
+
+  /* shrink a chosen photo to at most 1000 px and a JPEG small enough for mobile data */
+  function compressImage(file){
+    return new Promise(function(resolve, reject){
+      var url = URL.createObjectURL(file), img = new Image();
+      img.onload = function(){
+        var w = img.naturalWidth, hh = img.naturalHeight, s = Math.min(1, 1000 / Math.max(w, hh));
+        var c = document.createElement("canvas");
+        c.width = Math.max(1, Math.round(w * s)); c.height = Math.max(1, Math.round(hh * s));
+        var ctx = c.getContext("2d");
+        ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, c.width, c.height);
+        ctx.drawImage(img, 0, 0, c.width, c.height);
+        URL.revokeObjectURL(url);
+        var q = 0.8, d = c.toDataURL("image/jpeg", q);
+        while(d.length > 360000 && q > 0.45){ q -= 0.1; d = c.toDataURL("image/jpeg", q); }
+        resolve(d);
+      };
+      img.onerror = function(){ URL.revokeObjectURL(url); reject(new Error("decode")); };
+      img.src = url;
+    });
+  }
+  function qImage(src, cls){ return src ? h("img", {class: cls || "q-img", src: src, alt: "Bilde pie jautājuma", decoding: "async"}) : null; }
+  function preload(map){ Object.keys(map || {}).forEach(function(k){ var im = new Image(); im.src = map[k]; }); }
   function defaultCfg(){ return {child:{name:"", gender:"m"}, timeLimit:10, sound:true, questions:BASE.map(freshQ)}; }
   function listOf(v){
     if(Array.isArray(v)) return v;
@@ -657,7 +688,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
       sound: c.sound !== false,
       questions: qs ? qs.filter(function(q){ return q && typeof q.id === "string"; }).map(function(q){
         return {id:q.id, text:String(q.text || ""), options:normOpts(q.options),
-          correct:(typeof q.correct === "number" && q.correct >= 0 && q.correct < 4) ? q.correct : null, on: q.on !== false};
+          correct:(typeof q.correct === "number" && q.correct >= 0 && q.correct < 4) ? q.correct : null, on: q.on !== false, img: q.img ? 1 : 0};
       }) : BASE.map(freshQ)
     };
   }
@@ -699,7 +730,12 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     var off = 0, games = {}, connCbs = [];
     function parts(p){ return String(p).split("/").filter(Boolean); }
     /* answers live in their own stream, so only the host receives every guest's answer (keeps fan-out at N, not N×N) */
-    function gameOf(p){ var ps = parts(p); return ps[0] === "games" && ps[2] === "answers" ? "games-" + ps[1] + "-ans" : ps.slice(0, 2).join("-"); }
+    function gameOf(p){
+      var ps = parts(p);
+      if(ps[2] === "answers") return ps[0] + "-" + ps[1] + "-ans";
+      if(ps[2] === "img") return ps[0] + "-" + ps[1] + "-img";   /* pictures are big: kept apart and read only when needed */
+      return ps.slice(0, 2).join("-");
+    }
     function isPrefix(a, b){ if(a.length > b.length) return false; for(var i = 0; i < a.length; i++) if(a[i] !== b[i]) return false; return true; }
     function dig(v, ps){ for(var i = 0; i < ps.length; i++){ if(v == null || typeof v !== "object") return undefined; v = v[ps[i]]; } return v; }
     function put(obj, ps, v){
@@ -1047,8 +1083,13 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
   function gAttach(pin, pid, name){
     G.sub.clear();
     G.active = true; G.pin = pin; G.pid = pid; G.name = name;
-    G.quiz = null; G.state = undefined; G.players = {}; G.results = null; G.mine = {}; G.phase = ""; G.joined = false; G.confettiDone = false;
+    G.quiz = null; G.state = undefined; G.players = {}; G.results = null; G.mine = {}; G.phase = ""; G.joined = false; G.confettiDone = false; G.imgs = {};
     keepAwake(true);
+    S.get("games/" + pin + "/img").then(function(v){
+      if(!G.active || G.pin !== pin) return;
+      G.imgs = v || {}; preload(G.imgs);
+      if(cur === "gq"){ G.phase = ""; gUpdate(); }
+    }).catch(function(){});
     S.get("games/" + pin + "/quiz").then(function(q){ G.quiz = q; soundOn = !q || q.sound !== false; gUpdate(); });
     G.sub.on("games/" + pin + "/state", function(v){ G.state = v; gUpdate(); });
     G.sub.on("games/" + pin + "/players", function(v){
@@ -1138,6 +1179,10 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     $("gq-who").textContent = G.name;
     $("gq-prog").style.width = Math.round(ph.i / ph.n * 100) + "%";
     $("gq-q").textContent = item.text || "";
+    var pic = $("gq-img"); pic.textContent = "";
+    var src = (G.imgs || {})["q" + ph.i];
+    if(src) pic.append(qImage(src));
+    pic.hidden = !src;
     var box = $("gq-opts"); box.textContent = ""; box.classList.toggle("locked", !!mine);
     box.append(optButtons(item, mine ? mine.a : null, function(k, b){ gAnswer(ph.i, k, b); }));
     var done = $("gq-done");
@@ -1283,7 +1328,8 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
   });
 
   function hOpen(hid, raw){
-    H.hid = hid; H.cfg = normCfg(raw);
+    H.hid = hid; H.cfg = normCfg(raw); H.imgs = {};
+    S.get("hosts/" + hid + "/img").then(function(v){ H.imgs = v || {}; if(cur === "hsetup") hRenderSetup(); }).catch(function(){});
     S.get("hosts/" + hid + "/currentPin").then(function(p){ H.lastPin = p || null; hPanel(); }).catch(function(){ hPanel(); });
   }
   function hLeaveGame(){ H.inGame = false; H.sub.clear(); keepAwake(false); }
@@ -1325,10 +1371,14 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     location.hash = "";
   });
 
-  function hSave(){ clearTimeout(H.saveT); H.saveT = setTimeout(hSaveNow, 500); }
+  function hSave(){ clearTimeout(H.saveT); H.saveT = setTimeout(hSaveNow, 500); H.dirty = true; }
+  function hFlush(){ if(H.dirty) hSaveNow(); }
+  window.addEventListener("pagehide", hFlush);
+  document.addEventListener("visibilitychange", function(){ if(document.visibilityState === "hidden") hFlush(); });
   function hSaveNow(){
     clearTimeout(H.saveT);
     if(!H.hid || !H.cfg) return;
+    H.dirty = false;
     S.set("hosts/" + H.hid + "/config", clone(H.cfg)).catch(function(){ toast("Neizdevās saglabāt. Pārbaudi internetu."); });
   }
 
@@ -1337,26 +1387,39 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     if(errEl) errEl.textContent = "";
     if(!qs.length){ if(errEl) errEl.textContent = "Nav neviena jautājuma. Pievieno vai ieslēdz jautājumus."; return; }
     hSaveNow();
+    var imgs = H.imgs || {};
     var quiz = {child:c.child, timeLimit:c.timeLimit, sound:c.sound,
-      questions: qs.map(function(q){ return {id:q.id, text:fill(q.text, c), options:normOpts(q.options)}; })};
+      questions: qs.map(function(q){ return {id:q.id, text:fill(q.text, c), options:normOpts(q.options), img: imgs[q.id] ? 1 : 0}; })};
+    var withImg = qs.filter(function(q){ return imgs[q.id]; }).length;
+    if(withImg) toast("Gatavo spēli un augšupielādē " + withImg + " " + plural(withImg, "bildi", "bildes") + "…");
     var tries = 0;
     function attempt(){
       var pin = String(100000 + Math.floor(Math.random() * 900000));
       return S.get("games/" + pin + "/state").then(function(st){
         if(st && ++tries < 8) return attempt();
         return S.set("games/" + pin, {quiz:quiz, state:{status:"lobby", created:S.ts()}}).then(function(){
+          return Promise.all(qs.map(function(q, i){ return imgs[q.id] ? S.set("games/" + pin + "/img/q" + i, imgs[q.id]) : null; }));
+        }).then(function(){
           return S.set("hosts/" + H.hid + "/currentPin", pin);
         }).then(function(){ H.lastPin = pin; hAttach(pin); });
       });
     }
-    attempt().catch(function(e){ console.warn(e); if(errEl) errEl.textContent = "Neizdevās izveidot spēli. Pārbaudi internetu."; else toast("Neizdevās izveidot spēli."); });
+    var btns = [$("hp-new"), $("hr-new")];
+    btns.forEach(function(b){ b.disabled = true; });
+    attempt().catch(function(e){ console.warn(e); if(errEl) errEl.textContent = "Neizdevās izveidot spēli. Pārbaudi internetu."; else toast("Neizdevās izveidot spēli."); })
+      .then(function(){ btns.forEach(function(b){ b.disabled = false; }); });
   }
 
   function hAttach(pin){
     H.sub.clear();
     H.inGame = true; H.pin = pin; H.quiz = null; H.state = undefined; H.players = {}; H.answers = {};
-    H.phase = ""; H.seen = null; H.armed = null; H.resTab = "win"; H.ansIdx = 0; H.ansShown = {}; H.confettiDone = false;
+    H.phase = ""; H.seen = null; H.armed = null; H.resTab = "win"; H.ansIdx = 0; H.ansShown = {}; H.confettiDone = false; H.gimgs = {};
     keepAwake(true);
+    S.get("games/" + pin + "/img").then(function(v){
+      if(H.pin !== pin) return;
+      H.gimgs = v || {}; preload(H.gimgs);
+      if(cur === "hgame"){ H.phase = ""; hUpdate(); }
+    }).catch(function(){});
     S.get("games/" + pin + "/quiz").then(function(q){ H.quiz = q; hUpdate(); });
     H.sub.on("games/" + pin + "/state", function(v){ H.state = v; hUpdate(); });
     H.sub.on("games/" + pin + "/players", function(v){ H.players = v || {}; hLobbyNames(); hMeter(); if(cur === "hres") hRenderResults(); });
@@ -1436,6 +1499,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     var pin = H.pin;
     hLeaveGame();
     S.remove("games/" + pin).catch(function(){});
+    S.remove("games/" + pin + "/img").catch(function(){});
     S.remove("hosts/" + H.hid + "/currentPin").catch(function(){});
     H.lastPin = null; hPanel();
   });
@@ -1463,7 +1527,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
         grid.append(h("div", {class:"host-opt c" + (k % 4)}, h("span", {class:"l", text:LETTERS[shown]}), h("span", {class:"t", text:o})));
         shown++;
       });
-      body.append(h("h2", {class:"qtext", text:item.text || ""}), grid);
+      body.append(h("h2", {class:"qtext", text:item.text || ""}), qImage((H.gimgs || {})["q" + ph.i], "q-img q-img-host"), grid);
     } else if(ph.k === "gap"){
       $("hg-count").textContent = "Jautājums " + (ph.i + 1) + " / " + n;
       $("hg-prog").style.width = Math.round((ph.i + 1) / n * 100) + "%";
@@ -1669,7 +1733,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
         h("span", {class:"dcount", text: counts[k] + " · " + pct + "%"}),
         h("div", {class:"bar"}, h("span", {style:"width:" + pct + "%"}))));
     });
-    var card = h("article", {class:"qres"}, h("span", {class:"eyebrow", text: answered + " no " + n + " atbildēja laikā"}), h("h3", {text:item.text}), dist);
+    var card = h("article", {class:"qres"}, h("span", {class:"eyebrow", text: answered + " no " + n + " atbildēja laikā"}), h("h3", {text:item.text}), qImage((H.gimgs || {})["q" + i]), dist);
     if(key == null) card.append(h("p", {class:"note", text:"Šim jautājumam pareizā atbilde nav atzīmēta."}));
     else if(!open){
       var rev = h("button", {type:"button", class:"btn btn-go", text:"Atklāt pareizo atbildi"});
@@ -1736,9 +1800,45 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
         if(custom && !q.text){ C.questions = C.questions.filter(function(x){ return x !== q; }); hSave(); hRenderSetup(); return; }
         rebuild();
       });
+      /* optional picture: saved straight away, separate from the Save button */
+      var imgField = h("div", {class:"field"});
+      function renderImgField(){
+        imgField.textContent = "";
+        var src = (H.imgs || {})[q.id] || null;
+        var file = h("input", {type:"file", accept:"image/*", id:"q-" + q.id + "-file", hidden:true});
+        var msg = h("p", {class:"hint", "aria-live":"polite"});
+        var row = h("div", {class:"img-row"});
+        if(src) row.append(h("img", {class:"thumb", src:src, alt:"Pievienotā bilde"}));
+        var add = h("button", {type:"button", class:"btn btn-quiet btn-sm", text: src ? "Mainīt bildi" : "+ Pievienot bildi"});
+        add.addEventListener("click", function(){ file.click(); });
+        row.append(add);
+        if(src){
+          var rm = h("button", {type:"button", class:"btn-text btn-danger", text:"Noņemt bildi"});
+          rm.addEventListener("click", function(){
+            q.img = 0; delete H.imgs[q.id];
+            S.remove("hosts/" + H.hid + "/img/" + q.id).catch(function(){});
+            hSaveNow(); renderImgField();
+          });
+          row.append(rm);
+        }
+        file.addEventListener("change", function(){
+          var f = file.files && file.files[0];
+          if(!f) return;
+          msg.textContent = "Apstrādā bildi…"; add.disabled = true;
+          compressImage(f).then(function(data){
+            return S.set("hosts/" + H.hid + "/img/" + q.id, data).then(function(){ H.imgs[q.id] = data; q.img = 1; hSaveNow(); });
+          }).then(function(){ renderImgField(); }).catch(function(e){
+            add.disabled = false;
+            msg.textContent = e && e.message === "decode" ? "Šo bildi neizdevās atvērt. Izvēlies JPG vai PNG bildi." : "Neizdevās saglabāt bildi. Pārbaudi internetu un mēģini vēlreiz.";
+          });
+        });
+        imgField.append(h("span", {class:"lbl", text:"Bilde (neobligāti)"}), row, file, msg);
+      }
+      renderImgField();
       card.append(
         h("div", {class:"qhead"}, num, h("p", {class:"qprev", text: custom && !q.text ? "Jauns jautājums" : "Labo jautājumu"})),
         h("div", {class:"field"}, h("label", {class:"lbl", for:"q-" + q.id + "-text"}, "Jautājums"), ta),
+        imgField,
         h("div", {class:"field"}, h("span", {class:"lbl", text:"Atbilžu varianti"}),
           h("p", {class:"hint", text:"Pārraksti variantus pēc sava prāta un ar aplīti atzīmē pareizo. Tukšu variantu viesi neredzēs."}), optBox),
         err, h("div", {class:"edit-actions"}, cancelBtn, saveBtn));
@@ -1772,6 +1872,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     });
     card.append(
       h("div", {class:"qhead edit-head"}, num, h("p", {class:"qprev", text: fill(q.text, C) || "Jautājums bez teksta"}), editBtn),
+      (H.imgs || {})[q.id] ? h("img", {class:"thumb-wide", src:H.imgs[q.id], alt:"Bilde pie jautājuma"}) : null,
       h("div", {class:"qmeta"}, chipWrap, h("label", {class:"check", for:"q-" + q.id + "-on"}, onBox, "Rādīt viesiem")),
       list, h("div", null, del));
     return card;
