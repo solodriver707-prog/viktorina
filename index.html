@@ -548,6 +548,67 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
 .is-poll .pick input,.is-poll .oview input{visibility:hidden;width:0;margin:0}
 .is-poll .right-tag{display:none!important}
 .is-poll .orow.is-correct input[type=text],.is-poll .oview.is-correct{border-color:var(--line);background:transparent}
+
+/* ===== big screen (TV, projector, laptop) ===== */
+:root[data-screen="tv"] .wrap{max-width:none;padding-block:clamp(16px,3vh,40px)}
+:root[data-tvphase="q"] #scene-fx{opacity:.3}
+.tv-body{min-height:calc(100vh - 6vh);min-height:calc(100dvh - 6vh);display:flex;flex-direction:column;gap:clamp(12px,2.4vh,28px);width:min(100%,1500px);margin:0 auto}
+.tv-h1{font:900 clamp(32px,4.6vw,76px)/1.05 var(--display);margin:0;text-wrap:balance}
+.tv-lede{font-size:clamp(17px,1.8vw,30px);color:var(--muted);max-width:40ch;margin:0}
+.tv-eyebrow{font:800 clamp(13px,1.1vw,20px)/1.2 var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0}
+.tv-center{text-align:center;margin:auto}
+.tv-pair,.tv-center-screen,.tv-count-screen{align-items:center;justify-content:center;text-align:center}
+.tv-pair .tv-lede,.tv-center-screen .tv-lede{margin-inline:auto}
+.tv-mark{width:clamp(90px,9vw,150px)}
+.tv-code{font:900 clamp(90px,16vw,260px)/1 var(--display);letter-spacing:.08em;margin:0;font-variant-numeric:tabular-nums;color:var(--ink)}
+.tv-actions{justify-content:center}
+.tv-lobby{display:grid;grid-template-columns:minmax(0,1fr);gap:clamp(16px,3vw,48px);align-items:center}
+@media (min-width:900px){ .tv-lobby{grid-template-columns:minmax(300px,.85fr) minmax(0,1.15fr)} }
+.tv-joinbox{display:grid;justify-items:center;text-align:center;gap:6px;background:var(--card);border:2px solid var(--line);border-radius:28px;padding:clamp(16px,2.4vw,36px);box-shadow:var(--shadow)}
+.tv-url{font:900 clamp(26px,3vw,52px)/1.1 var(--display);margin:0}
+.tv-pinlbl{font-weight:800;color:var(--muted);margin:8px 0 0}
+.tv-pin{font:900 clamp(56px,7vw,120px)/1 var(--display);letter-spacing:.04em;margin:0;font-variant-numeric:tabular-nums}
+.tv-qr{width:min(100%,clamp(220px,24vw,420px));margin-top:10px}
+.tv-players{display:grid;gap:14px;align-content:start;min-width:0}
+.tv-count{font:800 clamp(18px,1.8vw,30px)/1.2 var(--body);color:var(--muted);margin:0}
+.tv-names{justify-content:flex-start}
+.tv-names .name-chip{font-size:clamp(17px,1.7vw,30px);padding:.5em .9em}
+.tv-num{font-size:clamp(160px,26vw,380px)}
+.tv-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+.tv-head-l{display:grid;gap:2px}
+.tv-game{font:800 clamp(14px,1.3vw,22px)/1.2 var(--body);color:var(--muted);margin:0}
+.tv-qn{font:900 clamp(20px,2vw,34px)/1.1 var(--display);margin:0}
+.tv-join{font:800 clamp(14px,1.3vw,22px)/1.2 var(--body);background:var(--card);border:2px solid var(--line);border-radius:99px;padding:.45em 1em;margin:0}
+.tv-qrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:clamp(16px,2vw,40px);align-items:center}
+.tv-question{font:900 clamp(28px,3.8vw,68px)/1.12 var(--display);margin:0;text-wrap:balance}
+.tv-question-sm{font-size:clamp(22px,2.4vw,42px)}
+.tv-ring{width:clamp(80px,8vw,150px);height:clamp(80px,8vw,150px)}
+.tv-ring>span{width:78%;height:78%;font-size:clamp(32px,3.4vw,64px)}
+.tv-img{max-height:32vh;max-height:32dvh}
+.tv-opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(10px,1.4vw,24px);flex:1;align-content:start}
+.tv-opt{display:flex;gap:.6em;align-items:center;background:var(--c);color:#fff;border-radius:clamp(16px,1.6vw,28px);padding:clamp(14px,1.6vw,30px);font:800 clamp(20px,2.4vw,44px)/1.15 var(--body);box-shadow:inset 0 -.18em 0 rgba(0,0,0,.2),var(--shadow);min-height:clamp(70px,11vh,150px)}
+.tv-opt.c0{--c:#e2462f}.tv-opt.c1{--c:#f2ae1c;color:#2b230c}.tv-opt.c2{--c:#2c6fd8}.tv-opt.c3{--c:#1f8a4c}
+.tv-opt .l{flex:none;width:1.6em;height:1.6em;border-radius:.35em;display:grid;place-items:center;background:rgba(255,255,255,.24);font-family:var(--display);font-weight:900}
+.tv-opt .t{min-width:0;overflow-wrap:anywhere}
+.tv-meter{font-size:clamp(15px,1.4vw,24px)}
+.tv-split{display:grid;gap:clamp(16px,3vw,48px);grid-template-columns:minmax(0,1fr)}
+@media (min-width:900px){ .tv-split{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr)} }
+.tv-col{display:grid;gap:14px;align-content:start;min-width:0}
+.tv-dist{font-size:clamp(16px,1.6vw,28px)}
+.tv-dist .mini-tile{width:1.7em;height:1.7em;font-size:inherit}
+.tv-dist .bar{height:clamp(12px,1.2vw,22px)}
+.tv-board .brow{padding:clamp(10px,1vw,18px) clamp(14px,1.4vw,24px)}
+.tv-board .rname,.tv-board .rscore,.tv-board .rank{font-size:clamp(18px,1.9vw,34px)}
+.tv-next{font:800 clamp(15px,1.4vw,24px)/1.2 var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:center;margin-top:auto}
+.tv-reveal{align-items:center;text-align:center}
+.tv-reveal .podium{width:min(100%,1100px)}
+.tv-reveal .place .names{font-size:clamp(20px,2.6vw,46px)}
+.tv-reveal .block{font-size:clamp(40px,5vw,90px)}
+.tv-reveal .p1 .block{height:clamp(150px,26vh,320px)}.tv-reveal .p2 .block{height:clamp(112px,19vh,240px)}.tv-reveal .p3 .block{height:clamp(82px,14vh,180px)}
+/* host lobby: connect a big screen */
+.tv-host{gap:10px}
+.tv-ic{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;flex:none}
+.tv-code-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px}
 </style>
 </head>
 <body>
@@ -560,6 +621,9 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     <h2 class="qtext">Datubāze vēl nav pieslēgta</h2>
     <p class="lede">Šai lapai vēl nav iestatīta datubāze. Pajautā vadītājam.</p>
   </section>
+
+  <!-- ===== BIG SCREEN ===== -->
+  <section id="s-tv" class="screen tv" hidden><div id="tv-body" class="tv-body"></div></section>
 
   <!-- ===== GUEST ===== -->
   <section id="s-home" class="screen" hidden>
@@ -830,6 +894,16 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     <p class="hint" id="hlb-hint" hidden>Lai izņemtu spēlētāju, uzspied uz vārda divreiz.</p>
     <p class="note" id="hlb-warn" hidden></p>
     <button class="btn btn-go btn-xl" id="hlb-start" type="button" disabled>START</button>
+    <div class="panel tv-host">
+      <button class="btn btn-quiet btn-sm" id="hlb-tv-open" type="button"><svg class="tv-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="13" rx="2.5"/><path d="M8 21h8"/></svg> Rādīt uz TV vai datora ekrāna</button>
+      <form id="hlb-tv-form" class="field" novalidate hidden>
+        <label class="lbl" for="hlb-tv-code">Lielā ekrāna kods</label>
+        <p class="hint">Televizora vai datora pārlūkā atver <strong>quizmaker.fun/tv</strong> un ieraksti kodu, ko tur redzi. Spēli vadīsi no telefona.</p>
+        <div class="tv-code-row"><input id="hlb-tv-code" type="text" inputmode="numeric" maxlength="4" autocomplete="off" class="big-input pin-input" placeholder="0000"><button class="btn btn-primary" type="submit">Savienot</button></div>
+        <p class="err" id="hlb-tv-err" aria-live="polite"></p>
+      </form>
+      <div class="row-between" id="hlb-tv-ok" hidden><span class="chip ok" id="hlb-tv-ok-text">Lielais ekrāns pievienots</span><button class="btn-text" id="hlb-tv-off" type="button">Atvienot</button></div>
+    </div>
     <div class="row-actions" style="justify-content:space-between">
       <button class="btn-text" id="hlb-copy" type="button">Kopēt saiti</button>
       <button class="btn-text btn-danger" id="hlb-cancel" type="button">Atcelt spēli</button>
@@ -1701,7 +1775,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
   }
 
   /* ================= shared game logic ================= */
-  var SCREENS = ["noconfig","home","globby","gcount","gq","ggap","gend","greveal","gbye","hlogin","htpl","hpanel","hsetup","hlobby","hgame","hres"];
+  var SCREENS = ["noconfig","tv","home","globby","gcount","gq","ggap","gend","greveal","gbye","hlogin","htpl","hpanel","hsetup","hlobby","hgame","hres"];
   var cur = "";
   function show(name){
     if(cur !== name){ try{ window.scrollTo(0, 0); }catch(e){} }
@@ -1714,6 +1788,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     var id = BRAND_SCENE;
     if(cur === "hlobby" || cur === "hgame" || cur === "hres") id = (H.quiz && H.quiz.bg) || (H.cfg && H.cfg.bg) || BRAND_SCENE;
     else if(cur === "hpanel" || cur === "hsetup") id = (H.cfg && H.cfg.bg) || BRAND_SCENE;
+    else if(cur === "tv") id = (T.quiz && T.pin && T.quiz.bg) || BRAND_SCENE;
     else if(cur !== "hlogin" && cur !== "htpl" && cur !== "noconfig") id = G.scene || BRAND_SCENE;
     applyScene(id);
   }
@@ -2429,7 +2504,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
           return Promise.all(qs.map(function(q, i){ return imgs[q.id] ? S.set("games/" + pin + "/img/q" + i, imgs[q.id]) : null; }));
         }).then(function(){
           return S.set(qBase() + "/currentPin", pin);
-        }).then(function(){ H.lastPin = pin; var ce = curEntry(); if(ce) ce.pin = pin; hAttach(pin); });
+        }).then(function(){ H.lastPin = pin; var ce = curEntry(); if(ce) ce.pin = pin; hTvFollow(pin); hAttach(pin); });
       });
     }
     var btns = [$("hp-new"), $("hr-new")];
@@ -2488,6 +2563,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     $("hlb-warn").hidden = sq >= aq.length;
     $("hlb-warn").textContent = "Pareizā atbilde atzīmēta tikai " + sq + " no " + aq.length + " jautājumiem. Bez tās pēc jautājuma nevarēs parādīt, vai atbilde bija pareiza.";
     hLobbyNames();
+    hTvRender();
   }
   function hLobbyNames(){
     if(!H.inGame) return;
@@ -2530,6 +2606,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     S.remove("games/" + pin).catch(function(){});
     S.remove("games/" + pin + "/img").catch(function(){});
     S.remove(qBase() + "/currentPin").catch(function(){});
+    var tvc = hTvConnected(); if(tvc) S.set("screens/" + tvc + "/pin", null).catch(function(){});
     H.lastPin = null; var ce = curEntry(); if(ce) ce.pin = null; hPanel();
   });
 
@@ -3064,12 +3141,224 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
   $("hs-back").addEventListener("click", function(){ hSaveNow(); hPanel(); });
   $("setup-intro-x").addEventListener("click", function(){ $("setup-intro").hidden = true; });
 
+
+  /* ================= TV / big screen =================
+     A TV or laptop opens quizmaker.fun/tv and shows a 4-digit code. The host types that code on the phone,
+     and the big screen follows the game (and every next game of that host) without any buttons of its own. */
+  var T = {active:false, sub:new Subs(), gsub:new Subs(), code:null, pin:null, quiz:null, state:undefined, players:{}, answers:{}, results:null, rev:{}, imgs:{}, phase:"", lastCount:null, confettiDone:false};
+  var LS_TV = "vk-tv";
+  function tvStop(){ T.active = false; T.sub.clear(); T.gsub.clear(); T.pin = null; document.documentElement.removeAttribute("data-tvphase"); }
+  function tvBoot(){
+    gStop(); hLeaveGame();
+    T.active = true; keepAwake(true);
+    var saved = lsGet(LS_TV) || {}, tries = 0;
+    function pick(){
+      var code = (tries === 0 && saved.code) ? saved.code : String(1000 + Math.floor(Math.random() * 9000));
+      tries++;
+      return S.get("screens/" + code).then(function(v){
+        if(v && !(tries === 1 && saved.code === code)){ if(tries < 6) return pick(); }
+        if(!v) return S.set("screens/" + code, {at:S.ts()}).then(function(){ return code; });
+        return code;
+      });
+    }
+    tvPairScreen(null);
+    pick().then(function(code){
+      if(!T.active) return;
+      T.code = code; lsSet(LS_TV, {code:code});
+      T.sub.clear();
+      T.sub.on("screens/" + code + "/pin", function(pin){
+        if(pin && /^\d{6}$/.test(String(pin))){ if(pin !== T.pin) tvAttach(String(pin)); }
+        else { T.gsub.clear(); T.pin = null; tvPairScreen(code); }
+      });
+      if(!T.pin) tvPairScreen(code);
+    }).catch(function(){ tvPairScreen(null, true); });
+  }
+  function tvShell(cls){ var b = $("tv-body"); b.className = "tv-body " + (cls || ""); b.textContent = ""; return b; }
+  function tvPairScreen(code, failed){
+    T.phase = "pair"; document.documentElement.setAttribute("data-tvphase", "pair");
+    var b = tvShell("tv-pair");
+    var full = h("button", {type:"button", class:"btn btn-quiet btn-sm", text:"Pilnekrāns"});
+    full.addEventListener("click", function(){ try{ (document.documentElement.requestFullscreen || function(){}).call(document.documentElement); }catch(e){} });
+    var snd = h("button", {type:"button", class:"btn btn-quiet btn-sm", text:"Ieslēgt skaņu"});
+    snd.addEventListener("click", function(){ audioInit(); beep(880, 0.12, 0.15); snd.textContent = "Skaņa ieslēgta"; snd.disabled = true; });
+    b.append(
+      h("div", {class:"brand-mark tv-mark", "aria-hidden":"true"}, h("span", {class:"c0", text:"A"}), h("span", {class:"c1", text:"B"}), h("span", {class:"c2", text:"C"}), h("span", {class:"c3", text:"D"})),
+      h("h1", {class:"tv-h1", text:"Viktorīna uz lielā ekrāna"}),
+      h("p", {class:"tv-lede", text: failed ? "Neizdevās savienoties ar serveri. Pārbaudi internetu un atsvaidzini lapu." : "Vadītāja telefonā, spēles gaidīšanas ekrānā, spied „Rādīt uz TV” un ieraksti šo kodu:"}),
+      h("p", {class:"tv-code", text: code || "····"}),
+      h("div", {class:"row-actions tv-actions"}, full, snd));
+    show("tv");
+  }
+  function tvAttach(pin){
+    T.gsub.clear();
+    T.pin = pin; T.quiz = null; T.state = undefined; T.players = {}; T.answers = {}; T.results = null; T.rev = {}; T.imgs = {}; T.phase = ""; T.confettiDone = false; qrForTv = null;
+    S.get("games/" + pin + "/quiz").then(function(q){ if(T.pin !== pin) return; T.quiz = q; syncScene(); tvUpdate(); });
+    S.get("games/" + pin + "/img").then(function(v){ if(T.pin !== pin) return; T.imgs = v || {}; preload(T.imgs); }).catch(function(){});
+    T.gsub.on("games/" + pin + "/state", function(v){ T.state = v; tvUpdate(); });
+    T.gsub.on("games/" + pin + "/players", function(v){ T.players = v || {}; if(T.phase === "lobby") tvLobbyNames(); });
+    T.gsub.on("games/" + pin + "/answers", function(v){ T.answers = v || {}; tvMeter(); });
+    T.gsub.on("games/" + pin + "/results", function(v){ T.results = v; T.phase = ""; tvUpdate(); });
+    T.gsub.on("games/" + pin + "/rev", function(v){ T.rev = v || {}; var ph = T.quiz && T.state ? phaseOf(T.state, T.quiz, now()) : null; if(ph && ph.k === "gap"){ T.phase = ""; tvUpdate(); } });
+  }
+  function tvUpdate(){
+    if(!T.active || !T.pin || !T.quiz || T.state === undefined) return;
+    if(T.state === null){ T.gsub.clear(); T.pin = null; tvPairScreen(T.code); return; }
+    var ph = phaseOf(T.state, T.quiz, now());
+    var key = ph.k + (ph.i != null ? ":" + ph.i : "");
+    if(ph.k === "reveal") key += ":" + (T.state.revealStep || 0) + ":" + (T.results ? JSON.stringify(T.results).length : 0);
+    if(key !== T.phase){ T.phase = key; document.documentElement.setAttribute("data-tvphase", ph.k); tvEnter(ph); }
+    tvTick(ph);
+  }
+  var qrForTv = null;
+  function tvHead(ph){
+    var n = quizQs(T.quiz).length;
+    return h("div", {class:"tv-head"},
+      h("div", {class:"tv-head-l"}, h("p", {class:"tv-game", text: gameTitle(T.quiz)}),
+        ph.i != null ? h("p", {class:"tv-qn", text:"Jautājums " + (ph.i + 1) + " / " + n}) : null),
+      h("p", {class:"tv-join", text:"quizmaker.fun · PIN " + fmtPin(T.pin)}));
+  }
+  function tvEnter(ph){
+    var qs = quizQs(T.quiz), b;
+    if(ph.k === "lobby"){
+      b = tvShell("tv-lobby");
+      var qr = h("div", {class:"qr-box tv-qr", id:"tv-qr"});
+      b.append(
+        h("div", {class:"tv-joinbox"},
+          h("p", {class:"tv-eyebrow", text:"Pievienojies ar telefonu"}),
+          h("p", {class:"tv-url", text:"quizmaker.fun"}),
+          h("p", {class:"tv-pinlbl", text:"Spēles PIN"}),
+          h("p", {class:"tv-pin", text: fmtPin(T.pin)}), qr),
+        h("div", {class:"tv-players"},
+          h("h1", {class:"tv-h1", text: gameTitle(T.quiz)}),
+          h("p", {class:"tv-count", id:"tv-count"}),
+          h("div", {class:"names tv-names", id:"tv-names"})));
+      try{ if(window.QRCode){ new window.QRCode(qr, {text: location.origin + location.pathname + "?pin=" + T.pin, width:512, height:512, colorDark:"#000000", colorLight:"#ffffff", correctLevel: window.QRCode.CorrectLevel.M}); } }catch(e){}
+      tvLobbyNames();
+    } else if(ph.k === "count"){
+      b = tvShell("tv-count-screen");
+      T.lastCount = null;
+      b.append(h("p", {class:"tv-eyebrow", text: gameTitle(T.quiz)}), h("h1", {class:"tv-h1", text:"Sākam!"}), h("div", {class:"ready-num tv-num", id:"tv-num", text:"3"}));
+    } else if(ph.k === "q"){
+      b = tvShell("tv-q");
+      var item = qs[ph.i] || {}, grid = h("div", {class:"tv-opts"}), shown = 0;
+      normOpts(item.options).forEach(function(o, k){
+        if(!o.trim()) return;
+        grid.append(h("div", {class:"tv-opt c" + (k % 4)}, h("span", {class:"l", text:LETTERS[shown]}), h("span", {class:"t", text:o})));
+        shown++;
+      });
+      var pic = qImage((T.imgs || {})["q" + ph.i], "q-img tv-img");
+      b.append(tvHead(ph),
+        h("div", {class:"tv-qrow"}, h("h1", {class:"tv-question", text:item.text || ""}), h("div", {class:"ring tv-ring", id:"tv-ring"}, h("span", {id:"tv-secs"}))));
+      if(pic) b.append(pic);
+      b.append(grid,
+        h("div", {class:"meter tv-meter"}, h("div", {class:"mrow"}, h("span", {text:"Atbildējuši"}), h("span", {id:"tv-mval"})), h("div", {class:"bar"}, h("span", {id:"tv-mbar"}))));
+      tvMeter();
+    } else if(ph.k === "gap"){
+      b = tvShell("tv-gap");
+      var rv = (T.rev || {})["q" + ph.i], gi = qs[ph.i] || {};
+      b.append(tvHead(ph));
+      if(!rv){
+        b.append(h("h1", {class:"tv-h1 tv-center", text: ph.early ? "Visi atbildējuši!" : "Laiks beidzās!"}));
+      } else {
+        var dsum = listOf(rv.d).reduce(function(a, c){ return a + (c || 0); }, 0), dist = h("div", {class:"dist tv-dist" + (rv.k >= 0 ? " revealed" : "")}), sl = 0;
+        normOpts(gi.options).forEach(function(o, k){
+          if(!o.trim()) return;
+          var cnt = listOf(rv.d)[k] || 0, pct = dsum ? Math.round(cnt / dsum * 100) : 0, right = rv.k === k;
+          dist.append(h("div", {class:"drow c" + k + (right ? " right" : "")},
+            h("span", {class:"mini-tile", "aria-hidden":"true", text:LETTERS[sl]}),
+            h("span", {class:"dlabel"}, o, right ? h("span", {class:"right-tag", text:"Pareizi"}) : null),
+            h("span", {class:"dcount", text:String(cnt)}),
+            h("div", {class:"bar"}, h("span", {style:"width:" + pct + "%"}))));
+          sl++;
+        });
+        var left = h("div", {class:"tv-col"}, h("p", {class:"tv-eyebrow", text: rv.k === -2 ? "Aptaujas rezultāts" : rv.k >= 0 ? "Pareizā atbilde" : "Kā atbildēja"}), h("h2", {class:"tv-question tv-question-sm", text: gi.text || ""}), dist);
+        var right2 = h("div", {class:"tv-col"});
+        var top = listOf(rv.top);
+        if(rv.any && top.length){
+          var ol = h("ol", {class:"board tv-board"});
+          top.forEach(function(x){
+            ol.append(h("li", {class:"brow"}, h("span", {class:"rank", text:String(x.r)}),
+              h("div", null, h("div", {class:"rname", text:x.n}), x.g ? h("div", {class:"rmeta gain", text:"+" + fmtPts(x.g)}) : null),
+              h("span", {class:"rscore", text:fmtPts(x.p)})));
+          });
+          right2.append(h("p", {class:"tv-eyebrow", text:"Līderi"}), ol);
+        }
+        b.append(h("div", {class:"tv-split"}, left, right2));
+      }
+      b.append(h("p", {class:"tv-next", id:"tv-next"}));
+    } else if(ph.k === "end"){
+      b = tvShell("tv-center-screen");
+      b.append(h("div", {class:"done-mark", "aria-hidden":"true", text:"✓"}), h("h1", {class:"tv-h1", text:"Visi jautājumi aiz muguras!"}), h("p", {class:"tv-lede", text:"Vadītājs tūlīt atklās uzvarētājus."}));
+    } else if(ph.k === "reveal"){
+      b = tvShell("tv-reveal");
+      var R = T.results, step = (T.state && T.state.revealStep) || 0, podium = R ? listOf(R.podium) : [];
+      b.append(h("p", {class:"tv-eyebrow", text: gameTitle(T.quiz)}));
+      if(!podium.length){ b.append(h("h1", {class:"tv-h1", text:"Gaidām rezultātus…"})); return; }
+      var done = step >= podium.length;
+      b.append(h("h1", {class:"tv-h1", text: done ? "Uzvarētāji" : "Atklājam vietas…"}), podiumEl(podium, step));
+      if(done){ b.append(h("p", {class:"tv-lede", text:"Paldies par spēli! Savu viktorīnu vari izveidot quizmaker.fun"})); if(!T.confettiDone){ T.confettiDone = true; confetti(); beep(990, 0.25, 0.2); } }
+      else T.confettiDone = false;
+    }
+  }
+  function tvLobbyNames(){
+    var box = $("tv-names"); if(!box) return;
+    var r = nameChips(T.players);
+    box.textContent = ""; box.append(r.frag);
+    $("tv-count").textContent = r.count ? r.count + " " + plural(r.count, "spēlētājs", "spēlētāji") : "Gaidām spēlētājus…";
+  }
+  function tvMeter(){
+    var el = $("tv-mval"); if(!el || !T.state || !T.quiz) return;
+    var ph = phaseOf(T.state, T.quiz, now()); if(ph.k !== "q") return;
+    var ids = Object.keys(T.players), n = 0;
+    ids.forEach(function(id){ var a = T.answers[id]; if(a && a["q" + ph.i]) n++; });
+    el.textContent = n + " / " + ids.length;
+    $("tv-mbar").style.width = (ids.length ? Math.round(n / ids.length * 100) : 0) + "%";
+  }
+  function tvTick(ph){
+    if(ph.k === "count"){
+      var n = Math.max(1, Math.min(3, Math.ceil(ph.left / 1000))), el = $("tv-num");
+      if(el && n !== T.lastCount){ T.lastCount = n; el.textContent = n; el.classList.remove("pop"); void el.offsetWidth; el.classList.add("pop"); beep(520, 0.14); }
+    } else if(ph.k === "q"){
+      var ring = $("tv-ring"); if(ring) ringSet(ring, $("tv-secs"), ph.left, ph.lim);
+    } else if(ph.k === "gap"){
+      var nx = $("tv-next"); if(nx) nx.textContent = ph.last ? "Tas bija pēdējais jautājums!" : "Nākamais jautājums pēc " + Math.max(1, Math.ceil(ph.left / 1000)) + " s";
+    }
+  }
+
+  /* host side: connect a big screen by its code; it then follows this host's games */
+  var LS_HTV = "vk-htv";
+  function hTvConnected(){ var c = lsGet(LS_HTV); return c && /^\d{4}$/.test(c) ? c : null; }
+  function hTvFollow(pin){ var c = hTvConnected(); if(c) S.set("screens/" + c + "/pin", pin).catch(function(){}); }
+  function hTvRender(){
+    var c = hTvConnected();
+    $("hlb-tv-ok").hidden = !c;
+    if(c) $("hlb-tv-ok-text").textContent = "Lielais ekrāns pievienots (kods " + c + ")";
+    $("hlb-tv-open").hidden = !!c;
+  }
+  $("hlb-tv-open").addEventListener("click", function(){ $("hlb-tv-form").hidden = false; this.hidden = true; focusSoon("hlb-tv-code"); });
+  $("hlb-tv-code").addEventListener("input", function(){ this.value = this.value.replace(/\D/g, "").slice(0, 4); });
+  $("hlb-tv-form").addEventListener("submit", function(ev){
+    ev.preventDefault();
+    var code = $("hlb-tv-code").value.replace(/\D/g, ""), err = $("hlb-tv-err"); err.textContent = "";
+    if(code.length !== 4){ err.textContent = "Ieraksti 4 ciparu kodu no lielā ekrāna."; return; }
+    S.get("screens/" + code).then(function(v){
+      if(!v){ err.textContent = "Šāds ekrāns nav atrasts. Pārbaudi kodu uz ekrāna."; return; }
+      return S.set("screens/" + code + "/pin", H.pin).then(function(){ lsSet(LS_HTV, code); $("hlb-tv-form").hidden = true; $("hlb-tv-code").value = ""; hTvRender(); toast("Lielais ekrāns pievienots."); });
+    }).catch(function(){ err.textContent = "Neizdevās savienot. Pārbaudi internetu."; });
+  });
+  $("hlb-tv-off").addEventListener("click", function(){
+    var c = hTvConnected(); if(c) S.set("screens/" + c + "/pin", null).catch(function(){});
+    lsSet(LS_HTV, null); $("hlb-tv-form").hidden = true; hTvRender();
+  });
+
   /* ================= routing ================= */
   function isHostRoute(){
     var hsh = decodeURIComponent(location.hash || "").toLowerCase();
     return hsh === "#vaditajs" || hsh === "#vadītājs" || hsh === "#host" || hsh === "#jauna" || /^#v-[0-9a-f]{32}$/.test(hsh);
   }
   function route(){
+    if(/^#tv$/i.test(location.hash || "")){ tvBoot(); return; }
+    if(T.active){ tvStop(); keepAwake(false); }
     if(isHostRoute()){ gStop(); hBoot(); return; }
     hLeaveGame();
     var saved = lsGet(LS_JOIN), up = urlPin();
@@ -3090,7 +3379,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
       else offT = setTimeout(function(){ $("net").hidden = false; }, 3000);
     });
     setInterval(function(){
-      try{ if(G.active) gUpdate(); if(H.inGame) hUpdate(); }catch(e){ console.error(e); }
+      try{ if(G.active) gUpdate(); if(H.inGame) hUpdate(); if(T.active) tvUpdate(); }catch(e){ console.error(e); }
     }, 100);
     window.addEventListener("hashchange", route);
     route();
