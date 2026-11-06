@@ -478,6 +478,28 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
 .opts.locked .opt:not(.sel)::after{content:"";position:absolute;inset:0 0 -6px;border-radius:inherit;background:var(--card);opacity:.7}
 .tpl-tile-t{background:rgba(18,14,48,.62);padding:4px 7px;border-radius:9px;text-shadow:none;font-size:15px}
 .after-game{margin-top:8px}
+
+/* compact top bar on host screens: back button, title, save status; stays at the top while scrolling */
+.topbar{position:sticky;top:calc(6px + env(safe-area-inset-top,0px));z-index:20;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:12px;
+  padding:8px 12px 8px 8px;border-radius:20px;border:2px solid var(--line);background:var(--card);box-shadow:var(--shadow)}
+@supports (background:color-mix(in srgb,red 50%,transparent)){
+  .topbar{background:color-mix(in srgb,var(--card) 86%,transparent);-webkit-backdrop-filter:blur(12px) saturate(1.2);backdrop-filter:blur(12px) saturate(1.2)}
+}
+.tb-back{appearance:none;flex:none;width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:var(--field);border:2px solid var(--line);color:var(--ink);cursor:pointer;text-decoration:none;transition:transform .08s}
+.tb-back:active{transform:scale(.94)}
+.tb-back svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2.8;stroke-linecap:round;stroke-linejoin:round}
+.tb-text{min-width:0;display:grid;gap:1px}
+.tb-eyebrow{margin:0;font:800 11px/1.2 var(--body);letter-spacing:.09em;text-transform:uppercase;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tb-title{margin:0;font:900 20px/1.15 var(--display);letter-spacing:-.01em;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow-wrap:anywhere}
+.tb-mark{width:44px;height:44px;display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.tb-mark span{border-radius:7px;background:var(--c);box-shadow:inset 0 -3px 0 rgba(0,0,0,.18)}
+.save-chip{font:800 12px/1 var(--body);padding:8px 10px;border-radius:99px;background:var(--green-soft);color:var(--green-ink);white-space:nowrap}
+.save-chip.saving{background:var(--amber-soft);color:var(--amber-ink)}
+.save-chip.bad{background:var(--red-soft);color:var(--red-ink)}
+.intro-note{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:start;font-size:15px;line-height:1.4;padding:12px 12px 12px 16px}
+.note-x{appearance:none;width:32px;height:32px;border-radius:10px;border:0;background:transparent;color:var(--muted);font:700 22px/1 var(--body);cursor:pointer;margin:-4px -2px 0 0}
+.note-x:active{background:var(--line)}
+@media (max-width:360px){ .save-chip{padding:7px 8px;font-size:11px} .tb-title{font-size:18px} }
 </style>
 </head>
 <body>
@@ -590,7 +612,10 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
 
   <!-- ===== HOST ===== -->
   <section id="s-hlogin" class="screen" hidden>
-    <div><p class="eyebrow">Vadītājam</p><h2 class="qtext">Sāc savu viktorīnu</h2></div>
+    <header class="topbar">
+      <a class="tb-back" href="./" aria-label="Atpakaļ uz sākumu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5 8 12l6.5 6.5"/></svg></a>
+      <div class="tb-text"><p class="tb-eyebrow">Vadītājam</p><h2 class="tb-title">Sāc savu viktorīnu</h2></div>
+    </header>
     <div class="panel">
       <h3 class="section-title">Jauna viktorīna</h3>
       <p class="muted">Bez reģistrācijas un paroles. Izvēlies tēmu, pielāgo jautājumus un aicini viesus ar QR kodu.</p>
@@ -606,11 +631,13 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
         <div><button class="btn btn-primary btn-sm" type="submit" id="hl-go">Ieiet</button></div>
       </form>
     </div>
-    <div><a class="btn-text" href="./">Atpakaļ uz sākumu</a></div>
   </section>
 
   <section id="s-htpl" class="screen" hidden>
-    <div><p class="eyebrow" id="tpl-eyebrow">Jauna viktorīna</p><h2 class="qtext">Izvēlies tēmu</h2></div>
+    <header class="topbar">
+      <button class="tb-back" id="tpl-back-top" type="button" aria-label="Atpakaļ"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5 8 12l6.5 6.5"/></svg></button>
+      <div class="tb-text"><p class="tb-eyebrow" id="tpl-eyebrow">Jauna viktorīna</p><h2 class="tb-title">Izvēlies tēmu</h2></div>
+    </header>
     <p class="muted">Jautājumus vēlāk varēsi mainīt, dzēst un pievienot savus, arī ar bildēm.</p>
     <p class="note" id="tpl-warn" hidden>Izvēloties citu tēmu, pašreizējie jautājumi tiks aizstāti. Vārds, laiks un skaņas iestatījumi paliks.</p>
     <div class="tpl-grid" id="tpl-grid"></div>
@@ -619,7 +646,10 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
   </section>
 
   <section id="s-hpanel" class="screen" hidden>
-    <div><p class="eyebrow">Vadītāja panelis</p><h2 class="qtext" id="hp-title">Viktorīnas vadība</h2></div>
+    <header class="topbar">
+      <span class="tb-mark" aria-hidden="true"><span class="c0"></span><span class="c1"></span><span class="c2"></span><span class="c3"></span></span>
+      <div class="tb-text"><p class="tb-eyebrow">Vadītāja panelis</p><h2 class="tb-title" id="hp-title">Viktorīnas vadība</h2></div>
+    </header>
     <div class="stat-row" id="hp-stats"></div>
     <p class="note" id="hp-note" hidden></p>
     <div class="panel hp-resume" id="hp-resume" hidden>
@@ -653,9 +683,12 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
   </section>
 
   <section id="s-hsetup" class="screen" hidden>
-    <div><p class="eyebrow">Vadītāja iestatījumi</p><h2 class="qtext">Sagatavo viktorīnu</h2></div>
-    <p class="muted">Izmaiņas saglabājas automātiski. Tās attiecas uz nākamo spēli, ko sāksi.</p>
-    <p class="note info" id="setup-intro" hidden>Viktorīna izveidota! Ieraksti vārdu, pārbaudi jautājumus un atzīmē pareizās atbildes. Tad atgriezies panelī un spied „Sākt jaunu spēli”.</p>
+    <header class="topbar">
+      <button class="tb-back" id="hs-back" type="button" aria-label="Atpakaļ uz vadītāja paneli"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5 8 12l6.5 6.5"/></svg></button>
+      <div class="tb-text"><p class="tb-eyebrow" id="hs-eyebrow">Viktorīna</p><h2 class="tb-title">Iestatījumi</h2></div>
+      <span class="save-chip" id="save-chip" role="status" title="Izmaiņas saglabājas automātiski un attiecas uz nākamo spēli">✓ Saglabāts</span>
+    </header>
+    <div class="note info intro-note" id="setup-intro" hidden><span id="setup-intro-text"></span><button class="note-x" id="setup-intro-x" type="button" aria-label="Aizvērt">×</button></div>
     <div class="panel">
       <div class="row-between"><h3 class="section-title">Pasākums</h3><button class="btn btn-quiet btn-sm" id="setup-tpl" type="button">Mainīt tēmu</button></div>
       <p class="hint" id="setup-tpl-name"></p>
@@ -756,7 +789,10 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
   </section>
 
   <section id="s-hres" class="screen" hidden>
-    <div><p class="eyebrow">Rezultāti</p><h2 class="qtext" id="hr-title">Uzvarētāji</h2></div>
+    <header class="topbar">
+      <button class="tb-back" id="hr-back" type="button" aria-label="Uz vadītāja paneli"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5 8 12l6.5 6.5"/></svg></button>
+      <div class="tb-text"><p class="tb-eyebrow">Rezultāti</p><h2 class="tb-title" id="hr-title">Uzvarētāji</h2></div>
+    </header>
     <p class="muted" id="hr-sub"></p>
     <div class="tabs" role="tablist">
       <button class="tab" role="tab" id="hr-tab-win" aria-selected="true" type="button">Uzvarētāji</button>
@@ -1850,11 +1886,11 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
       S.get("hosts/" + hid + "/config").then(function(cfg){
         if(cfg){ hOpen(hid, cfg); return; }
         lsSet(LS_HOST, null);
-        if(wantNew) hTemplates(); else { hLoginScreen(); if(viaLink) $("hl-err").textContent = "Šī vadītāja saite vairs nav derīga."; }
+        if(wantNew){ H.tplFrom = "home"; hTemplates(); } else { hLoginScreen(); if(viaLink) $("hl-err").textContent = "Šī vadītāja saite vairs nav derīga."; }
       }).catch(function(){ hLoginScreen(); $("hl-err").textContent = "Neizdevās savienoties ar datubāzi. Pārbaudi internetu."; });
       return;
     }
-    if(wantNew) hTemplates(); else hLoginScreen();
+    if(wantNew){ H.tplFrom = "home"; hTemplates(); } else hLoginScreen();
   }
   function hLoginScreen(){
     H.hid = null; H.cfg = null;
@@ -1862,7 +1898,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     $("hl-err").textContent = "";
     show("hlogin");
   }
-  $("hl-new").addEventListener("click", function(){ audioInit(); hTemplates(); });
+  $("hl-new").addEventListener("click", function(){ audioInit(); H.tplFrom = "login"; hTemplates(); });
   function findByPassword(pw){
     var legacy = sha256hex("vk-host-v1:" + pw).slice(0, 32);
     return S.get("hosts/" + legacy + "/config").then(function(cfg){
@@ -1942,7 +1978,12 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
       err.textContent = "Neizdevās izveidot viktorīnu. Pārbaudi internetu un mēģini vēlreiz.";
     });
   }
-  $("tpl-back").addEventListener("click", function(){ if(H.hid && H.cfg) hSetup(); else hLoginScreen(); });
+  function tplBack(){
+    if(H.hid && H.cfg){ hSetup(); return; }
+    if(H.tplFrom === "login") hLoginScreen(); else location.href = "./";
+  }
+  $("tpl-back").addEventListener("click", tplBack);
+  $("tpl-back-top").addEventListener("click", tplBack);
 
   function hOpen(hid, raw){
     H.hid = hid; H.cfg = normCfg(raw); H.imgs = {};
@@ -2028,7 +2069,12 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     }).catch(function(){ msg.textContent = "Neizdevās saglabāt paroli. Pārbaudi internetu."; }).then(function(){ btn.disabled = false; });
   });
 
-  function hSave(){ clearTimeout(H.saveT); H.saveT = setTimeout(hSaveNow, 500); H.dirty = true; }
+  function saveChip(st){
+    var c = $("save-chip"); if(!c) return;
+    c.classList.toggle("saving", st === "saving"); c.classList.toggle("bad", st === "bad");
+    c.textContent = st === "saving" ? "Saglabā…" : st === "bad" ? "Nav saglabāts" : "✓ Saglabāts";
+  }
+  function hSave(){ clearTimeout(H.saveT); H.saveT = setTimeout(hSaveNow, 500); H.dirty = true; saveChip("saving"); }
   function hFlush(){ if(H.dirty) hSaveNow(); }
   window.addEventListener("pagehide", hFlush);
   document.addEventListener("visibilitychange", function(){ if(document.visibilityState === "hidden") hFlush(); });
@@ -2036,7 +2082,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     clearTimeout(H.saveT);
     if(!H.hid || !H.cfg) return;
     H.dirty = false;
-    S.set("hosts/" + H.hid + "/config", clone(H.cfg)).catch(function(){ toast("Neizdevās saglabāt. Pārbaudi internetu."); });
+    S.set("hosts/" + H.hid + "/config", clone(H.cfg)).then(function(){ if(!H.dirty) saveChip("ok"); }).catch(function(){ saveChip("bad"); toast("Neizdevās saglabāt. Pārbaudi internetu."); });
   }
 
   function hNewGame(errEl){
@@ -2310,6 +2356,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
   $("hr-tab-win").addEventListener("click", function(){ hSetTab("win"); });
   $("hr-tab-qs").addEventListener("click", function(){ hSetTab("qs"); });
   $("hr-panel").addEventListener("click", function(){ hPanel(); });
+  $("hr-back").addEventListener("click", function(){ hPanel(); });
   $("hr-new").addEventListener("click", function(){ hNewGame(null); });
 
   function hRenderResults(){
@@ -2541,17 +2588,19 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
   function hSetup(fresh){
     hLeaveGame(); hRenderSetup();
     var tt = tplById(H.cfg.tpl), withKey = tt.q.some(function(q){ return typeof q[3] === "number"; });
-    $("setup-intro").textContent = !tt.q.length ? "Viktorīna izveidota! Pievieno savus jautājumus ar pogu „+ Pievienot savu jautājumu” un atzīmē pareizās atbildes. Tad atgriezies panelī un spied „Sākt jaunu spēli”."
+    $("setup-intro-text").textContent = !tt.q.length ? "Viktorīna izveidota! Pievieno savus jautājumus ar pogu „+ Pievienot savu jautājumu” un atzīmē pareizās atbildes. Tad atgriezies panelī un spied „Sākt jaunu spēli”."
       : tt.name ? "Viktorīna izveidota! Ieraksti vārdu, pārbaudi jautājumus un atzīmē pareizās atbildes. Tad atgriezies panelī un spied „Sākt jaunu spēli”."
       : withKey ? "Viktorīna izveidota! Pareizās atbildes jau atzīmētas. Pārskati jautājumus, pielāgo tos un tad atgriezies panelī un spied „Sākt jaunu spēli”."
       : "Viktorīna izveidota! Pārbaudi jautājumus un atzīmē pareizās atbildes. Tad atgriezies panelī un spied „Sākt jaunu spēli”.";
     $("setup-intro").hidden = !fresh;
+    saveChip("ok");
     show("hsetup");
     if(fresh && tplById(H.cfg.tpl).name) focusSoon("child-name");
   }
   function titleFieldValue(C){ return C.title.indexOf("{") >= 0 ? fill(C.title, C) : C.title; }
   function hRenderSetup(){
     var C = H.cfg, t = tplById(C.tpl);
+    $("hs-eyebrow").textContent = quizTitle(C);
     $("setup-tpl-name").textContent = "Tēma: " + t.title + " (" + t.sub.charAt(0).toLowerCase() + t.sub.slice(1) + ")";
     $("name-field").hidden = !t.name;
     $("gender-field").hidden = !t.gender;
@@ -2587,11 +2636,11 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     });
     if(document.activeElement !== $("ev-title")) $("ev-title").value = titleFieldValue(H.cfg);
   }
-  $("ev-title").addEventListener("input", function(){ H.cfg.title = this.value; hSave(); });
+  $("ev-title").addEventListener("input", function(){ H.cfg.title = this.value; hSave(); $("hs-eyebrow").textContent = quizTitle(H.cfg); });
   $("ev-eyebrow").addEventListener("input", function(){ H.cfg.eyebrow = this.value; hSave(); });
   $("ev-age").addEventListener("input", function(){ var d = this.value.replace(/\D/g, "").slice(0, 3); if(d !== this.value) this.value = d; H.cfg.age = d; hSave(); });
   $("setup-tpl").addEventListener("click", function(){ hSaveNow(); hTemplates(); });
-  $("child-name").addEventListener("input", function(){ H.cfg.child.name = this.value; hSave(); refreshPreviews(); });
+  $("child-name").addEventListener("input", function(){ H.cfg.child.name = this.value; hSave(); refreshPreviews(); $("hs-eyebrow").textContent = quizTitle(H.cfg); });
   ["g-m","g-f"].forEach(function(id){ $(id).addEventListener("change", function(){ if(this.checked){ H.cfg.child.gender = this.value; hSave(); refreshPreviews(); } }); });
   ["10","15","20"].forEach(function(v){ $("t-" + v).addEventListener("change", function(){ if(this.checked){ H.cfg.timeLimit = Number(v); hSave(); } }); });
   $("snd-on").addEventListener("change", function(){ if(this.checked){ H.cfg.sound = true; hSave(); } });
@@ -2603,6 +2652,8 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
   });
   $("restore-q").addEventListener("click", function(){ missingBase(H.cfg).forEach(function(b){ H.cfg.questions.push(freshQ(b)); }); hSave(); hRenderSetup(); });
   $("setup-done").addEventListener("click", function(){ hSaveNow(); hPanel(); });
+  $("hs-back").addEventListener("click", function(){ hSaveNow(); hPanel(); });
+  $("setup-intro-x").addEventListener("click", function(){ $("setup-intro").hidden = true; });
 
   /* ================= routing ================= */
   function isHostRoute(){
