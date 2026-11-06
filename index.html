@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Quizmaker</title>
 <meta name="description" content="Izveido viktorīnu savam pasākumam. Viesi noskenē QR kodu un spēlē savos telefonos.">
-<meta name="theme-color" content="#11162f">
+<meta name="theme-color" content="#5a29cf">
 <meta name="robots" content="noindex">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23e4513a'/%3E%3Ctext x='32' y='49' font-family='Arial Black,Arial' font-weight='900' font-size='46' text-anchor='middle' fill='white'%3E2%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='2' y='2' width='28' height='28' rx='8' fill='%23e4513a'/%3E%3Crect x='34' y='2' width='28' height='28' rx='8' fill='%23f2b22a'/%3E%3Crect x='2' y='34' width='28' height='28' rx='8' fill='%233a7ddf'/%3E%3Crect x='34' y='34' width='28' height='28' rx='8' fill='%232e9c60'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap">
@@ -477,6 +477,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
 .opts.locked .opt:not(.sel){opacity:1}
 .opts.locked .opt:not(.sel)::after{content:"";position:absolute;inset:0 0 -6px;border-radius:inherit;background:var(--card);opacity:.7}
 .tpl-tile-t{background:rgba(18,14,48,.62);padding:4px 7px;border-radius:9px;text-shadow:none;font-size:15px}
+.after-game{margin-top:8px}
 </style>
 </head>
 <body>
@@ -669,6 +670,11 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
           <label><input type="radio" name="gender" id="g-f" value="f"><span>Sievieti vai meiteni</span></label>
         </div>
       </div>
+      <div class="field" id="age-field">
+        <label class="lbl" for="ev-age">Cik gadus svin? (neobligāti)</label>
+        <input id="ev-age" type="text" inputmode="numeric" maxlength="3" autocomplete="off" placeholder="Piemēram, 40">
+        <p class="hint">Skaitli viesi redzēs kā svecīti, kad pievienosies spēlei.</p>
+      </div>
       <div class="field">
         <label class="lbl" for="ev-title">Viktorīnas nosaukums</label>
         <input id="ev-title" type="text" maxlength="60" autocomplete="off">
@@ -676,7 +682,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
       </div>
       <div class="field">
         <label class="lbl" for="ev-eyebrow">Uzraksts virs jautājumiem (neobligāti)</label>
-        <input id="ev-eyebrow" type="text" maxlength="60" autocomplete="off" placeholder="Piemēram, Laiks no 1 līdz 2 gadiem">
+        <input id="ev-eyebrow" type="text" maxlength="60" autocomplete="off" placeholder="Piemēram, Draugu vakars">
       </div>
     </div>
     <div class="panel">
@@ -803,14 +809,35 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
   /* Themes a new host can start from. {N} is always used in the nominative; {a|b} picks the boy|girl form.
      A fourth item in a question is the index of the correct answer (trivia themes come with answers). */
   var TEMPLATES = [
-    {id:"baby12", tile:"1–2", c:0, bg:"baloni", title:"Mazuļa jubileja", sub:"Bērnam 1–2 gadi",
+    {id:"blank", tile:"+", c:2, bg:"konfeti", title:"Tukša viktorīna", sub:"Raksti savus jautājumus",
+     desc:"Sāc no nulles un pievieno savus jautājumus un bildes.",
+     name:null, gender:false, eventTitle:"Mana viktorīna", eyebrow:"", q:[]},
+    {id:"baby1", tile:"1", c:3, bg:"makonisi", title:"Mazuļa 1. dzimšanas diena", sub:"Pirmais dzīves gads",
+     desc:"Cik labi viesi zina, kā mazulis pavadīja savu pirmo gadu.",
+     name:{label:"Bērna vārds", ph:"Piemēram, Marta", fb:["jubilārs","jubilāre"]}, gender:true, badge:"1",
+     eventTitle:"{N} · 1 gads", eyebrow:"Pirmais dzīves gads", q:[
+      ["b1-svars","Cik {smags|smaga} {N} bija piedzimstot?",["Līdz 3 kg","3–3,5 kg","3,5–4 kg","Vairāk nekā 4 kg"]],
+      ["b1-garums","Cik {garš|gara} {N} bija piedzimstot?",["Līdz 48 cm","49–51 cm","52–54 cm","Vairāk nekā 54 cm"]],
+      ["b1-zobs","Cik mēnešu {vecs|veca} bija {N}, kad izšķīlās pirmais zobiņš?",["Līdz 5","6–7","8–9","Zobiņu vēl nav"]],
+      ["b1-apgriezas","Cik mēnešu {vecs|veca} bija {N}, kad pirmo reizi {pats|pati} apgriezās uz vēdera?",["Līdz 3","4","5","6 un vairāk"]],
+      ["b1-rapo","Cik mēnešu {vecs|veca} bija {N}, kad sāka rāpot?",["Līdz 7","8–9","10–11","Rāpot negribēja"]],
+      ["b1-soli","Vai {N} jau staigā {pats|pati}?",["Jau kopš 11 mēnešiem","Tikko sāka","Tikai turoties","Vēl ne"]],
+      ["b1-vards","Kuru vārdu {N} pateica pirmo?",["Mamma","Tētis","Dod","Kaut ko citu"]],
+      ["b1-ediens","Ko {N} ēd vislabprātāk?",["Biezenīšus","Putru","Banānu","Mammas pienu"]],
+      ["b1-aizmigt","Kā {N} vislabāk aizmieg?",["Šūpojot rokās","Ar šūpuļdziesmu","Braucot ratos","Ar knupīti"]],
+      ["b1-smejas","Par ko {N} smejas visskaļāk?",["Par paslēpēm „kū-kū”","Par kutināšanu","Par smieklīgām skaņām","Par mājdzīvnieku"]],
+      ["b1-mostas","Cik reizes naktī {N} parasti pamostas?",["Neviena","1 reizi","2–3 reizes","Vairāk nekā 3"]],
+      ["b1-rotallieta","Ar ko {N} spēlējas visvairāk?",["Ar grabulīti","Ar mīksto mantiņu","Ar grāmatiņu","Ar virtuves katliem"]],
+      ["b1-nakts","Kur {N} pirmo reizi pavadīja nakti ārpus mājām?",["Pie vecvecākiem","Ceļojumā","Laukos","Vēl nav {bijis|bijusi}"]]
+    ]},
+    {id:"baby12", tile:"2", c:0, bg:"baloni", title:"Mazuļa 2. dzimšanas diena", sub:"Gads no 1 līdz 2",
      desc:"Cik labi viesi zina, kā mazulis pavadīja laiku no 1 līdz 2 gadiem.",
-     name:{label:"Bērna vārds", ph:"Piemēram, Rudolfs", fb:["jubilārs","jubilāre"]}, gender:true, badge:"2",
+     name:{label:"Bērna vārds", ph:"Piemēram, Marta", fb:["jubilārs","jubilāre"]}, gender:true, badge:"2",
      eventTitle:"{N} · 2 gadi", eyebrow:"Laiks no 1 līdz 2 gadiem", q:BASE},
     {id:"kid", tile:"3–10", c:1, bg:"konfeti", title:"Bērna dzimšanas diena", sub:"Bērnam 3–10 gadi",
      desc:"Mīļākās krāsas, rotaļas, ēdieni un sapņi.",
-     name:{label:"Bērna vārds", ph:"Piemēram, Elza", fb:["jubilārs","jubilāre"]}, gender:true,
-     eventTitle:"{N} dzimšanas diena", eyebrow:"", q:[
+     name:{label:"Bērna vārds", ph:"Piemēram, Elza", fb:["jubilārs","jubilāre"]}, gender:true, age:true,
+     eventTitle:"{N} · dzimšanas diena", eyebrow:"", q:[
       ["kd-krasa","Kuru krāsu {N} izvēlas visbiežāk?",["Sarkano","Zilo","Zaļo","Rozā"]],
       ["kd-kluts","Par ko {N} grib kļūt, kad izaugs?",["Par ārstu","Par pavāru","Par policistu","Par mākslinieku"]],
       ["kd-multene","Kuru multfilmu {N} skatās visbiežāk?",["Ķepu patruļa","Cūciņa Pepa","Ledus sirds","Bluey"]],
@@ -826,8 +853,8 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     ]},
     {id:"adult", tile:"18+", c:2, bg:"ballite", title:"Dzimšanas diena", sub:"Pieaugušajam",
      desc:"Cik labi draugi un radi pazīst jubilāru.",
-     name:{label:"Jubilāra vārds", ph:"Piemēram, Andris", fb:["jubilārs","jubilāre"]}, gender:true,
-     eventTitle:"{N} dzimšanas diena", eyebrow:"", q:[
+     name:{label:"Jubilāra vārds", ph:"Piemēram, Andris", fb:["jubilārs","jubilāre"]}, gender:true, age:true,
+     eventTitle:"{N} · dzimšanas diena", eyebrow:"", q:[
       ["ad-pilseta","Kurā pilsētā {N} piedzima?",["Rīgā","Daugavpilī","Liepājā","Citā pilsētā"]],
       ["ad-darbs","Kur {N} strādāja savā pirmajā darbā?",["Veikalā","Kafejnīcā","Būvniecībā","Birojā"]],
       ["ad-dzeriens","Ko {N} visbiežāk dzer?",["Kafiju","Tēju","Alu","Vīnu"]],
@@ -869,6 +896,36 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
       ["bs-baro","Cik reižu diennaktī jaundzimušo parasti baro?",["3–4","5–6","8–12","15–20"],2],
       ["bs-redze","Kura maņa jaundzimušajam ir vismazāk attīstīta?",["Dzirde","Redze","Oža","Garša"],1]
     ]},
+    {id:"work", tile:"Darbs", c:2, bg:"konfeti", title:"Kolēģu ballīte", sub:"Komandai un uzņēmumam",
+     desc:"Cik labi kolēģi pazīst savu komandu un ikdienu darbā.",
+     name:null, gender:false, eventTitle:"Kolēģu viktorīna", eyebrow:"", q:[
+      ["wk-kafija","Ko kolēģi visbiežāk dzer darba dienas rītā?",["Kafiju","Tēju","Ūdeni","Enerģijas dzērienu"]],
+      ["wk-pusdienas","Kas ir mūsu komandas iecienītākās pusdienas?",["Zupa","Pica","Salāti","Līdzpaņemtais"]],
+      ["wk-diena","Kurā darba dienā ir vislabākais noskaņojums?",["Pirmdienā","Trešdienā","Piektdienā","Kad kādam ir dzimšanas diena"]],
+      ["wk-frāze","Kura frāze sapulcēs skan visbiežāk?",["Vai mani dzird?","Tev ir izslēgts mikrofons","Atgriezīsimies pie šī","Īsi un konkrēti"]],
+      ["wk-gadi","Cik gadus mūsu uzņēmums jau darbojas?",["Mazāk par 3","3–9","10–19","20 un vairāk"]],
+      ["wk-cilveki","Cik cilvēku šobrīd strādā mūsu komandā?",["Līdz 10","11–30","31–100","Vairāk nekā 100"]],
+      ["wk-kave","Kas visbiežāk aizkavē sapulces sākumu?",["Tehnika","Kafijas rinda","Satiksme","Iepriekšējā sapulce"]],
+      ["wk-pasakums","Kur notika mūsu pēdējais kopīgais pasākums?",["Ārpus pilsētas","Restorānā","Birojā","Tāds vēl nav bijis"]],
+      ["wk-atvalinajums","Kurā mēnesī komandā ir visvairāk atvaļinājumu?",["Jūnijā","Jūlijā","Augustā","Decembrī"]],
+      ["wk-epasti","Cik e-pastu vidēji dienā saņem mūsu vadītājs?",["Līdz 20","20–50","51–100","Vairāk nekā 100"]]
+    ]},
+    {id:"latvija", tile:"LV", c:0, bg:"klasika", title:"Latvijas viktorīna", sub:"Vispārējās zināšanas",
+     desc:"Vēsture, daba un simboli. Pareizās atbildes jau atzīmētas.",
+     name:null, gender:false, eventTitle:"Latvijas viktorīna", eyebrow:"", q:[
+      ["lv-neatkariba","Kurā gadā tika proklamēta Latvijas valsts?",["1905","1918","1920","1991"],1],
+      ["lv-kalns","Kurš ir Latvijas augstākais punkts?",["Zilais kalns","Riekstukalns","Gaiziņkalns","Ozolkalns"],2],
+      ["lv-upe","Kurai upei ir garākais tecējums Latvijas teritorijā?",["Gaujai","Daugavai","Ventai","Lielupei"],0],
+      ["lv-ezers","Kuram ezeram Latvijā ir vislielākā platība?",["Rāznai","Burtniekam","Usmai","Lubānam"],3],
+      ["lv-dziesmusvetki","Kurā gadā notika pirmie Vispārējie latviešu Dziesmu svētki?",["1873","1888","1918","1990"],0],
+      ["lv-es","Kurā gadā Latvija iestājās Eiropas Savienībā?",["1991","2007","2004","2014"],2],
+      ["lv-eiro","Kurā gadā Latvijā ieviesa eiro?",["2004","2014","2011","2016"],1],
+      ["lv-putns","Kurš ir Latvijas nacionālais putns?",["Baltais stārķis","Lakstīgala","Dzērve","Baltā cielava"],3],
+      ["lv-zieds","Kurš ir Latvijas nacionālais zieds?",["Rudzupuķe","Pīpene","Magone","Zilā vizbulīte"],1],
+      ["lv-piemineklis","Kurā gadā atklāja Brīvības pieminekli Rīgā?",["1918","1940","1935","1991"],2],
+      ["lv-alfabets","Cik burtu ir latviešu alfabētā?",["33","26","30","35"],0],
+      ["lv-himna","Kā sauc Latvijas valsts himnu?",["„Pūt, vējiņi”","„Dievs, svētī Latviju!”","„Saule, Pērkons, Daugava”","„Gaismas pils”"],1]
+    ]},
     {id:"xmas", tile:"★", c:3, bg:"sniegs", title:"Ziemassvētki", sub:"Svētku viktorīna",
      desc:"Tradīcijas un svētku fakti. Pareizās atbildes jau atzīmētas.",
      name:null, gender:false, eventTitle:"Ziemassvētku viktorīna", eyebrow:"", q:[
@@ -882,11 +939,10 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
       ["xm-edieni","Cik ēdienus pēc latviešu tradīcijas liek galdā Ziemassvētku vakarā?",["3","5","15","9"],3],
       ["xm-terps","Kādā krāsā parasti attēlo Ziemassvētku vecīša tērpu?",["Zilā","Sarkanā","Zaļā","Violetā"],1],
       ["xm-piparkukas","Kura garšviela piparkūkās parasti nav?",["Kanēlis","Krustnagliņas","Ingvers","Kurkuma"],3]
-    ]},
-    {id:"blank", tile:"+", c:2, bg:"konfeti", title:"Tukša viktorīna", sub:"Raksti savus jautājumus",
-     desc:"Sāc no nulles un pievieno savus jautājumus un bildes.",
-     name:null, gender:false, eventTitle:"Mana viktorīna", eyebrow:"", q:[]}
+    ]}
   ];
+  var TPL_ORDER = ["blank","adult","kid","baby1","baby12","wedding","babyshower","work","latvija","xmas"];
+  TEMPLATES.sort(function(a, b){ return TPL_ORDER.indexOf(a.id) - TPL_ORDER.indexOf(b.id); });
   function tplById(id){ for(var i = 0; i < TEMPLATES.length; i++) if(TEMPLATES[i].id === id) return TEMPLATES[i]; return TEMPLATES[0]; }
 
   /* Backgrounds ("fons"). Each one sets its own colours in CSS (html[data-scene]) and a moving decoration layer.
@@ -1100,7 +1156,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
   function preload(map){ Object.keys(map || {}).forEach(function(k){ var im = new Image(); im.src = map[k]; }); }
   function cfgFromTemplate(id){
     var t = tplById(id);
-    return {tpl:t.id, bg:t.bg || BRAND_SCENE, title:t.eventTitle, eyebrow:t.eyebrow, child:{name:"", gender:"m"}, timeLimit:10, sound:true, questions:t.q.map(freshQ)};
+    return {tpl:t.id, bg:t.bg || BRAND_SCENE, age:"", title:t.eventTitle, eyebrow:t.eyebrow, child:{name:"", gender:"m"}, timeLimit:10, sound:true, questions:t.q.map(freshQ)};
   }
   function defaultCfg(){ return cfgFromTemplate("baby12"); }
   function listOf(v){
@@ -1122,6 +1178,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     return {
       tpl: t.id,
       bg: sceneById(c.bg) ? c.bg : (t.bg || BRAND_SCENE),
+      age: /^\d{1,3}$/.test(String(c.age || "")) ? String(c.age) : "",
       title: typeof c.title === "string" ? c.title : t.eventTitle,
       eyebrow: typeof c.eyebrow === "string" ? c.eyebrow : t.eyebrow,
       child:{name: typeof child.name === "string" ? child.name : "", gender: child.gender === "f" ? "f" : "m"},
@@ -1484,9 +1541,9 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
   function gameTitle(q){
     if(q && q.title) return q.title;
     var nm = q && q.child ? String(q.child.name || "").trim() : "";
-    return nm ? nm + " · 2 gadi" : "Viktorīna";
+    return nm || "Viktorīna";
   }
-  function gameEyebrow(q){ return q && typeof q.eyebrow === "string" ? q.eyebrow : (q && !q.title ? "Laiks no 1 līdz 2 gadiem" : ""); }
+  function gameEyebrow(q){ return q && typeof q.eyebrow === "string" ? q.eyebrow : ""; }
   function setHero(badge){
     $("home-candle").hidden = !badge;
     $("home-brand").hidden = !!badge;
@@ -1542,7 +1599,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
       if(dup){ err.textContent = "Spēlē jau ir „" + name + "”. Pieliec klāt uzvārda burtu, piemēram, „" + name + " K.”"; return null; }
       var pid = rid();
       return S.set("games/" + pin + "/players/" + pid, {name:name, joinedAt:S.ts()}).then(function(){
-        lsSet(LS_JOIN, {pin:pin, pid:pid, name:name});
+        lsSet(LS_JOIN, {pin:pin, pid:pid, name:name, at:Date.now()});
         gAttach(pin, pid, name);
       });
     }).catch(function(e){
@@ -1579,10 +1636,21 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     }).catch(function(){});
   }
   function gForget(){ lsSet(LS_JOIN, null); gStop(); }
+  /* A phone remembers its game only while it is useful: during the game and for a short while after the results.
+     After that, opening the site shows the start page instead of an old game. */
+  var KEEP_AFTER_RESULTS = 15 * 60 * 1000, KEEP_MAX = 12 * 3600 * 1000;
   function gResume(saved){
-    return S.get("games/" + saved.pin + "/players/" + saved.pid).then(function(p){
-      if(p){ gAttach(saved.pin, saved.pid, p.name || saved.name); return true; }
-      lsSet(LS_JOIN, null); return false;
+    var t = Date.now();
+    if(saved.at && t - saved.at > KEEP_MAX){ lsSet(LS_JOIN, null); return Promise.resolve(false); }
+    return Promise.all([S.get("games/" + saved.pin + "/players/" + saved.pid), S.get("games/" + saved.pin + "/state"), S.get("games/" + saved.pin + "/quiz")]).then(function(r){
+      var p = r[0], st = r[1], quiz = r[2];
+      if(!p || !st || !quiz){ lsSet(LS_JOIN, null); return false; }
+      var ph = phaseOf(st, quiz, now());
+      if(ph.k === "end" || ph.k === "reveal"){
+        var recent = saved.doneAt ? t - saved.doneAt < KEEP_AFTER_RESULTS : (saved.at ? t - saved.at < 3 * 3600 * 1000 : false);
+        if(!recent){ lsSet(LS_JOIN, null); return false; }
+      }
+      gAttach(saved.pin, saved.pid, p.name || saved.name); return true;
     }).catch(function(){ return false; });
   }
   function gBye(title, text){
@@ -1712,6 +1780,12 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
         h("p", {class:"me-rank", text: me.rank + ". vieta"}),
         h("p", {class:"score-meta", text: fmtPts(me.pts) + " " + plural(me.pts, "punkts", "punkti") + " · " + me.correct + " no " + (R.scored || 0) + " pareizi · kopā " + (R.count || 0) + " " + plural(R.count || 0, "spēlētājs", "spēlētāji")})));
     }
+    var sv = lsGet(LS_JOIN);
+    if(sv && sv.pin === G.pin && !sv.doneAt){ sv.doneAt = Date.now(); lsSet(LS_JOIN, sv); }
+    var again = h("button", {type:"button", class:"btn btn-primary", text:"Pievienoties citai spēlei"});
+    again.addEventListener("click", function(){ gForget(); try{ history.replaceState(null, "", location.pathname); }catch(e){} gHome(); });
+    body.append(h("div", {class:"actions after-game"}, again,
+      h("a", {class:"btn btn-quiet", href:"#jauna", text:"Izveidot savu viktorīnu", onclick:function(){ lsSet(LS_JOIN, null); }})));
     if(!G.confettiDone){ G.confettiDone = true; confetti(); beep(990, 0.25, 0.2); }
   }
 
@@ -1851,7 +1925,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
       }
       armedTpl = null;
       var keep = H.cfg, cfg = cfgFromTemplate(t.id);
-      cfg.child = keep.child; cfg.timeLimit = keep.timeLimit; cfg.sound = keep.sound;
+      cfg.child = keep.child; cfg.timeLimit = keep.timeLimit; cfg.sound = keep.sound; cfg.age = keep.age || "";
       H.cfg = normCfg(cfg); editingQ = {};
       hSaveNow(); hSetup(true);
       return;
@@ -1971,7 +2045,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     if(!qs.length){ if(errEl) errEl.textContent = "Nav neviena jautājuma. Pievieno vai ieslēdz jautājumus."; return; }
     hSaveNow();
     var imgs = H.imgs || {};
-    var quiz = {child:c.child, timeLimit:c.timeLimit, sound:c.sound, title:quizTitle(c), eyebrow:fill(c.eyebrow || "", c), badge:tplById(c.tpl).badge || "", bg:c.bg,
+    var quiz = {child:c.child, timeLimit:c.timeLimit, sound:c.sound, title:quizTitle(c), eyebrow:fill(c.eyebrow || "", c), badge:tplById(c.tpl).badge || (tplById(c.tpl).age && c.age) || "", bg:c.bg,
       questions: qs.map(function(q){ return {id:q.id, text:fill(q.text, c), options:normOpts(q.options), img: imgs[q.id] ? 1 : 0}; })};
     var withImg = qs.filter(function(q){ return imgs[q.id]; }).length;
     if(withImg) toast("Gatavo spēli un augšupielādē " + withImg + " " + plural(withImg, "bildi", "bildes") + "…");
@@ -2466,6 +2540,11 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
   function missingBase(C){ var have = {}; C.questions.forEach(function(q){ have[q.id] = true; }); return tplById(C.tpl).q.filter(function(b){ return !have[b[0]]; }); }
   function hSetup(fresh){
     hLeaveGame(); hRenderSetup();
+    var tt = tplById(H.cfg.tpl), withKey = tt.q.some(function(q){ return typeof q[3] === "number"; });
+    $("setup-intro").textContent = !tt.q.length ? "Viktorīna izveidota! Pievieno savus jautājumus ar pogu „+ Pievienot savu jautājumu” un atzīmē pareizās atbildes. Tad atgriezies panelī un spied „Sākt jaunu spēli”."
+      : tt.name ? "Viktorīna izveidota! Ieraksti vārdu, pārbaudi jautājumus un atzīmē pareizās atbildes. Tad atgriezies panelī un spied „Sākt jaunu spēli”."
+      : withKey ? "Viktorīna izveidota! Pareizās atbildes jau atzīmētas. Pārskati jautājumus, pielāgo tos un tad atgriezies panelī un spied „Sākt jaunu spēli”."
+      : "Viktorīna izveidota! Pārbaudi jautājumus un atzīmē pareizās atbildes. Tad atgriezies panelī un spied „Sākt jaunu spēli”.";
     $("setup-intro").hidden = !fresh;
     show("hsetup");
     if(fresh && tplById(H.cfg.tpl).name) focusSoon("child-name");
@@ -2476,6 +2555,8 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
     $("setup-tpl-name").textContent = "Tēma: " + t.title + " (" + t.sub.charAt(0).toLowerCase() + t.sub.slice(1) + ")";
     $("name-field").hidden = !t.name;
     $("gender-field").hidden = !t.gender;
+    $("age-field").hidden = !t.age;
+    $("ev-age").value = C.age || "";
     if(t.name){ $("name-lbl").textContent = t.name.label; $("child-name").placeholder = t.name.ph; }
     $("child-name").value = C.child.name;
     $("g-m").checked = C.child.gender !== "f"; $("g-f").checked = C.child.gender === "f";
@@ -2508,6 +2589,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
   }
   $("ev-title").addEventListener("input", function(){ H.cfg.title = this.value; hSave(); });
   $("ev-eyebrow").addEventListener("input", function(){ H.cfg.eyebrow = this.value; hSave(); });
+  $("ev-age").addEventListener("input", function(){ var d = this.value.replace(/\D/g, "").slice(0, 3); if(d !== this.value) this.value = d; H.cfg.age = d; hSave(); });
   $("setup-tpl").addEventListener("click", function(){ hSaveNow(); hTemplates(); });
   $("child-name").addEventListener("input", function(){ H.cfg.child.name = this.value; hSave(); refreshPreviews(); });
   ["g-m","g-f"].forEach(function(id){ $(id).addEventListener("change", function(){ if(this.checked){ H.cfg.child.gender = this.value; hSave(); refreshPreviews(); } }); });

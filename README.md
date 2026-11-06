@@ -1,8 +1,8 @@
-# Jubilejas viktorīna
+# Quizmaker
 
-Kahoot līdzīga viktorīna bērna 2 gadu jubilejai. Viesi noskenē QR kodu, vadītājs nospiež START, un visiem jautājumi sākas reizē.
+Kahoot līdzīga viktorīna jebkuram pasākumam: dzimšanas dienām, kāzām, kolēģu ballītēm un svētkiem. Vadītājs izvēlas tēmu un fonu, viesi noskenē QR kodu, un, kad vadītājs nospiež START, visiem jautājumi sākas reizē.
 
-- Viesiem: atver lapu un ieraksti PIN un vārdu.
-- Vadītājam: lapas apakšā „Vadītājs” (vai adrese ar `#vaditajs`).
+- Viesiem: atver quizmaker.fun un ieraksti PIN un vārdu.
+- Vadītājam: „Izveidot savu viktorīnu” (vai adrese ar `#jauna`), esošai viktorīnai `#vaditajs`.
 
 Dati glabājas Supabase (`config.js`).
