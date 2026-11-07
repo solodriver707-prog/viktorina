@@ -1179,6 +1179,24 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
       ["lv-alfabets","Cik burtu ir latviešu alfabētā?",["33","26","30","35"],0],
       ["lv-himna","Kā sauc Latvijas valsts himnu?",["„Pūt, vējiņi”","„Dievs, svētī Latviju!”","„Saule, Pērkons, Daugava”","„Gaismas pils”"],1]
     ]},
+    {id:"aktualitates", tile:"2026", c:1, bg:"jura", title:"Aktualitātes 2026", sub:"Gada notikumi un jaunumi",
+     desc:"Sports, Eirovīzija, kosmoss, Nobela prēmijas un Latvija. Pareizās atbildes jau atzīmētas.",
+     name:null, gender:false, eventTitle:"Aktualitātes 2026", eyebrow:"", q:[
+      ["ak-futbols","Kura valsts uzvarēja 2026. gada FIFA Pasaules kausā futbolā?",["Argentīna","Francija","Spānija","Brazīlija"],2],
+      ["ak-eirovizija","Kura valsts uzvarēja Eirovīzijā 2026. gadā Vīnē?",["Izraēla","Bulgārija","Zviedrija","Ukraina"],1],
+      ["ak-hokejs","Kura valsts kļuva par pasaules čempioni hokejā 2026. gadā?",["Somija","Kanāda","Šveice","Zviedrija"],0],
+      ["ak-olimpiade","Kurš Latvijas sportists izcīnīja bronzu šorttrekā Milānas–Kortīnas ziemas olimpiskajās spēlēs?",["Mārtiņš Dukurs","Roberts Krūzbergs","Kristers Gudļevskis","Elīza Tīruma"],1],
+      ["ak-artemis","Kā sauc NASA misiju, ar kuru 2026. gada aprīlī astronauti pirmo reizi kopš 1972. gada devās lidojumā apkārt Mēnesim?",["Apollo 18","Gemini 12","Artemis II","Skylab 5"],2],
+      ["ak-cl","Kura komanda uzvarēja 2026. gada UEFA Čempionu līgas finālā?",["Arsenal","Real Madrid","Bayern München","Paris Saint-Germain"],3],
+      ["ak-oskars","Kura filma 2026. gadā saņēma „Oskaru” kā gada labākā filma?",["Sinners","Hamnet","Frankenstein","One Battle After Another"],3],
+      ["ak-dziesma","Kā sauca 2026. gada Eirovīzijas uzvarētājdziesmu?",["Tattoo","Wasted Love","Euphoria","Bangaranga"],3],
+      ["ak-tour","Kurš riteņbraucējs uzvarēja 2026. gada „Tour de France” un izcīnīja savu piekto titulu?",["Jonass Vingegors","Tadejs Pogačars","Remko Evenpuls","Primožs Rogličs"],1],
+      ["ak-miers","Kas ir Navi Pillaja, kurai piešķirta 2026. gada Nobela Miera prēmija?",["Ārste no Indijas","Klimata aktīviste no Kenijas","Cilvēktiesību juriste un tiesnese no Dienvidāfrikas","Žurnāliste no Brazīlijas"],2],
+      ["ak-komandas","Cik komandu pirmo reizi vēsturē piedalījās Pasaules kausā futbolā 2026. gadā?",["48","32","64","40"],0],
+      ["ak-norvegija","Kura valsts 2026. gadā izcīnīja savu pirmo medaļu hokeja pasaules čempionātos, bronzas spēlē pieveicot Kanādu?",["Dānija","Austrija","Norvēģija","Francija"],2],
+      ["ak-literatura","Kurai kanādiešu dzejniecei piešķirta 2026. gada Nobela prēmija literatūrā?",["Margareta Atvuda","Alise Manro","Rupi Kaura","Anne Kārsone"],3],
+      ["ak-saeima","Kuras pēc kārtas Saeimas vēlēšanas Latvijā notika 2026. gada 3. oktobrī?",["15.","13.","14.","16."],0]
+    ]},
     {id:"xmas", tile:"★", c:3, bg:"sniegs", title:"Ziemassvētki", sub:"Svētku viktorīna",
      desc:"Tradīcijas un svētku fakti. Pareizās atbildes jau atzīmētas.",
      name:null, gender:false, eventTitle:"Ziemassvētku viktorīna", eyebrow:"", q:[
@@ -1194,7 +1212,7 @@ h1,h2,h3{font-weight:900;letter-spacing:-.01em}
       ["xm-piparkukas","Kura garšviela piparkūkās parasti nav?",["Kanēlis","Krustnagliņas","Ingvers","Kurkuma"],3]
     ]}
   ];
-  var TPL_ORDER = ["blank","adult","kid","baby1","baby12","wedding","babyshower","work","latvija","xmas"];
+  var TPL_ORDER = ["blank","adult","kid","baby1","baby12","wedding","babyshower","work","latvija","aktualitates","xmas"];
   TEMPLATES.sort(function(a, b){ return TPL_ORDER.indexOf(a.id) - TPL_ORDER.indexOf(b.id); });
   function tplById(id){ for(var i = 0; i < TEMPLATES.length; i++) if(TEMPLATES[i].id === id) return TEMPLATES[i]; return TEMPLATES[0]; }
 
